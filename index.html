@@ -2,6 +2,8 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v1.3 · 11/10/2026 · Versão visível
+   - Número da versão sempre à mostra no topo da tela (e em Ajustes)
   v1.2 · 11/10/2026 · Ícones dos apps
    - Ícones reais (recortados do print do iPhone do COSTA) para bancos,
      corretoras, lojas, Spotify e YouTube: na grade de escolha, na lista
@@ -327,6 +329,9 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc-logo{width:24px;height:24px;border-radius:7px;margin-right:8px;flex:none;display:block;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 .cc.mini .cc-logo{display:none}
 
+.hr{display:flex;align-items:center;gap:8px}
+.ver{font:700 11px/1 var(--fb);letter-spacing:.04em;color:var(--mu);padding:5px 9px;border-radius:99px;border:1px solid var(--line2);background:rgba(255,255,255,.05);font-variant-numeric:tabular-nums}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -339,7 +344,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <span class="pill">Premium</span>
+    <div class="hr"><span class="ver" id="ver">v1.3</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -423,6 +428,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 <script>
 (function(){
 'use strict';
+const VERSION='1.3';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -686,7 +692,7 @@ function renderSet(){
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Dados</h3><div class="cap">'+S.bills.length+(S.bills.length===1?' conta cadastrada':' contas cadastradas')+' neste aparelho. O aplicativo da tela de início tem os próprios dados, separados do Safari.</div><button class="act danger" id="bwipe">Apagar tudo</button></div>'+
-   '<p class="hint" style="text-align:center;margin-top:22px">Vencimentos v1.2</p>';
+   '<p class="hint" style="text-align:center;margin-top:22px">Vencimentos v'+VERSION+'</p>';
   $('#bcopy').onclick=async()=>{
     const txt=JSON.stringify(S);
     try{await navigator.clipboard.writeText(txt);toast('Backup copiado')}
@@ -971,6 +977,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 /* ao voltar para o app, atualiza o "hoje" */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&TAB==='home'){ANIM=false;renderHome()}});
 
+$('#ver').textContent='v'+VERSION;
 setTab('home');
 })();
 </script>
