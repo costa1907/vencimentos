@@ -2,9 +2,10 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
-  v3.6 · 11/10/2026 · Vibração ao mover ícones
-   - Toque tátil diferente ao segurar (firme), ao passar por cada posição
-     (leve) e ao soltar (duplo); no iPhone usa o toque nativo do sistema
+  v3.6 · 11/10/2026 · Toque tátil nos ícones
+   - Cada ícone tem um interruptor nativo invisível: ao tocar, o iPhone dá o
+     toque tátil do sistema (sem som). O iOS não permite vibrar por código
+     ao segurar/arrastar; em Android a vibração ao arrastar funciona
   v3.5 · 11/10/2026 · Linha digitável e limite do cartão
    - Boleto: cole a linha digitável (ou o código de barras) e o app já
      preenche valor e vencimento; confere os dígitos e avisa se estiver errado
@@ -365,12 +366,13 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .pv.img{background:rgba(255,255,255,.06);border:1px solid var(--line2);box-shadow:none}
 .pv img{width:100%;height:100%;object-fit:cover;display:block}
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:2px}
-.pt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0;transition:all .25s var(--ease)}
+.pt{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0;transition:all .25s var(--ease)}
 .pt .pv{width:44px;height:44px;border-radius:15px;font-size:15px}
 .pt span{max-width:100%;padding:0 3px;font:600 10.5px var(--fb);color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pt.on{border-color:rgba(232,178,74,.7);background:rgba(232,178,74,.1);transform:translateY(-2px)}
 .pt.on span{color:var(--gold2)}
 .pt:active{transform:scale(.95)}
+.pt .hz{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;clip-path:inset(0 round 16px);touch-action:pan-y;-webkit-tap-highlight-color:transparent}
 .fld.sm{height:42px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .imgrow{display:flex;gap:8px;align-items:center;margin-top:10px}
 .imgrow .act{margin:0;height:42px;font-size:13px;flex:1}
@@ -1061,6 +1063,7 @@ $('#fc').innerHTML=Object.keys(CAT).map(k=>'<button type="button" class="cat" da
 $('#cb').innerHTML=Object.keys(BRANDS).map(k=>'<button type="button" class="chip" data-b="'+k+'">'+BRANDS[k]+'</button>').join('');
 $('#ct').innerHTML=Object.keys(TIERS).map(k=>'<button type="button" class="chip" data-t="'+k+'">'+TIERS[k]+'</button>').join('');
 const fmtAmt=c=>brl(c);
+const HZ='<input type="checkbox" switch class="hz" tabindex="-1" aria-hidden="true">';
 const AZ=(a,b)=>PROV[a].n.localeCompare(PROV[b].n,'pt-BR',{sensitivity:'base'});
 function orderedIds(cat){
   const base=Array.from(new Set(LIST[cat]||[])).filter(id=>PROV[id]).sort(AZ);
@@ -1083,8 +1086,8 @@ function renderProv(){
   }
   if(q)ids.sort(AZ);
   provBar(!!q);
-  let g='<button type="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span></button>';
-  g+=ids.map(id=>{const p=PROV[id];return '<button type="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span></button>'}).join('');
+  let g='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
+  g+=ids.map(id=>{const p=PROV[id];return '<button type="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
   if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
   $('#pg').innerHTML=g;
 }
@@ -1176,20 +1179,10 @@ $('#fc').addEventListener('click',e=>{
 });
 $('#ps').addEventListener('input',renderProv);
 let LASTDRAG=0;
-const HP=(function(){
-  const l=document.createElement('label');l.setAttribute('aria-hidden','true');
-  l.style.cssText='position:fixed;left:-60px;top:-60px;width:40px;height:40px;opacity:0;pointer-events:none';
-  const i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);document.body.appendChild(l);
-  const tick=()=>{try{l.click()}catch(e){}};
-  const hasV=typeof navigator.vibrate==='function';
-  return function(k){
-    try{
-      if(k==='lift'){hasV?navigator.vibrate(28):tick()}
-      else if(k==='tick'){hasV?navigator.vibrate(7):tick()}
-      else if(k==='drop'){if(hasV)navigator.vibrate([14,40,22]);else{tick();setTimeout(tick,95)}}
-    }catch(e){}
-  };
-})();
+const HP=function(k){
+  try{if(typeof navigator.vibrate!=='function')return;
+    navigator.vibrate(k==='lift'?28:k==='tick'?7:[14,40,22])}catch(e){}
+};
 (function(){
   const grid=$('#pg');let st=null,timer=0,lastTouch=0;
   const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
