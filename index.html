@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='7.4';
+(function(){var V='7.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -104,7 +104,7 @@ svg{display:block}
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,var(--p1),var(--bg));border:1px solid var(--line2);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 .brand h1 .ex{color:var(--gold)}
-.logo>img{width:24px;height:auto;filter:var(--mf)}
+.brand .logo>img{width:24px;height:auto;filter:var(--mf)}
 .brand h1{font:800 21px/1 var(--fd);margin:0;letter-spacing:-.02em}
 .pill{font:700 9.5px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--on);background:linear-gradient(120deg,var(--gold2),var(--gold));padding:5px 8px;border-radius:99px}
 
@@ -538,7 +538,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img src="mark.webp" alt="" class="mk"></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v7.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v7.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -638,7 +638,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='7.4';
+const VERSION='7.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1125,7 +1125,7 @@ function renderSet(){
    '<div class="card"><h3>Aparência</h3><div class="cap">Escolha um tema pronto ou monte o seu: cor de fundo e cor de destaque.</div>'+
    '<div class="lbl" style="margin-top:14px">Temas prontos</div><div class="thm" id="thm">'+TH.PR.map((p,i)=>'<button type="button" class="tp" data-pr="'+i+'"><span class="tpv" style="background:'+TH.hsl(TH.BG[p[1]][1],TH.BG[p[1]][2],i===9||p[1]===1?3:11)+'"><i style="background:'+TH.AC[p[2]][1]+'"></i><b style="background:'+TH.AC[p[2]][1]+'"></b></span><span>'+p[0]+'</span></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
-   '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div></div>'+
+   '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
@@ -1134,6 +1134,7 @@ function renderSet(){
    '<p class="hint" style="text-align:center;margin-top:22px">Sobrou! v'+VERSION+'</p>';
   const thSync=()=>{const c=TH.cur;$$('#swb .swc').forEach(b=>b.classList.toggle('on',+b.dataset.b===c[0]));$$('#swa .swc').forEach(b=>b.classList.toggle('on',+b.dataset.a===c[1]));$$('#thm .tp').forEach(b=>{const p=TH.PR[+b.dataset.pr];b.classList.toggle('on',p[1]===c[0]&&p[2]===c[1])})};
   thSync();
+  $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
   $('#swa').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(TH.cur[0],+b.dataset.a);thSync()};
@@ -1830,13 +1831,21 @@ setTab('home');
 
 /* Abertura: aparece só ao abrir o app (não a cada volta ao app); toque para pular */
 (function(){
+  const HTML='<div class="spl-in"><div class="spl-mw"><img src="mark.webp" alt=""></div><div class="spl-n">Sobrou<span>!</span></div><div class="spl-t">Onde o seu controle<b>vira lucro.</b></div></div>';
+  function run(el,ms){
+    const done=()=>{if(el.dataset.d)return;el.dataset.d=1;el.classList.add('out');setTimeout(()=>el.remove(),650)};
+    el.addEventListener('pointerdown',done);setTimeout(done,ms||2500);
+  }
+  window.showSplash=function(){
+    const old=document.getElementById('spl');if(old)old.remove();
+    const el=document.createElement('div');el.className='spl';el.id='spl';el.setAttribute('aria-hidden','true');el.innerHTML=HTML;
+    document.body.appendChild(el);run(el,3200);
+  };
   const el=document.getElementById('spl');if(!el)return;
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
-  const done=()=>{if(el.dataset.d)return;el.dataset.d=1;el.classList.add('out');setTimeout(()=>el.remove(),650)};
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
-  el.addEventListener('pointerdown',done);
-  setTimeout(done,2500);
+  run(el,2500);
 })();
 </script>
 </body>
