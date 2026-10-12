@@ -1,6 +1,14 @@
 # Histórico de versões — Vencimentos
-# (as 3 últimas ficam também no topo do index.html)
-
+# (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v7.6 · 12/10/2026 · A marca do app e o ícone da tela inicial agora vão dentro do index.html (não dependem mais dos arquivos mark.webp/icon-*.png no GitHub)
+  v7.5 · 12/10/2026 · Corrigido: os ícones das empresas não mudam mais de cor com o tema (só a marca do app muda); novo botão Ajustes → Aparência → "Ver animação de abertura"
+  v7.4 · 12/10/2026 · App renomeado para "Sobrou!"; novo ícone (fita em V com 3 barras e seta, verde); abertura animada com a marca que muda de cor conforme o tema escolhido; tema padrão "Sobrou" (verde) e nova cor de destaque Verde
+  v7.3 · 12/10/2026 · Escolha de empresa: ao arrastar um ícone ele passa a ficar selecionado e a seleção do anterior some
+  v7.2 · 12/10/2026 · Arrastar ícones: o fundo do ícone em movimento (selecionado ou não) agora usa as cores do tema escolhido, sem azul/marrom fixo
+  v7.1 · 12/10/2026 · Temas: Ajustes → Aparência com 10 temas prontos (Rosé, Lima neon, Bordô e champanhe, Floresta menta, Oceano, Ameixa, Pêssego, Grafite, Amoled...), 10 cores de fundo e 9 cores de destaque; vale para o app todo e para a abertura
+  v7.0 · 12/10/2026 · App renomeado para "Prazo"; novo ícone (relógio dourado em contagem regressiva, arquivos icon-*.png); abertura animada premium (anel desenha, ponteiro gira, nome aparece) e tela de abertura nativa do iPhone (splash-*.png)
+  v6.8 · 12/10/2026 · Escolha de empresa: "Outro" fica sempre no final; ícone selecionado arrastado mantém o fundo dourado; ao soltar, o ícone assenta com um leve "pulo" e um anel dourado
+  v6.7 · 12/10/2026 · Arrastar ícone: a grade não pisca mais ao soltar e o ícone selecionado cai sem pulo
   v6.6 · 12/10/2026 · Abre na hora (e sem internet): o sw.js guarda o próprio app e confere a versão nova em segundo plano; cabeçalho enxuto (histórico completo em CHANGELOG.txt)
   v6.5 · 12/10/2026 · Imagem que falhou é pedida de novo sozinha (o iPhone guardava o "não encontrado" por alguns minutos)
   v6.4 · 12/10/2026 · Ajustes: botão "Verificar arquivos de imagem" lista quais ícones/cartões faltam no GitHub
