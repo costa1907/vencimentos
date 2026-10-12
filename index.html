@@ -2,6 +2,13 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v3.8 · 11/10/2026 · Tela não abre mais deslocada para baixo
+   - Corrige o bug do iPhone em que, ao abrir/voltar ao app, tudo aparecia
+     empurrado para baixo: trava o "elástico" do topo e recoloca a tela na
+     posição certa ao abrir, voltar e girar
+  v3.7 · 11/10/2026 · Sem seleção de texto
+   - Segurar ou tocar por muito tempo não seleciona mais o texto nem abre o
+     menu Copiar/Pesquisar/Traduzir; campos de digitação continuam normais
   v3.6 · 11/10/2026 · Toque tátil nos ícones
    - Cada ícone tem um interruptor nativo invisível: ao tocar, o iPhone dá o
      toque tátil do sistema (sem som). O iOS não permite vibrar por código
@@ -172,6 +179,7 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
+html,body{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px;-webkit-text-size-adjust:100%}
 body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action:manipulation;-webkit-font-smoothing:antialiased;
   background:
@@ -179,6 +187,9 @@ body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action
    radial-gradient(700px 500px at -10% 30%,rgba(95,130,255,.07),transparent 60%),
    var(--bg);
   background-attachment:fixed}
+html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+input[type=checkbox]{-webkit-user-select:none;user-select:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
 input,textarea{font:inherit;color:inherit}
 svg{display:block}
@@ -536,7 +547,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v3.6</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v3.8</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -633,7 +644,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='3.6';
+const VERSION='3.8';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1178,6 +1189,25 @@ $('#fc').addEventListener('click',e=>{
   $('#ps').value='';renderProv();syncForm();
 });
 $('#ps').addEventListener('input',renderProv);
+document.addEventListener('selectstart',e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest('input,textarea,[contenteditable]'))return;e.preventDefault()});
+document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.closest('input,textarea'))return;e.preventDefault()});
+(function(){
+  const vv=window.visualViewport;
+  function fix(){
+    try{
+      if(document.body.classList.contains('so'))return;
+      const off=vv&&(vv.offsetTop>0.5||vv.pageTop<-0.5);
+      if(window.scrollY<0||off||(window.scrollY>0&&window.scrollY<2)){window.scrollTo(0,0)}
+      if(off){const e=document.documentElement;e.style.transform='translateZ(0)';requestAnimationFrame(()=>{e.style.transform=''})}
+    }catch(e){}
+  }
+  window.fixTop=fix;
+  ['pageshow','focus','resize','orientationchange'].forEach(n=>window.addEventListener(n,()=>{fix();setTimeout(fix,120);setTimeout(fix,450)}));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){fix();setTimeout(fix,120);setTimeout(fix,450)}});
+  if(vv){vv.addEventListener('resize',fix);vv.addEventListener('scroll',fix)}
+  window.addEventListener('scroll',()=>{if(window.scrollY<0)fix()},{passive:true});
+  [0,60,200,500,1000,2000].forEach(t=>setTimeout(()=>{if(window.scrollY<=2)fix()},t));
+})();
 let LASTDRAG=0;
 const HP=function(k){
   try{if(typeof navigator.vibrate!=='function')return;
