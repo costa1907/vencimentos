@@ -1,5 +1,12 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v9.0 · 12/10/2026 · Login por e-mail e senha (Firebase) com sincronização na nuvem em segundo plano; ao sair da conta o app volta zerado; teste grátis de 7 dias e bloqueio por assinatura mensal via PIX; painel do administrador em Ajustes para liberar (+30 dias) ou bloquear clientes
+  v8.2 · 12/10/2026 · Removido o cartão deitado Itaú Uniclass Visa Signature (fica só o vertical)
+  v8.1 · 12/10/2026 · Carrossel de cartões mais leve: cartões longe do centro saem da GPU (sem mudar a qualidade nem o carregamento) e sem camada duplicada em cada cartão
+  v8.0 · 12/10/2026 · Volta ao comportamento da v7.7 (cartões carregando como antes, sem as otimizações das v7.8 e v7.9); único ajuste: o ícone só acende se o dedo ficar parado sobre ele (rolar a tela não acende)
+  v7.9 · 12/10/2026 · Desempenho: barra de abas sem desfoque (rolagem mais leve), animações de fundo pausam com o formulário aberto, download de imagens em segundo plano mais leve e só depois de 7 s
+  v7.8 · 12/10/2026 · Ícones: só seleciona/acende com toque de verdade (rolar a tela não acende mais) e o toque responde ao soltar o dedo; desempenho: o formulário atualiza no quadro seguinte e o carrossel carrega só os cartões próximos do centro (menos memória e travadas)
+  v7.7 · 12/10/2026 · Escolha de empresa: o ícone acende no instante do toque (antes de soltar o dedo) e as transições ficaram mais rápidas
   v7.6 · 12/10/2026 · A marca do app e o ícone da tela inicial agora vão dentro do index.html (não dependem mais dos arquivos mark.webp/icon-*.png no GitHub)
   v7.5 · 12/10/2026 · Corrigido: os ícones das empresas não mudam mais de cor com o tema (só a marca do app muda); novo botão Ajustes → Aparência → "Ver animação de abertura"
   v7.4 · 12/10/2026 · App renomeado para "Sobrou!"; novo ícone (fita em V com 3 barras e seta, verde); abertura animada com a marca que muda de cor conforme o tema escolhido; tema padrão "Sobrou" (verde) e nova cor de destaque Verde
