@@ -2,6 +2,7 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v5.1 · 12/10/2026 · Carrossel leve e fluido: sem ajuste de centro por script, imagens otimizadas, 3D barato
   v5.0 · 12/10/2026 · Carrossel para direto no cartão certo (sem ir e voltar)
   v4.9 · 12/10/2026 · Ícone arrastado fica exatamente sob o dedo; sombra leve (sem bolha)
   v4.8 · 12/10/2026 · Segurar e soltar ícone: sem texto cortado, sem pulo, pouso suave
@@ -163,7 +164,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='5.0';
+(function(){var V='5.1';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -437,10 +438,10 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
 .cbf::-webkit-scrollbar{display:none}
 .cbf .chip{height:34px;padding:0 15px;font-size:12.5px;border-radius:999px;flex:none}
-.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;perspective:900px;perspective-origin:50% 40%;margin-bottom:-18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cpk::-webkit-scrollbar{display:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
-.cpi{flex:none;transform-style:preserve-3d;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;transform-origin:50% 60%;will-change:transform,opacity;-webkit-tap-highlight-color:transparent}
+.cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden;-webkit-tap-highlight-color:transparent}
 .cpa{display:block;pointer-events:none}
 .cpa .cc{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75)}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0;transition:opacity .25s}
@@ -615,7 +616,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v5.0</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v5.1</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -715,7 +716,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='5.0';
+const VERSION='5.1';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1220,13 +1221,15 @@ function renderProv(){
 let CF='',CK='',CSEL='',CKS='';
 function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
 function cpLayout(){
-  const tr=$('#cm'),its=tr.children;if(!its.length)return -1;
-  const c=tr.scrollLeft+tr.clientWidth/2;let bi=0,bd=1e9;
-  for(let i=0;i<its.length;i++){const it=its[i],t=(it.offsetLeft+it.offsetWidth/2-c)/it.offsetWidth,d=Math.abs(t);if(d<bd){bd=d;bi=i}
-    if(d>2.2){if(it._f!==1){it._f=1;it.style.transform='rotateY('+(t<0?34:-34)+'deg) scale(.86)';it.style.opacity='.5'}continue}
-    it._f=0;const k=Math.min(1,d);
-    it.style.transform='rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-k*.14).toFixed(3)+')';it.style.opacity=(1-k*.5).toFixed(2)}
-  if(tr._c!==bi){tr._c=bi;for(let i=0;i<its.length;i++)its[i].classList.toggle('ctr',i===bi)}
+  const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
+  const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
+  if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
+  const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
+  for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
+    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;its[i].style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
+    its[i]._f=0;const q=d>1?1:d;
+    its[i].style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 function cpLabel(bi){
@@ -1236,14 +1239,12 @@ function cpLabel(bi){
   $('#cpn').textContent=it.dataset.n;$('#cps').textContent=it.dataset.s;{const g=$$('#cpg i');g.forEach((d,i)=>d.classList.toggle('on',i===bi))}
 }
 (function(){
-  let raf=0,idle=0,lb=-2,tch=0,fix=0;
+  let raf=0,idle=0,lb=-2,tch=0;
   const tr=document.getElementById('cm');
   function settle(){
-    const bi=cpLayout(),it=tr.children[bi];if(!it)return;
-    const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
     if(tch)return;
-    if(Math.abs(off)>3){if(++fix>2){fix=0;tr.scrollLeft+=off}else idle=setTimeout(settle,160);return}
-    fix=0;cpLabel(bi);
+    const bi=cpLayout(),it=tr.children[bi];if(!it)return;
+    cpLabel(bi);
     if(it.dataset.m!==F.model){
       const md=MODELS.find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
       $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el===it));
@@ -1252,11 +1253,17 @@ function cpLabel(bi){
   }
   tr.addEventListener('scroll',()=>{
     if(!raf)raf=requestAnimationFrame(()=>{raf=0;const bi=cpLayout();if(bi!==lb){lb=bi;cpLabel(bi)}});
-    clearTimeout(idle);idle=setTimeout(settle,140);
+    clearTimeout(idle);idle=setTimeout(settle,120);
   },{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;clearTimeout(idle)},{passive:true});
-  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,220)},{passive:true}));
+  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,160)},{passive:true}));
 })();
+const TH=new Map();
+function cpThumbs(){
+  $$('#cm img.cc-bg').forEach((im,k)=>{const src=im.getAttribute('src');
+    if(TH.has(src)){im.src=TH.get(src);return}
+    setTimeout(()=>{const i=new Image();i.onload=()=>{try{const W=840;if(i.naturalWidth<=W)return;const H=Math.round(W*i.naturalHeight/i.naturalWidth),c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(i,0,0,W,H);const u=c.toDataURL('image/webp',.92);TH.set(src,u);if(im.isConnected)im.src=u}catch(e){}};i.src=src},120+k*60)})
+}
 function cpNums(){const t='•••• '+(F.last4||'');$$('#cm .cc-num').forEach(n=>{if(n.textContent!==t)n.textContent=t})}
 function syncForm(){
   $('#fa').value=fmtAmt(F.cents);
@@ -1294,7 +1301,7 @@ function syncForm(){
        if(key!==CK){
          $('#cbf').innerHTML=brs.length>1?'<button type="button" class="chip'+(CF?'':' on')+'" data-f="">Todas</button>'+brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+BRANDS[b]+'</button>').join(''):'';
          $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false)+'</span></button>').join('');
-         $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');
+         $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');cpThumbs();
          CK=key;CSEL='';
        }else{$$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===CF))}
        const tr=$('#cm');
