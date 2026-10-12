@@ -8,5 +8,5 @@ self.addEventListener('activate',e=>e.waitUntil(
 self.addEventListener('fetch',e=>{
   const r=e.request,u=new URL(r.url);
   if(r.method!=='GET'||u.origin!==location.origin||!/\/[ci]-[a-z0-9_-]+\.webp$/.test(u.pathname))return;
-  e.respondWith(caches.open(CACHE).then(c=>c.match(r).then(h=>h||fetch(r).then(n=>{if(n.ok)c.put(r,n.clone());return n}))));
+  e.respondWith(caches.open(CACHE).then(c=>c.match(r).then(h=>h||fetch(new Request(r,{cache:'no-cache'})).then(n=>{if(n.ok)c.put(r,n.clone());return n}))));
 });
