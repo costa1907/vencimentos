@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='7.2';
+(function(){var V='7.3';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -549,7 +549,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="22" height="22" viewBox="0 0 1024 1024" fill="none" stroke-linecap="round"><defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="260" y1="240" x2="780" y2="800"><stop offset="0" style="stop-color:var(--gold2)"/><stop offset=".5" style="stop-color:var(--gold)"/><stop offset="1" style="stop-color:var(--gold3)"/></linearGradient></defs><circle cx="512" cy="512" r="258" stroke="#fff" stroke-opacity=".12" stroke-width="64"/><path d="M512 254A258 258 0 1 1 289 383" stroke="url(#hg)" stroke-width="64"/><path d="M512 512L398 438" stroke="url(#hg)" stroke-width="54"/><circle cx="289" cy="383" r="34" fill="#fff4cf" stroke="none"/></svg></div>
       <h1>Prazo</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v7.2</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v7.3</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -649,7 +649,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='7.2';
+const VERSION='7.3';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1487,6 +1487,8 @@ const HP=function(k){
     st.tiles=tiles;st.from=tiles.indexOf(st.tile);st.to=st.from;
     st.slots=tiles.map(el=>{const r=el.getBoundingClientRect();return{x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height}});
     const r=st.tile.getBoundingClientRect();st.dx=st.x0-r.left;st.dy=st.y0-r.top;
+    /* arrastar um ícone também o seleciona (e tira a seleção do anterior) */
+    {const pid=st.tile.dataset.p;if(pid&&!st.tile.classList.contains('on')&&(LIST[F.cat]||[]).indexOf(pid)>=0){setProv(pid);tiles.forEach(x=>x.classList.toggle('on',x===st.tile));syncForm()}}
     const g=st.tile.cloneNode(true);st.sel=st.tile.classList.contains('on');g.className='pt ghost'+(st.sel?' on':'');
     g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;translate:'+r.left+'px '+r.top+'px';
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
@@ -1564,14 +1566,18 @@ $('#pg').addEventListener('click',e=>{
     F.cat=PCAT[id];catChanged=true;
     autoCat();
   }
-  const p=PROV[id], fn=$('#fn');
-  if(p){if(!fn.value.trim()||fn.value===F.auto)fn.value=p.n;F.auto=p.n}
-  else{if(fn.value===F.auto)fn.value='';F.auto=''}
-  F.prov=id||'';
+  setProv(id);
   if(q||catChanged){$('#ps').value='';renderProv()}
   else $$('#pg .pt').forEach(x=>x.classList.toggle('on',x.dataset.p===(F.prov||'')));
   syncForm();
 });
+/* escolhe a empresa (nome automático + seleção); usado no toque e ao começar a arrastar */
+function setProv(id){
+  const p=PROV[id], fn=$('#fn');
+  if(p){if(!fn.value.trim()||fn.value===F.auto)fn.value=p.n;F.auto=p.n}
+  else{if(fn.value===F.auto)fn.value='';F.auto=''}
+  F.prov=id||'';
+}
 $('#ccx').addEventListener('click',e=>{
   const f=e.target.closest('[data-f]');if(f){CF=f.dataset.f;const l=MF(F.prov).filter(x=>!CF||x.br===CF);if(l.length&&!l.some(x=>x.id===F.model)){F.model=l[0].id;F.brand=l[0].br;F.tier=l[0].tr}syncForm();return}
   const b=e.target.closest('[data-b]'),t=e.target.closest('[data-t]'),m=e.target.closest('[data-m]');
