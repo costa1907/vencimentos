@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='8.2';
+(function(){var V='9.0';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -542,7 +542,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v8.2</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v9.0</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -642,7 +642,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='8.2';
+const VERSION='9.0';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -882,7 +882,7 @@ if(!S.goals||typeof S.goals!=='object')S.goals={};
 if(!S.order||typeof S.order!=='object')S.order={};
 if(S.pord!=='custom')S.pord='az';
 let EV=6;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.__sync)window.__sync()}
 const now0=new Date();
 let V={y:now0.getFullYear(),m:now0.getMonth()}; /* mês em exibição */
 let TAB='home', ANIM=true;
@@ -1124,6 +1124,7 @@ function renderSet(){
   const sa=window.navigator.standalone||matchMedia('(display-mode: standalone)').matches;
   $('#set').innerHTML=
    (sa?'':'<div class="install"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--gold2);flex:none;margin-top:2px"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><div>Para usar como aplicativo no iPhone: abra no <b>Safari</b>, toque em <b>Compartilhar</b> e escolha <b>Adicionar à Tela de Início</b>.</div></div>')+
+   (window.__acc?window.__acc.card():'')+
    '<div class="card"><h3>Aparência</h3><div class="cap">Escolha um tema pronto ou monte o seu: cor de fundo e cor de destaque.</div>'+
    '<div class="lbl" style="margin-top:14px">Temas prontos</div><div class="thm" id="thm">'+TH.PR.map((p,i)=>'<button type="button" class="tp" data-pr="'+i+'"><span class="tpv" style="background:'+TH.hsl(TH.BG[p[1]][1],TH.BG[p[1]][2],i===9||p[1]===1?3:11)+'"><i style="background:'+TH.AC[p[2]][1]+'"></i><b style="background:'+TH.AC[p[2]][1]+'"></b></span><span>'+p[0]+'</span></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
@@ -1136,6 +1137,7 @@ function renderSet(){
    '<p class="hint" style="text-align:center;margin-top:22px">Sobrou! v'+VERSION+'</p>';
   const thSync=()=>{const c=TH.cur;$$('#swb .swc').forEach(b=>b.classList.toggle('on',+b.dataset.b===c[0]));$$('#swa .swc').forEach(b=>b.classList.toggle('on',+b.dataset.a===c[1]));$$('#thm .tp').forEach(b=>{const p=TH.PR[+b.dataset.pr];b.classList.toggle('on',p[1]===c[0]&&p[2]===c[1])})};
   thSync();
+  if(window.__acc)window.__acc.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
@@ -1837,8 +1839,289 @@ document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.c
 document.addEventListener('pointermove',e=>{if(ccHeld&&e.pointerType!=='touch')ccTilt(ccHeld,e)},{passive:true});
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,ccRelease,{passive:true}));
 
+window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
+  put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
 setTab('home');
+})();
+
+/* ---------- Conta: login, sincronização e assinatura ---------- */
+(function(){
+  /* >>> AJUSTE AQUI <<< */
+  const ADMIN='thiago.costa1907@gmail.com';   /* e-mail que libera clientes */
+  const TRIAL_DIAS=7, DIAS_MES=30;
+  const PRECO='R$ 19,90';                      /* valor mensal */
+  const PIX='';                                /* sua chave PIX */
+  const SUPORTE='';                            /* link do Telegram/WhatsApp para enviar o comprovante */
+  const FB={key:'AIzaSyCQG-0Yft-eAA3EUD6Fli5QFyXkU9l_Lxk',pid:'sobrou-f61cf'};
+  const IDT='https://identitytoolkit.googleapis.com/v1/accounts:';
+  const FS='https://firestore.googleapis.com/v1/projects/'+FB.pid+'/databases/(default)/documents';
+  const AK='sobrou.auth',LK='sobrou.lic',DK='sobrou.dirty',UK='sobrou.upd',BK='sobrou.bkp';
+  const $=s=>document.querySelector(s);
+  const jget=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+  const jset=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const toast=m=>window.__app&&window.__app.toast(m);
+  let A=jget(AK),LIC=jget(LK)||{ate:0,created:0},tok='',tokExp=0,pulling=false,pushT=0,pushing=false,online=true,LST=[];
+
+  /* ----- rede ----- */
+  async function post(url,body,form){
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:form?body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.code=(j.error&&j.error.message)||'erro';e.http=r.status;throw e}
+    return j;
+  }
+  const MSG={EMAIL_NOT_FOUND:'E-mail ou senha incorretos',INVALID_PASSWORD:'E-mail ou senha incorretos',INVALID_LOGIN_CREDENTIALS:'E-mail ou senha incorretos',EMAIL_EXISTS:'Este e-mail já tem conta. Toque em Entrar',INVALID_EMAIL:'E-mail inválido',MISSING_PASSWORD:'Digite a senha',USER_DISABLED:'Conta desativada',TOO_MANY_ATTEMPTS_TRY_LATER:'Muitas tentativas. Espere um pouco'};
+  const errTxt=e=>{const c=String(e.code||'');if(/WEAK_PASSWORD/.test(c))return 'A senha precisa ter pelo menos 6 caracteres';return MSG[c]||(e.http?'Não deu certo ('+c+')':'Sem internet. Conecte e tente de novo')};
+  async function idToken(){
+    if(!A)throw new Error('sem sessão');
+    if(tok&&Date.now()<tokExp-60000)return tok;
+    try{
+      const j=await post('https://securetoken.googleapis.com/v1/token?key='+FB.key,'grant_type=refresh_token&refresh_token='+encodeURIComponent(A.rt),true);
+      tok=j.id_token;tokExp=Date.now()+(+j.expires_in||3600)*1000;
+      if(j.refresh_token&&j.refresh_token!==A.rt){A.rt=j.refresh_token;jset(AK,A)}
+      return tok;
+    }catch(e){
+      if(e.http&&/TOKEN_EXPIRED|USER_NOT_FOUND|USER_DISABLED|INVALID_REFRESH_TOKEN/.test(e.code)){wipe();location.reload()}
+      throw e;
+    }
+  }
+  async function fs(method,path,body){
+    const t=await idToken();
+    const r=await fetch(FS+path,{method:method,headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    if(r.status===404)return null;
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.http=r.status;throw e}
+    return j;
+  }
+  const num=f=>f&&(f.integerValue!=null?+f.integerValue:f.doubleValue!=null?+f.doubleValue:0)||0;
+
+  /* ----- assinatura ----- */
+  const isAdmin=()=>!!A&&A.email===ADMIN;
+  function status(){
+    const n=Date.now();
+    if(isAdmin())return {k:'adm'};
+    if(LIC.ate>n)return {k:'ok',ate:LIC.ate};
+    const te=(LIC.created||A&&A.created||0)+TRIAL_DIAS*864e5;
+    if(te>n)return {k:'trial',ate:te};
+    return {k:'exp'};
+  }
+  const dt=ms=>new Date(ms).toLocaleDateString('pt-BR');
+  async function checkLic(){
+    try{
+      const j=await fs('GET','/licencas/'+encodeURIComponent(A.email));
+      LIC.ate=j&&j.fields?num(j.fields.ate):0;
+      jset(LK,LIC);online=true;
+    }catch(e){if(e.http)LIC.ate=LIC.ate||0}
+    gate();
+  }
+  function gate(){
+    if(!A)return;
+    const s=status();
+    if(s.k==='exp')showBlock();else hideOv();
+  }
+
+  /* ----- sincronização ----- */
+  const payload=()=>JSON.stringify({s:window.__app.get(),t:(window.THEME&&window.THEME.cur)||[4,9]});
+  window.__sync=function(){
+    if(!A||pulling)return;
+    try{localStorage.setItem(DK,'1');localStorage.setItem(UK,String(Date.now()))}catch(e){}
+    clearTimeout(pushT);pushT=setTimeout(push,1500);
+    uiSync();
+  };
+  async function push(){
+    if(!A||pushing||pulling)return true;
+    if(!navigator.onLine){uiSync();return false}
+    pushing=true;
+    try{
+      const upd=+localStorage.getItem(UK)||Date.now();
+      await fs('PATCH','/users/'+A.uid+'?updateMask.fieldPaths=data&updateMask.fieldPaths=upd',{fields:{data:{stringValue:payload()},upd:{integerValue:String(upd)}}});
+      try{localStorage.removeItem(DK)}catch(e){}
+      online=true;pushing=false;uiSync();return true;
+    }catch(e){
+      pushing=false;uiSync();
+      if(e.http===403)toast('Sem permissão para salvar na nuvem');
+      return false;
+    }
+  }
+  async function pull(force){
+    if(!A)return;
+    pulling=true;
+    try{
+      const j=await fs('GET','/users/'+A.uid);
+      const f=j&&j.fields;
+      if(f&&f.data&&f.data.stringValue){
+        const cu=num(f.upd),lu=+localStorage.getItem(UK)||0;
+        const dirty=localStorage.getItem(DK);
+        if(force||(!dirty&&cu>=lu)||(!dirty&&!lu)){
+          const o=JSON.parse(f.data.stringValue);
+          const cur=JSON.stringify(window.__app.get());
+          if(JSON.stringify(o.s)!==cur){
+            try{localStorage.setItem(BK,cur)}catch(e){}
+            window.__app.put(o.s);
+          }
+          if(o.t&&window.THEME&&(o.t[0]!==THEME.cur[0]||o.t[1]!==THEME.cur[1])){THEME.set(o.t[0],o.t[1])}
+          try{localStorage.setItem(UK,String(cu));localStorage.removeItem(DK)}catch(e){}
+        }else if(dirty){pulling=false;await push()}
+      }else{
+        pulling=false;try{localStorage.setItem(DK,'1');localStorage.setItem(UK,String(Date.now()))}catch(e){}
+        await push();
+      }
+      online=true;
+    }catch(e){}
+    pulling=false;uiSync();
+  }
+  function uiSync(){const el=$('#acsync');if(!el)return;const d=localStorage.getItem(DK);el.textContent=d?(navigator.onLine?'Sincronizando…':'Aguardando internet'):'Tudo salvo na nuvem';el.style.color=d?'var(--warn)':'var(--ok)'}
+  window.addEventListener('online',()=>{if(A){if(localStorage.getItem(DK))push();else pull()}});
+  document.addEventListener('visibilitychange',()=>{
+    if(!A)return;
+    if(document.visibilityState==='hidden'){if(localStorage.getItem(DK))push()}
+    else{if(localStorage.getItem(DK))push();else pull();if(status().k==='exp'||!LIC.ate)checkLic()}
+  });
+  window.addEventListener('pagehide',()=>{if(A&&localStorage.getItem(DK))push()});
+
+  /* ----- sessão ----- */
+  function wipe(){
+    A=null;tok='';clearTimeout(pushT);
+    ['vencimentos.v1','vencimentos.theme',AK,LK,DK,UK].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+    try{sessionStorage.removeItem('spl')}catch(e){}
+  }
+  async function logout(){
+    if(localStorage.getItem(DK)&&navigator.onLine){const ok=await Promise.race([push(),new Promise(r=>setTimeout(()=>r(false),4000))]);if(!ok&&!window.__lgForce){window.__lgForce=1;toast('Ainda há dados sem salvar. Toque de novo para sair mesmo assim');setTimeout(()=>{window.__lgForce=0},4000);return}}
+    else if(localStorage.getItem(DK)&&!window.__lgForce){window.__lgForce=1;toast('Sem internet: há dados sem salvar. Toque de novo para sair mesmo assim');setTimeout(()=>{window.__lgForce=0},4000);return}
+    wipe();location.reload();
+  }
+  async function enter(kind,email,pw){
+    const j=await post(IDT+(kind==='new'?'signUp':'signInWithPassword')+'?key='+FB.key,{email:email,password:pw,returnSecureToken:true});
+    tok=j.idToken;tokExp=Date.now()+(+j.expiresIn||3600)*1000;
+    let created=Date.now();
+    try{const l=await post(IDT+'lookup?key='+FB.key,{idToken:tok});created=+l.users[0].createdAt||created}catch(e){}
+    A={uid:j.localId,email:(j.email||email).toLowerCase(),rt:j.refreshToken,created:created};
+    jset(AK,A);LIC={ate:0,created:created};jset(LK,LIC);
+  }
+
+  /* ----- telas ----- */
+  const CSS='.lgv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px 20px;overflow:auto;background:radial-gradient(120% 80% at 50% 30%,var(--h1) 0%,var(--bg2) 55%,var(--bg) 100%)}'+
+  '.lgv[hidden]{display:none}.lgb{width:100%;max-width:380px;text-align:center}'+
+  '.lgb .lgm{width:88px;height:78px;margin:0 auto 10px;display:grid;place-items:center}.lgb .lgm>img{width:100%;height:100%;object-fit:contain;filter:var(--mf)}'+
+  '.lgb h1{font:800 34px var(--fd,var(--fb));letter-spacing:-.02em;margin:0}.lgb h1 span{color:var(--gold2)}'+
+  '.lgb .lgs{margin:6px 0 22px;color:var(--mu);font-size:13.5px}'+
+  '.lgtab{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);margin-bottom:14px}'+
+  '.lgtab button{height:40px;border-radius:12px;font:700 14px var(--fb);color:var(--mu)}.lgtab button.on{background:linear-gradient(120deg,var(--gold2),var(--gold));color:var(--on)}'+
+  '.lgb .fld{font-size:16px;margin-top:10px;text-align:left}.lgb .cta{width:100%;justify-content:center;height:52px;margin-top:14px}'+
+  '.lgerr{min-height:20px;margin-top:12px;font-size:13px;color:var(--bad)}.lgerr.ok{color:var(--ok)}'+
+  '.lgl{display:inline-block;margin-top:10px;font-size:13px;color:var(--mu);text-decoration:underline;padding:6px}'+
+  '.lgpix{margin:16px 0;padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--line);text-align:left;font-size:14px;line-height:1.5}.lgpix b{color:var(--gold2)}.lgpix code{display:block;margin-top:6px;word-break:break-all;font:600 13px ui-monospace,monospace;color:var(--tx)}'+
+  '.lgb.adm .adl{display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px;text-align:left}';
+  const st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
+  const ov=document.createElement('div');ov.className='lgv';ov.id='lgv';ov.hidden=true;document.body.appendChild(ov);
+  const hideOv=()=>{ov.hidden=true;ov.innerHTML=''};
+  const MK=()=>'<div class="lgm"><img src="'+(window.MARK||'')+'" alt=""></div><h1>Sobrou<span>!</span></h1>';
+
+  function showLogin(mode){
+    mode=mode||'in';
+    ov.hidden=false;
+    ov.innerHTML='<div class="lgb">'+MK()+'<p class="lgs">Onde o seu controle <b style="color:var(--gold2)">vira lucro.</b></p>'+
+      '<div class="lgtab"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Entrar</button><button type="button" data-m="new" class="'+(mode==='new'?'on':'')+'">Criar conta</button></div>'+
+      '<input class="fld" id="lge" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">'+
+      '<input class="fld" id="lgp" type="password" autocomplete="'+(mode==='in'?'current-password':'new-password')+'" placeholder="'+(mode==='in'?'Senha':'Crie uma senha (mínimo 6)')+'">'+
+      '<button class="cta" id="lgg" type="button">'+(mode==='in'?'Entrar':'Criar conta e começar')+'</button>'+
+      '<div class="lgerr" id="lgx"></div>'+
+      (mode==='in'?'<a class="lgl" id="lgf">Esqueci minha senha</a>':'<p class="hint" style="margin-top:8px">'+TRIAL_DIAS+' dias grátis para testar tudo.</p>')+'</div>';
+    ov.querySelectorAll('.lgtab button').forEach(b=>b.onclick=()=>showLogin(b.dataset.m));
+    const x=(t,ok)=>{const e=$('#lgx');e.textContent=t;e.className='lgerr'+(ok?' ok':'')};
+    const go=async()=>{
+      const em=$('#lge').value.trim().toLowerCase(),pw=$('#lgp').value;
+      if(!/^\S+@\S+\.\S+$/.test(em)){x('Digite um e-mail válido');return}
+      if(!pw){x('Digite a senha');return}
+      const b=$('#lgg');b.disabled=true;b.style.opacity=.6;x('');
+      try{
+        await enter(mode,em,pw);
+        x('Entrando…',1);
+        await pull(false);
+        await checkLic();
+        if(ov.hidden===false&&status().k!=='exp')hideOv();
+        window.__app.renderAll();
+      }catch(e){x(errTxt(e));b.disabled=false;b.style.opacity=1}
+    };
+    $('#lgg').onclick=go;
+    ov.querySelectorAll('.fld').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')go()}));
+    const f=$('#lgf');if(f)f.onclick=async()=>{
+      const em=$('#lge').value.trim().toLowerCase();
+      if(!/^\S+@\S+\.\S+$/.test(em)){x('Digite seu e-mail acima');return}
+      try{await post(IDT+'sendOobCode?key='+FB.key,{requestType:'PASSWORD_RESET',email:em});x('Enviamos um e-mail para criar nova senha (veja também o spam)',1)}catch(e){x(errTxt(e))}
+    };
+  }
+  function showBlock(){
+    ov.hidden=false;
+    ov.innerHTML='<div class="lgb">'+MK()+'<p class="lgs" style="margin-bottom:6px">Seu período de teste terminou</p>'+
+      '<p class="hint" style="text-align:center">Seus dados continuam guardados. Renove a assinatura para voltar a usar.</p>'+
+      '<div class="lgpix"><b>'+esc(PRECO)+'</b> por mês via PIX'+(PIX?'<code>'+esc(PIX)+'</code>':'')+'<div style="margin-top:8px;color:var(--mu)">Depois de pagar, envie o comprovante com o e-mail <b style="color:var(--tx)">'+esc(A.email)+'</b> e sua conta é liberada.</div></div>'+
+      (PIX?'<button class="act" id="lgc" type="button">Copiar chave PIX</button>':'')+
+      (SUPORTE?'<a class="cta" style="width:100%;justify-content:center;margin-top:10px;text-decoration:none" href="'+esc(SUPORTE)+'" target="_blank" rel="noopener">Enviar comprovante</a>':'')+
+      '<button class="act" id="lgr" type="button">Já paguei, atualizar</button><button class="act" id="lgo" type="button">Sair da conta</button><div class="lgerr" id="lgx"></div></div>';
+    const c=$('#lgc');if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(PIX);toast('Chave PIX copiada')}catch(e){toast('Copie a chave acima')}};
+    $('#lgr').onclick=async()=>{$('#lgx').textContent='Conferindo…';$('#lgx').className='lgerr ok';await checkLic();if(!ov.hidden){$('#lgx').textContent='Ainda não consta pagamento.';$('#lgx').className='lgerr'}};
+    $('#lgo').onclick=logout;
+  }
+
+  /* ----- cartão em Ajustes ----- */
+  window.__acc={
+    card(){
+      if(!A)return '';
+      const s=status();
+      const stt=s.k==='adm'?'Administrador':s.k==='ok'?'Assinatura ativa até '+dt(s.ate):s.k==='trial'?'Teste grátis até '+dt(s.ate):'Assinatura vencida';
+      let h='<div class="card"><h3>Minha conta</h3><div class="cap">'+esc(A.email)+'</div>'+
+        '<div class="cap" style="margin-top:6px"><b>'+stt+'</b></div>'+
+        '<div class="cap" style="margin-top:6px"><span id="acsync"></span></div>'+
+        '<button class="act" id="acout" type="button">Sair da conta</button></div>';
+      if(isAdmin())h+='<div class="card"><h3>Clientes</h3><div class="cap">Digite o e-mail do cliente que pagou e toque em +30 dias.</div>'+
+        '<input class="fld" id="adm" type="email" autocapitalize="off" autocorrect="off" placeholder="E-mail do cliente" style="margin-top:12px;font-size:16px">'+
+        '<button class="act" id="adp" type="button">+30 dias</button><button class="act danger" id="adb" type="button">Bloquear</button>'+
+        '<div id="adl" style="margin-top:12px"></div></div>';
+      return h;
+    },
+    bind(){
+      uiSync();
+      const o=$('#acout');if(o)o.onclick=logout;
+      if(!isAdmin())return;
+      const list=async()=>{
+        try{
+          const j=await fs('GET','/licencas?pageSize=300');const d=(j&&j.documents)||[];
+          LST=d.map(x=>({e:decodeURIComponent(x.name.split('/').pop()),a:num(x.fields&&x.fields.ate)})).sort((a,b)=>b.a-a.a);
+          $('#adl').innerHTML=LST.length?LST.map(c=>'<div class="adl" data-e="'+esc(c.e)+'" style="display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px"><span style="word-break:break-all">'+esc(c.e)+'</span><b style="color:'+(c.a>Date.now()?'var(--ok)':'var(--bad)')+';white-space:nowrap">'+(c.a>Date.now()?dt(c.a):'vencido')+'</b></div>').join(''):'<p class="hint">Nenhum cliente liberado ainda.</p>';
+          $('#adl').querySelectorAll('.adl').forEach(r=>r.onclick=()=>{$('#adm').value=r.dataset.e});
+        }catch(e){$('#adl').innerHTML='<p class="hint">Não consegui listar (verifique as regras do Firestore).</p>'}
+      };
+      const setAte=async(add)=>{
+        const em=$('#adm').value.trim().toLowerCase();
+        if(!/^\S+@\S+\.\S+$/.test(em)){toast('Digite o e-mail do cliente');return}
+        try{
+          let cur=0;const j=await fs('GET','/licencas/'+encodeURIComponent(em));if(j&&j.fields)cur=num(j.fields.ate);
+          const ate=add?Math.max(Date.now(),cur)+DIAS_MES*864e5:0;
+          await fs('PATCH','/licencas/'+encodeURIComponent(em)+'?updateMask.fieldPaths=ate',{fields:{ate:{integerValue:String(ate)}}});
+          toast(add?'Liberado até '+dt(ate):'Cliente bloqueado');list();
+        }catch(e){toast('Erro ao salvar (regras do Firestore?)')}
+      };
+      $('#adp').onclick=()=>setAte(true);$('#adb').onclick=()=>setAte(false);
+      list();
+    }
+  };
+
+  /* ----- início ----- */
+  if(!A){
+    showLogin('in');
+  }else{
+    gate();
+    (async()=>{
+      try{await idToken()}catch(e){}
+      if(localStorage.getItem(DK))await push();else await pull();
+      checkLic();
+      if(window.__app)window.__app.renderAll();
+    })();
+  }
+  /* o tema também sobe para a nuvem */
+  if(window.THEME&&THEME.set){const o=THEME.set;THEME.set=function(){const r=o.apply(this,arguments);if(window.__sync)window.__sync();return r}}
 })();
 
 /* Abertura: aparece só ao abrir o app (não a cada volta ao app); toque para pular */
