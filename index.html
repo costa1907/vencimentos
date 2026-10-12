@@ -2,6 +2,7 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v4.8 · 12/10/2026 · Segurar e soltar ícone: sem texto cortado, sem pulo, pouso suave
   v4.7 · 12/10/2026 · Removidas as bolinhas/brilho ao tocar no cartão (leve e sem travar)
   v4.6 · 12/10/2026 · Carrossel fluido (sem travadas), final do cartão instantâneo, sempre encaixa no centro
   v4.5 · 12/10/2026 · Carrossel 3D sem brilho dourado
@@ -160,7 +161,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='4.7';
+(function(){var V='4.8';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -590,7 +591,10 @@ body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!i
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .2s var(--ease),border-color .2s,background .2s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
-.pt.ghost{background:#222842;border-color:rgba(232,178,74,.7);box-shadow:0 18px 36px rgba(0,0,0,.6);transition:none;opacity:.98}
+.pt.ghost{background:#222842;border-color:rgba(232,178,74,.7);box-shadow:0 18px 36px rgba(0,0,0,.6);transition:none;opacity:.98;scale:1.1;animation:gpop .18s var(--ease) both;will-change:transform}
+@keyframes gpop{from{scale:1;box-shadow:0 2px 6px rgba(0,0,0,.2)}to{scale:1.1}}
+body.dragging .pt:active{transform:none}
+.pt.ghost,.pt.ghost:active{transform:none}
 .pt img,.pt .pv,.pt .pv *{pointer-events:none}
 img{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 .pt.ph{opacity:.5;border:1px dashed rgba(232,178,74,.9);background:rgba(232,178,74,.08)}
@@ -609,7 +613,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v4.7</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v4.8</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -709,7 +713,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='4.7';
+const VERSION='4.8';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1394,15 +1398,16 @@ const HP=function(k){
   }
   function lift(){
     if(!st)return;st.on=true;
-    const tiles=$$('#pg .pt'),gr=grid.getBoundingClientRect();
+    document.body.classList.add('dragging');
+    const tiles=$$('#pg .pt');tiles.forEach(el=>{el.style.transition='none';el.style.transform='none'});
+    const gr=grid.getBoundingClientRect();
     st.tiles=tiles;st.from=tiles.indexOf(st.tile);st.to=st.from;
     st.slots=tiles.map(el=>{const r=el.getBoundingClientRect();return{x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height}});
     const r=st.tile.getBoundingClientRect();st.dx=st.x0-r.left;st.dy=st.y0-r.top;
     const g=st.tile.cloneNode(true);g.className='pt ghost';
-    g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;transform:translate('+r.left+'px,'+r.top+'px) scale(1.1)';
+    g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;transform:translate('+r.left+'px,'+r.top+'px)';
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
-    tiles.forEach(el=>{el.style.transition='transform .22s cubic-bezier(.2,.8,.2,1)'});
-    document.body.classList.add('dragging');
+    void grid.offsetWidth;tiles.forEach(el=>{el.style.transform='';el.style.transition='transform .22s cubic-bezier(.2,.8,.2,1)'});
     HP('lift');
     loop();
   }
@@ -1418,7 +1423,7 @@ const HP=function(k){
     });
   }
   function place(){
-    st.ghost.style.transform='translate('+(st.x-st.dx)+'px,'+(st.y-st.dy)+'px) scale(1.1)';
+    st.ghost.style.transform='translate('+(st.x-st.dx)+'px,'+(st.y-st.dy)+'px)';
     const gr=grid.getBoundingClientRect(),gx=st.x-gr.left,gy=st.y-gr.top;
     let best=st.to,bd=Infinity;
     for(let i=1;i<st.slots.length;i++){const s=st.slots[i],dx=gx-(s.x+s.w/2),dy=gy-(s.y+s.h/2),d=dx*dx+dy*dy;if(d<bd){bd=d;best=i}}
@@ -1441,14 +1446,15 @@ const HP=function(k){
     if(st.on){
       cancelAnimationFrame(st.raf);place();
       const g=st.ghost,gr=grid.getBoundingClientRect(),s=st.slots[st.to];
-      g.style.transition='transform .2s ease-out';
-      g.style.transform='translate('+(gr.left+s.x)+'px,'+(gr.top+s.y)+'px) scale(1)';
-      setTimeout(()=>g.remove(),210);
+      g.style.animation='none';g.style.transition='transform .22s cubic-bezier(.2,.8,.2,1),scale .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s';
+      g.style.transform='translate('+(gr.left+s.x)+'px,'+(gr.top+s.y)+'px)';g.style.scale='1';g.style.boxShadow='0 2px 6px rgba(0,0,0,.2)';
+      const to=st.to;
       if(st.to!==st.from){
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
         S.order[F.cat]=arr.filter(Boolean);S.pord='custom';save();
       }
       HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');renderProv();
+      {const nt=$$('#pg .pt')[to];if(nt){nt.style.visibility='hidden';setTimeout(()=>{nt.style.visibility='';g.remove()},230)}else setTimeout(()=>g.remove(),230)}
     }
     st=null;
   }
