@@ -2,6 +2,7 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v6.5 · 12/10/2026 · Imagem que falhou é pedida de novo sozinha (o iPhone guardava o "não encontrado" por alguns minutos)
   v6.4 · 12/10/2026 · Ajustes: botão "Verificar arquivos de imagem" lista quais ícones/cartões faltam no GitHub
   v6.3 · 12/10/2026 · Ícone que ainda não foi enviado ao GitHub mostra a sigla colorida (em vez de "?")
   v6.2 · 12/10/2026 · Ícones das empresas em arquivos (index.html de ~150 KB); cartões pesados otimizados; guarda tudo no aparelho em segundo plano; botão "Limpar memória" em Ajustes
@@ -177,7 +178,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='6.4';
+(function(){var V='6.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -649,7 +650,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v6.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v6.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -749,7 +750,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='6.4';
+const VERSION='6.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -849,7 +850,7 @@ const IMGCACHE='cartoes-2';
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];return /^i-[a-z0-9_-]+\.webp$/.test(v||'')?imgU(v):''}
 function badge(p){
   const g=logo(p.id);
-  if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt="" draggable="false" decoding="async" loading="lazy" onload="this.className=\'ok\'" onerror="this.parentNode.classList.add(\'bad\');this.remove()" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
+  if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt="" draggable="false" decoding="async" loading="lazy" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
   return '<div class="pv" style="--c:'+p.c+';--t:'+p.t+'">'+esc(p.i)+'</div>';
 }
 const TPLS=[
@@ -962,7 +963,7 @@ function tplFor(o,tier,br){
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
 document.addEventListener('load',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode)t.parentNode.classList.add('rd')},true);
-document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode)t.parentNode.classList.add('rd','er')},true);
+document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
   const nm=p?p.n:(o.name||'Cartão'), lg=p&&logo(p.id), l4=o.last4?esc(o.last4):'';
@@ -1868,7 +1869,7 @@ function prewarm(){
       let i=0;
       const next=()=>{
         if(i>=q.length)return;const u=q[i++];
-        c.match(u).then(h=>h?0:c.add(u)).catch(()=>{}).then(()=>setTimeout(next,40));
+        c.match(u).then(h=>h?0:c.add(new Request(u,{cache:'no-cache'}))).catch(()=>{}).then(()=>setTimeout(next,40));
       };
       next();next();
     }).catch(()=>{});
