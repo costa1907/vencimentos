@@ -2,6 +2,12 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v3.9 · 11/10/2026 · Abre sempre na versão nova + arrastar de volta
+   - O app guarda a versão mais nova dentro do aparelho e abre direto nela,
+     sem voltar para a versão antiga guardada pelo iPhone (era isso que
+     fazia a tela abrir deslocada e depois "atualizar sozinha")
+   - Arrastar ícones voltou a funcionar (o interruptor de toque tátil sobre
+     os ícones atrapalhava o gesto e foi removido)
   v3.8 · 11/10/2026 · Tela não abre mais deslocada para baixo
    - Corrige o bug do iPhone em que, ao abrir/voltar ao app, tudo aparecia
      empurrado para baixo: trava o "elástico" do topo e recoloca a tela na
@@ -125,6 +131,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>
+/* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
+(function(){var V='3.9';
+  function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
+  try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
+    if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Vencimentos</title>
 <meta name="theme-color" content="#0a0c13">
@@ -547,7 +562,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v3.8</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v3.9</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -644,7 +659,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='3.8';
+const VERSION='3.9';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1074,7 +1089,7 @@ $('#fc').innerHTML=Object.keys(CAT).map(k=>'<button type="button" class="cat" da
 $('#cb').innerHTML=Object.keys(BRANDS).map(k=>'<button type="button" class="chip" data-b="'+k+'">'+BRANDS[k]+'</button>').join('');
 $('#ct').innerHTML=Object.keys(TIERS).map(k=>'<button type="button" class="chip" data-t="'+k+'">'+TIERS[k]+'</button>').join('');
 const fmtAmt=c=>brl(c);
-const HZ='<input type="checkbox" switch class="hz" tabindex="-1" aria-hidden="true">';
+const HZ='';
 const AZ=(a,b)=>PROV[a].n.localeCompare(PROV[b].n,'pt-BR',{sensitivity:'base'});
 function orderedIds(cat){
   const base=Array.from(new Set(LIST[cat]||[])).filter(id=>PROV[id]).sort(AZ);
@@ -1509,10 +1524,13 @@ function checkUpdate(manual){
   fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
     const m=t.match(/const VERSION='([\d.]+)'/);
     if(!m){if(manual)toast('Não consegui verificar');return}
-    if(m[1]!==VERSION){
+    const nv=m[1].split('.').map(Number),cv=VERSION.split('.').map(Number);
+    let newer=0;for(let i=0;i<3;i++){if((nv[i]||0)!==(cv[i]||0)){newer=(nv[i]||0)>(cv[i]||0)?1:-1;break}}
+    if(newer>0){
       let tried='';try{tried=sessionStorage.getItem('vupd')||''}catch(e){}
       if(tried===m[1]&&!manual){return}
       try{sessionStorage.setItem('vupd',m[1])}catch(e){}
+      try{localStorage.setItem('vencimentos.html',t);localStorage.setItem('vencimentos.htmlv',m[1])}catch(e){}
       toast('Atualizando para v'+m[1]+'…');
       setTimeout(()=>location.replace(location.pathname+'?u='+Date.now()),700);
     } else if(manual) toast('Você já está na versão mais recente (v'+VERSION+')');
