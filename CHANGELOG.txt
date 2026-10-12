@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v9.1 · 12/10/2026 · Cartões mais leves: imagens redimensionadas para o tamanho real de exibição (horizontais 1100 px, verticais 520 px), sem perda visível; rolagem do carrossel mais fluida
   v9.0 · 12/10/2026 · Login por e-mail e senha (Firebase) com sincronização na nuvem em segundo plano; ao sair da conta o app volta zerado; teste grátis de 7 dias e bloqueio por assinatura mensal via PIX; painel do administrador em Ajustes para liberar (+30 dias) ou bloquear clientes
   v8.2 · 12/10/2026 · Removido o cartão deitado Itaú Uniclass Visa Signature (fica só o vertical)
   v8.1 · 12/10/2026 · Carrossel de cartões mais leve: cartões longe do centro saem da GPU (sem mudar a qualidade nem o carregamento) e sem camada duplicada em cada cartão
