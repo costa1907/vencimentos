@@ -2,183 +2,17 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v6.6 · 12/10/2026 · Abre na hora (e sem internet): o sw.js guarda o próprio app e confere a versão nova em segundo plano; cabeçalho enxuto (histórico completo em CHANGELOG.txt)
   v6.5 · 12/10/2026 · Imagem que falhou é pedida de novo sozinha (o iPhone guardava o "não encontrado" por alguns minutos)
   v6.4 · 12/10/2026 · Ajustes: botão "Verificar arquivos de imagem" lista quais ícones/cartões faltam no GitHub
-  v6.3 · 12/10/2026 · Ícone que ainda não foi enviado ao GitHub mostra a sigla colorida (em vez de "?")
-  v6.2 · 12/10/2026 · Ícones das empresas em arquivos (index.html de ~150 KB); cartões pesados otimizados; guarda tudo no aparelho em segundo plano; botão "Limpar memória" em Ajustes
-  v6.1 · 12/10/2026 · Cartões carregam mais rápido: aparecem do centro para as pontas, com animação de carregando, e ficam guardados no aparelho (sw.js)
-  v6.0 · 12/10/2026 · App leve: imagens dos cartões saíram do index.html e ficam em arquivos c-banco-modelo.webp na mesma pasta (index.html de ~1 MB; cartão novo = só subir a imagem)
-  v5.9 · 12/10/2026 · 18 novos cartões Itaú (Azul Platinum/Infinite/Skyline, LATAM Pass, Passaí, Ayrton Senna Visa/Mastercard, Uniclass vertical), todos em alta qualidade
-  v5.8 · 12/10/2026 · Itaú Azul Mastercard Gold e Visa Gold (cartões verticais, suporte a cartão em pé)
-  v5.7 · 12/10/2026 · Itaú Uniclass Visa Signature (alta qualidade); cartões antigos removidos; TPLS/MODELS organizados por banco (busque @@BB@@, @@SANTANDER@@, @@ITAU@@)
-  v5.6 · 12/10/2026 · Todos os bancos usam o carrossel (sem listas Bandeira/Nível); removidos cartões antigos de baixa qualidade (Smiles, Inter)
-  v5.5 · 12/10/2026 · Tela inicial: cada cartão aparece (separa por modelo) e usa o mesmo carrossel 3D do cadastro
-  v5.4 · 12/10/2026 · Novo cartão: Ourocard Visa Infinite (Banco do Brasil)
-  v5.3 · 12/10/2026 · Carrossel nunca para torto: encaixe separado da inclinação 3D
-  v5.2 · 12/10/2026 · Corrigido o 'vai e volta': toque que só para a rolagem não seleciona mais o cartão
-  v5.1 · 12/10/2026 · Carrossel leve e fluido: sem ajuste de centro por script, imagens otimizadas, 3D barato
-  v5.0 · 12/10/2026 · Carrossel para direto no cartão certo (sem ir e voltar)
-  v4.9 · 12/10/2026 · Ícone arrastado fica exatamente sob o dedo; sombra leve (sem bolha)
-  v4.8 · 12/10/2026 · Segurar e soltar ícone: sem texto cortado, sem pulo, pouso suave
-  v4.7 · 12/10/2026 · Removidas as bolinhas/brilho ao tocar no cartão (leve e sem travar)
-  v4.6 · 12/10/2026 · Carrossel fluido (sem travadas), final do cartão instantâneo, sempre encaixa no centro
-  v4.5 · 12/10/2026 · Carrossel 3D sem brilho dourado
-   - Cartões laterais giram em perspectiva (estilo Cover Flow), o do centro
-     fica de frente com sombra suave no chão; removido o brilho dourado
-   - Indicador de posição em bolinhas no lugar do texto
-  v4.4 · 12/10/2026 · Escolha do cartão estilo carteira
-   - Os cartões do banco passam em um carrossel grande: deslize e o cartão
-     do centro já fica escolhido (ou toque em um cartão ao lado)
-   - Nome, bandeira e nível aparecem embaixo; sumiram o cartão genérico
-     "Padrão do banco" e as listas repetidas de bandeira e nível
-   - Os últimos 4 números aparecem direto no cartão escolhido
-  v4.3 · 12/10/2026 · Escolha do cartão em galeria
-   - Ao cadastrar um cartão, os modelos do banco aparecem como uma galeria
-     deslizável com a imagem de cada cartão, nome e bandeira/nível
-   - Filtro só com as bandeiras que o banco realmente tem
-   - Bandeira e nível manuais só aparecem em "Padrão do banco"
-  v4.2 · 12/10/2026 · Cartões Banco do Brasil
-   - 11 cartões do BB idênticos aos do app do banco, em alta resolução:
-     Ourocard Black, Visa Gold, Elo Grafite, Elo Mais, Platinum Mastercard,
-     Platinum Visa, Elo Nanquim, Smiles Platinum/Gold/Infinite e Petrobras
-  v4.1 · 12/10/2026 · Cartões Santander
-   - 10 cartões do Santander idênticos às fotos, sem nome de pessoa:
-     Free, Gol Smiles Gold/Platinum/Infinite, AAdvantage Quartz/Platinum/
-     Black, Unique, Unlimited e Elite (últimos 4 números aparecem no lugar)
-   - Ao escolher o modelo, bandeira e nível já ficam certos
-  v4.0 · 12/10/2026 · Primeiros cartões Santander
-  v3.9 · 11/10/2026 · Abre sempre na versão nova + arrastar de volta
-   - O app guarda a versão mais nova dentro do aparelho e abre direto nela,
-     sem voltar para a versão antiga guardada pelo iPhone (era isso que
-     fazia a tela abrir deslocada e depois "atualizar sozinha")
-   - Arrastar ícones voltou a funcionar (o interruptor de toque tátil sobre
-     os ícones atrapalhava o gesto e foi removido)
-  v3.8 · 11/10/2026 · Tela não abre mais deslocada para baixo
-   - Corrige o bug do iPhone em que, ao abrir/voltar ao app, tudo aparecia
-     empurrado para baixo: trava o "elástico" do topo e recoloca a tela na
-     posição certa ao abrir, voltar e girar
-  v3.7 · 11/10/2026 · Sem seleção de texto
-   - Segurar ou tocar por muito tempo não seleciona mais o texto nem abre o
-     menu Copiar/Pesquisar/Traduzir; campos de digitação continuam normais
-  v3.6 · 11/10/2026 · Toque tátil nos ícones
-   - Cada ícone tem um interruptor nativo invisível: ao tocar, o iPhone dá o
-     toque tátil do sistema (sem som). O iOS não permite vibrar por código
-     ao segurar/arrastar; em Android a vibração ao arrastar funciona
-  v3.5 · 11/10/2026 · Linha digitável e limite do cartão
-   - Boleto: cole a linha digitável (ou o código de barras) e o app já
-     preenche valor e vencimento; confere os dígitos e avisa se estiver errado
-   - Cartão: informe limite e dia do fechamento; na tela inicial aparece a
-     barra do limite usado, o disponível e quantos dias faltam para fechar
-  v3.4 · 11/10/2026 · Arrastar sem a cópia nativa do iPhone
-   - Segurar um ícone (logo do banco) não abre mais o arraste de imagem do
-     iPhone com o "+" verde; agora o ícone é movido dentro da lista
-  v3.3 · 11/10/2026 · Arrastar sem falhas
-   - Arrastar ícones refeito: sem buracos nem ícones sumindo no meio do
-     arraste, o lugar de soltar aparece marcado e o ícone cai exatamente
-     onde você soltou, indo e voltando quantas vezes quiser
-  v3.2 · 11/10/2026 · Arrastar ícones e rolagem leve
-   - Cartões da tela inicial voltaram a rolar de lado
-   - Escolha de empresas: segure um ícone e arraste para qualquer lugar
-     (a lista rola sozinha quando você chega na borda); funciona nos dois
-     sentidos e a ordem fica salva; "Voltar para A–Z" restaura
-   - Rolagem mais leve: sem desfoque atrás da janela, animações da tela de
-     fundo pausadas enquanto a janela está aberta, efeitos dos cartões mais
-     leves; barras de rolagem escondidas
-  v3.1 · 11/10/2026 · Ordem dos ícones e rolagem suave
-   - Ícones das empresas em ordem alfabética (A–Z) ou "Minha ordem":
-     toque em Organizar, pegue um ícone e toque em outro para colocá-lo
-     antes dele; a ordem é guardada por tipo e entra no backup
-   - Sem rolagem lateral: cartões da tela inicial agora empilham na vertical
-   - Sem rolagem dentro da rolagem na escolha de empresas (corrige travadas)
-   - Corrigido o botão de 6/12 meses que alterava o visual de outros botões
-  v3.0 · 11/10/2026 · Bancos em resolução máxima
-   - BB, Itaú, Santander, Caixa, Bradesco, XP, BTG, Genial, Inter, Rico,
-     Ágora, íon, Mercado Livre, Amazon, Shopee, Porto e Spotify refeitos
-     a 192 px direto do print original
-   - Novos: WhatsApp, Telegram, Instagram, Facebook e KMV
-  v2.9 · 11/10/2026 · Ícones antigos em resolução máxima
-   - 84 ícones refeitos direto dos prints originais (192 px, antes 160 px)
-  v2.8 · 11/10/2026 · 27 ícones novos em alta qualidade
-   - Novos: FGC, Gmail, Pão de Açúcar, Sam's Club, Atacadão, Rappi, Tenda
-     Atacado, Swift, Marisa, Pernambucanas e Havan
-   - Refeitos em resolução maior: Carrefour, Magalu, Casas Bahia,
-     Americanas, Renner, Riachuelo, Neon, BTG, PicPay, GitHub, Claude,
-     Enel, Comgás, Prime Video, AliExpress, Futfanatics
-  v2.7 · 11/10/2026 · Cartões refeitos + Smiles nos bancos
-   - Smiles Gold e Inter Gold refeitos a partir dos novos prints, sem
-     filtros, cores fiéis às fotos
-   - Novo campo "Modelo do cartão": Smiles Gold Visa disponível no Banco do
-     Brasil, Bradesco e Santander
-  v2.6 · 11/10/2026 · Mais dois cartões reais
-   - Smiles Gold Visa e Inter Mastercard Gold idênticos aos da carteira
-     (escolha Smiles + Gold + Visa, ou Inter + Gold + Mastercard)
-  v2.5 · 11/10/2026 · Cartões idênticos aos da Carteira
-   - Cartões reais (recortados dos prints do iPhone do COSTA) em alta
-     resolução: BB Ourocard Visa Infinite e Itaú Uniclass Visa Signature;
-     o final do cartão (•••• 0000) é escrito por cima, com a fonte do iPhone
-   - Demais cartões no mesmo layout da Carteira (cor do banco, logo grande,
-     bandeira e categoria no canto)
-   - Animação de luxo ao tocar: cartão inclina com o dedo, ondas de luz
-     saem do ponto do toque, brilho cruza o cartão e halo dourado; brilho
-     sutil automático de tempos em tempos
-  v2.4 · 11/10/2026 · Cartões estilo Carteira
-   - Cartão de crédito redesenhado como na Carteira do iPhone: logo do banco
-     no canto, nome do produto à direita, •••• final embaixo, bandeira e
-     categoria no canto inferior; novas categorias Infinite e Signature
-  v2.3 · 11/10/2026 · Atualização automática
-   - O app procura sozinho a versão nova ao abrir e ao voltar para ele,
-     e recarrega sem precisar reinstalar na tela de início (dados mantidos)
-   - Botão "Verificar atualização" em Ajustes
-  v2.2 · 11/10/2026 · Metas e evolução
-   - Meta mensal por tipo (Panorama): barra de uso, aviso ao chegar em 80%
-     e alerta quando passar do limite; entra no backup
-   - Evolução mês a mês: gráfico de 6 ou 12 meses com tendência
-  v2.1 · 11/10/2026 · Bancos
-   - Saem Original e Will Bank; entram Bmg e Safra (com ícone)
-  v2.0 · 11/10/2026 · Catálogo completo
-   - Mais de 100 empresas com ícone em alta qualidade (bancos, corretoras,
-     lojas, restaurantes, viagens, streaming, jornais, saúde, energia...)
-   - Novos tipos: Alimentação, Compras, Viagem e Transporte
-   - Modo "Gasto já feito": escolhe a empresa, digita o valor e registra
-   - Painel "Por empresa" no Panorama
-   - Correção: campos escondidos (parcelas, escopo do valor) agora somem
-     de verdade na versão hospedada
-  v1.4 · 11/10/2026 · Mais ícones
-   - Ícones novos: Neon, PicPay, Claude, Enel, Comgás, Vivo, Yamaha,
-     AliExpress, Netshoes, Centauro, Odonto, Wellhub e iFood
-   - Novas empresas: AliExpress, Netshoes, Centauro, Odonto Empresas,
-     Wellhub e iFood
-  v1.3 · 11/10/2026 · Versão visível
-   - Número da versão sempre à mostra no topo da tela (e em Ajustes)
-  v1.2 · 11/10/2026 · Ícones dos apps
-   - Ícones reais (recortados do print do iPhone do COSTA) para bancos,
-     corretoras, lojas, Spotify e YouTube: na grade de escolha, na lista
-     de contas e no topo do cartão
-   - Novas empresas: Genial, Rico, Ágora, íon Itaú, Mercado Livre,
-     Amazon e Shopee
-  v1.1 · 11/10/2026 · Empresas e cartões
-   - Escolha rápida de banco, streaming, água, luz, gás, internet, plano de
-     saúde, seguro e outros: toque no selo e o nome já vem preenchido
-   - Cartão de crédito com arte realista (cor do banco, chip, bandeira,
-     nível e final), também em carrossel na tela principal
-   - Foto ou logo próprio em qualquer conta
-   - Valor diferente em um mês só (fatura do cartão, luz, água)
-   - Novos tipos: Internet/Telefone, Saúde, Seguro, Impostos
-  v1.0 · 11/10/2026 · Versão inicial
-   - Contas únicas, mensais (assinaturas, aluguel, luz...) e parceladas
-     (cartão, financiamento, consórcio)
-   - Adicionar em poucos toques (valor, tipo, data)
-   - Marcar como paga com um toque, desfazer, atrasadas em destaque
-   - Panorama dos próximos meses, por tipo e compromissos de longo prazo
-   - Backup por copiar/colar, dados salvos no próprio aparelho
-   - Instalável na tela de início do iPhone
+  (histórico completo: CHANGELOG.txt · busque @@BB@@, @@SANTANDER@@, @@ITAU@@ para achar os cartões por banco)
 -->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='6.5';
+(function(){var V='6.6';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -650,7 +484,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v6.5</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v6.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -750,7 +584,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='6.5';
+const VERSION='6.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
