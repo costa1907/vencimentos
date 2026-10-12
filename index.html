@@ -2,6 +2,7 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v6.1 · 12/10/2026 · Cartões carregam mais rápido: aparecem do centro para as pontas, com animação de carregando, e ficam guardados no aparelho (sw.js)
   v6.0 · 12/10/2026 · App leve: imagens dos cartões saíram do index.html e ficam em arquivos c-banco-modelo.webp na mesma pasta (index.html de ~1 MB; cartão novo = só subir a imagem)
   v5.9 · 12/10/2026 · 18 novos cartões Itaú (Azul Platinum/Infinite/Skyline, LATAM Pass, Passaí, Ayrton Senna Visa/Mastercard, Uniclass vertical), todos em alta qualidade
   v5.8 · 12/10/2026 · Itaú Azul Mastercard Gold e Visa Gold (cartões verticais, suporte a cartão em pé)
@@ -173,7 +174,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='6.0';
+(function(){var V='6.1';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -596,6 +597,13 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.w.vert{width:39.7%;margin-left:auto;margin-right:auto;aspect-ratio:1/1.586;border-radius:5.7%/3.6%;background:none}
 .cc.w.vert.mini{width:19px;margin:0;border-radius:4px}
 .cc.w.vert.mini .cc-bg{border-radius:4px}
+.cc.w.tpl .cc-bg{opacity:0;transition:opacity .4s ease}
+.cc.w.tpl.rd .cc-bg{opacity:1}
+.cc.w.tpl:not(.rd) .cc-num{opacity:0}
+.cc.w.tpl:not(.rd){background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);animation:ccspin .8s linear infinite;pointer-events:none}
+.cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{display:none}
+@keyframes ccspin{to{transform:rotate(360deg)}}
 .cw:active .cc{transform:none}
 .pbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0 8px;flex-wrap:wrap}
 .pbar .mini{border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--tx);font:600 12.5px var(--fb);padding:7px 13px;border-radius:11px}
@@ -633,7 +641,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v6.0</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v6.1</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -733,7 +741,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='6.0';
+const VERSION='6.1';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -940,12 +948,14 @@ function tplFor(o,tier,br){
   if(o.model){const m=MODELS.find(x=>x.id===o.model&&x.provs.indexOf(o.prov)>-1);if(m)return TPLS.find(x=>x.m===o.model&&x.p===o.prov)||TPLS.find(x=>x.m===o.model)||null}
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
+document.addEventListener('load',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode)t.parentNode.classList.add('rd')},true);
+document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode)t.parentNode.classList.add('rd','er')},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
   const nm=p?p.n:(o.name||'Cartão'), lg=p&&logo(p.id), l4=o.last4?esc(o.last4):'';
   const num='<span class="cc-num">•••• '+l4+'</span>';
   const tp=tplFor(o,tier,br);
-  if(tp) return '<div class="cc w tpl'+(tp.v?' vert':'')+(mini?' mini':'')+'" style="--nt:'+(tp.c||'#fff')+';--rg:'+tp.rg+'"><img class="cc-bg" alt="" draggable="false" src="'+tp.s+'">'+(tp.n?num:'')+'<i class="cc-fx"></i></div>';
+  if(tp) return '<div class="cc w tpl'+(tp.v?' vert':'')+(mini?' mini':'')+'" style="--nt:'+(tp.c||'#fff')+';--rg:'+tp.rg+'"><i class="cc-ld"></i><img class="cc-bg" alt="" draggable="false" decoding="async" src="'+tp.s+'">'+(tp.n?num:'')+'<i class="cc-fx"></i></div>';
   const prod=o.name&&p&&o.name.trim().toLowerCase()!==p.n.toLowerCase()&&o.name.length<=16?o.name:(tier==='standard'?'':TIERS[tier]);
   return '<div class="cc w t-'+tier+(mini?' mini':'')+'" style="--c:'+(p?p.c:'#3a4163')+(tier==='standard'&&p?';--t:'+p.t:'')+'"><i class="cc-ln"></i>'+
    (lg?'<img class="cc-logo" alt="" src="'+lg+'">':'<span class="cc-n">'+esc(nm)+'</span>')+'<span class="cc-prod">'+esc(prod)+'</span>'+num+
@@ -1346,7 +1356,7 @@ function cpLabel(bi){
     const bi=cpLayout(),it=tr.children[bi];if(!it)return;
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
     if(Math.abs(off)>2){tr.scrollLeft=Math.max(0,tr.scrollLeft+off);return}
-    cpLabel(bi);
+    cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
       $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el===it));
@@ -1361,11 +1371,23 @@ function cpLabel(bi){
   tr.addEventListener('touchstart',()=>{tch=1;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,260)},{passive:true}));
 })();
-const TH=new Map();
-function cpThumbs(){
-  $$('#cm img.cc-bg').forEach((im,k)=>{const src=im.getAttribute('src');
-    if(TH.has(src)){im.src=TH.get(src);return}
-    setTimeout(()=>{const i=new Image();i.onload=()=>{try{const W=840;if(i.naturalWidth<=W)return;const H=Math.round(W*i.naturalHeight/i.naturalWidth),c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(i,0,0,W,H);const u=c.toDataURL('image/webp',.92);TH.set(src,u);if(im.isConnected)im.src=u}catch(e){}};i.src=src},120+k*60)})
+/* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
+let CPACT=0;
+function cpLoad(c){
+  const its=$$('#cm .cpi');if(!its.length)return;
+  if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
+  const pend=[];its.forEach((it,i)=>{const im=it.querySelector('img[data-src]');if(im)pend.push([Math.abs(i-c),i,im])});
+  pend.sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
+  const list=pend.map(x=>x[2]);
+  (function pump(){
+    while(CPACT<3&&list.length){
+      const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
+      im.removeAttribute('data-src');CPACT++;
+      let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
+      im.addEventListener('load',fin,{once:true});im.addEventListener('error',fin,{once:true});
+      im.src=u;if(im.complete&&im.naturalWidth)fin();
+    }
+  })();
 }
 function cpNums(){const t='•••• '+(F.last4||'');$$('#cm .cc-num').forEach(n=>{if(n.textContent!==t)n.textContent=t})}
 function syncForm(){
@@ -1404,8 +1426,8 @@ function syncForm(){
      else{
        if(key!==CK){
          $('#cbf').innerHTML=brs.length>1?'<button type="button" class="chip'+(CF?'':' on')+'" data-f="">Todas</button>'+brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+BRANDS[b]+'</button>').join(''):'';
-         $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false)+'</span></button>').join('');
-         $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');cpThumbs();
+         $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');
+         $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
          {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0}
          CK=key;CSEL='';
        }else{$$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===CF))}
@@ -1798,6 +1820,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&TAB==='home'){ANIM=false;renderHome()}});
 
 /* ---------- atualização automática ---------- */
+try{if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 function checkUpdate(manual){
   if(!/^https?:/.test(location.protocol)){if(manual)toast('Sem conexão com o site');return}
   fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
