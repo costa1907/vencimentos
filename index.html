@@ -2,6 +2,7 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v5.5 · 12/10/2026 · Tela inicial: cada cartão aparece (separa por modelo) e usa o mesmo carrossel 3D do cadastro
   v5.4 · 12/10/2026 · Novo cartão: Ourocard Visa Infinite (Banco do Brasil)
   v5.3 · 12/10/2026 · Carrossel nunca para torto: encaixe separado da inclinação 3D
   v5.2 · 12/10/2026 · Corrigido o 'vai e volta': toque que só para a rolagem não seleciona mais o cartão
@@ -167,7 +168,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='5.4';
+(function(){var V='5.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -484,9 +485,13 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.mini .cc-top,.cc.mini .cc-bot,.cc.mini .cc-num{display:none}
 .cc.mini .cc-chip{width:11px;height:8px;border-radius:2px;margin-top:2px}
 .cc.mini::after{display:none}
-.cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:4px 16px 14px;scrollbar-width:none}
+.cards{--cw:min(272px,76vw);display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cards::-webkit-scrollbar{display:none}
-.cw{flex:none;width:min(272px,76vw);scroll-snap-align:center;cursor:pointer;animation:rin .6s var(--ease) both}
+.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) both}
+.cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
+.cw .meta,.cw .lim{transition:opacity .25s}
+.cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
+.cards.cf .cw:not(.ctr) .cc-num{display:none}
 .cw:active .cc{transform:scale(.98)}
 .cw .cc{transition:transform .25s var(--ease)}
 .cw .meta{display:flex;justify-content:space-between;align-items:center;margin:12px 4px 0;font-size:13px;color:var(--mu)}
@@ -619,7 +624,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v5.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v5.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -719,7 +724,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='5.4';
+const VERSION='5.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -988,7 +993,7 @@ function section(cls,title,arr,start){
   return '<div class="sec '+cls+'"><h3>'+title+' <em>'+arr.length+'</em><span class="num">'+brl(sum(arr))+'</span></h3><div class="group">'+arr.map((o,i)=>row(o,start+i)).join('')+'</div></div>';
 }
 function cardGroups(mo){
-  const g={}, kk=b=>(b.prov||b.name)+'|'+(b.last4||'');
+  const g={}, kk=b=>(b.prov||b.name)+'|'+(b.model||'')+'|'+(b.last4||'');
   S.bills.filter(b=>b.cat==='cartao').forEach(b=>{const k=kk(b);if(!g[k])g[k]={b:b,occ:[]}});
   mo.forEach(o=>{if(o.b.cat==='cartao'){const k=kk(o.b);if(g[k])g[k].occ.push(o)}});
   return Object.keys(g).map(k=>g[k]);
@@ -996,7 +1001,7 @@ function cardGroups(mo){
 function limHTML(g,t){
   const b=g.b,lim=b.limit||0,cl=b.close||0;
   if(!lim&&!cl)return '';
-  const kk=x=>(x.prov||x.name)+'|'+(x.last4||'');
+  const kk=x=>(x.prov||x.name)+'|'+(x.model||'')+'|'+(x.last4||'');
   const k=kk(b);
   let used=g.occ.filter(o=>!o.paid).reduce((a,o)=>a+o.amt,0);
   try{overdueAll().forEach(o=>{if(o.b.cat==='cartao'&&kk(o.b)===k&&!g.occ.some(x=>x.b.id===o.b.id&&x.date.getTime()===o.date.getTime()))used+=o.amt})}catch(e){}
@@ -1012,6 +1017,32 @@ function limHTML(g,t){
     h+='<div class="tx"><span>'+(n===0?'Fecha hoje':n===1?'Fecha amanhã':'Fecha em '+n+' dias')+' · dia '+cl+'</span><span>Melhor compra: dia '+bd+'</span></div>';
   }
   return h+'</div>';
+}
+let HCLS=0,HIG=0;
+function cfLayout(tr){
+  const its=tr.children,n=its.length;if(!n)return -1;
+  const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
+  if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
+  const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
+  for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
+    const el=its[i].querySelector('.cc');if(!el)continue;
+    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
+    its[i]._f=0;const q=d>1?1:d;
+    el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  return bi;
+}
+function cfInit(){
+  const tr=document.querySelector('#list .cards');if(!tr)return;
+  tr.classList.add('cf');
+  let raf=0,idle=0,tch=0;
+  const settle=()=>{if(tch)return;const bi=cfLayout(tr),it=tr.children[bi];if(!it)return;
+    const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;if(Math.abs(off)>2)tr.scrollLeft=Math.max(0,tr.scrollLeft+off)};
+  cfLayout(tr);
+  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,200)},{passive:true});
+  tr.addEventListener('touchstart',()=>{tch=1;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
+  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,260)},{passive:true}));
+  setTimeout(()=>{cfLayout(tr);settle()},60);
 }
 function cardsHTML(gs){
   if(!gs.length) return '';
@@ -1052,7 +1083,7 @@ function renderHome(){
     if(mo.length&&!up.length&&!od.length) h+='<div class="cheer">Tudo pago em '+MES[V.m]+'. Tá em dia.</div>';
     h+=section('done','Pagas',pd,od.length+up.length);
   }
-  const L=$('#list');L.className=ANIM?'':'noanim';L.innerHTML=h;
+  const L=$('#list');L.className=ANIM?'':'noanim';L.innerHTML=h;cfInit();
   tween($('#hbig'),rest,brl,ANIM?900:500);
   tween($('#rpc'),pct,v=>Math.round(v)+'%',ANIM?900:500);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const r=$('#rpr');if(r)r.style.strokeDashoffset=(C*(1-pct/100)).toFixed(1)}));
@@ -1160,7 +1191,9 @@ document.addEventListener('click',e=>{
   }
   if(e.target.closest('[data-add]')){openSheet(null);return}
   const cw=e.target.closest('.cw');
-  if(cw){const cc=cw.querySelector('.cc');if(cc&&(!cc._fx||Date.now()-cc._fx>700))ccFx(cc,e.clientX||cc.getBoundingClientRect().left+cc.offsetWidth/2,e.clientY||cc.getBoundingClientRect().top+cc.offsetHeight/2);
+  if(cw){if(HIG||Date.now()-HCLS<350){HIG=0;return}
+    if(cw.parentNode.classList.contains('cf')&&!cw.classList.contains('ctr')){const tr=cw.parentNode;try{tr.scrollTo({left:Math.max(0,cw.offsetLeft+cw.offsetWidth/2-tr.clientWidth/2),behavior:'smooth'})}catch(e){}return}
+    const cc=cw.querySelector('.cc');if(cc&&(!cc._fx||Date.now()-cc._fx>700))ccFx(cc,e.clientX||cc.getBoundingClientRect().left+cc.offsetWidth/2,e.clientY||cc.getBoundingClientRect().top+cc.offsetHeight/2);
     const id=cw.dataset.id,key=cw.dataset.key;setTimeout(()=>openSheet(id,key),RMq()?0:520);return}
   const r=e.target.closest('.row');
   if(r&&$('#list').contains(r)){
@@ -1740,7 +1773,7 @@ function ccTilt(c,e){
 }
 let ccHeld=null;
 function ccRelease(){if(!ccHeld)return;const c=ccHeld;ccHeld=null;c.classList.remove('hold');c.style.transition='';c.style.transform=''}
-document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.closest('.cc:not(.mini)');if(!c||c.closest('.cpk'))return;ccRelease();ccHeld=c;ccTilt(c,e);ccFx(c,e.clientX,e.clientY)},{passive:true});
+document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.closest('.cc:not(.mini)');if(!c||c.closest('.cpk')||c.closest('.cards'))return;ccRelease();ccHeld=c;ccTilt(c,e);ccFx(c,e.clientX,e.clientY)},{passive:true});
 document.addEventListener('pointermove',e=>{if(ccHeld&&e.pointerType!=='touch')ccTilt(ccHeld,e)},{passive:true});
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,ccRelease,{passive:true}));
 
