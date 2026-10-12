@@ -2,6 +2,14 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v3.6 · 11/10/2026 · Vibração ao mover ícones
+   - Toque tátil diferente ao segurar (firme), ao passar por cada posição
+     (leve) e ao soltar (duplo); no iPhone usa o toque nativo do sistema
+  v3.5 · 11/10/2026 · Linha digitável e limite do cartão
+   - Boleto: cole a linha digitável (ou o código de barras) e o app já
+     preenche valor e vencimento; confere os dígitos e avisa se estiver errado
+   - Cartão: informe limite e dia do fechamento; na tela inicial aparece a
+     barra do limite usado, o disponível e quantos dias faltam para fechar
   v3.4 · 11/10/2026 · Arrastar sem a cópia nativa do iPhone
    - Segurar um ícone (logo do banco) não abre mais o arraste de imagem do
      iPhone com o "+" verde; agora o ícone é movido dentro da lista
@@ -400,6 +408,15 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cw:active .cc{transform:scale(.98)}
 .cw .cc{transition:transform .25s var(--ease)}
 .cw .meta{display:flex;justify-content:space-between;align-items:center;margin:12px 4px 0;font-size:13px;color:var(--mu)}
+.lim{margin:10px 4px 0}
+.lim .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.lim .bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#e8b24a,#f4d27c)}
+.lim .bar i.w{background:linear-gradient(90deg,#f0883e,#f5a35c)}
+.lim .bar i.d{background:linear-gradient(90deg,#e5484d,#ff7a7f)}
+.lim .tx{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-size:11.5px;color:var(--mu)}
+.lim .tx b{font:600 11.5px var(--fd);color:var(--tx)}
+.bolm{margin:8px 4px 0;font-size:12.5px;line-height:1.4}
+.bolm.ok{color:var(--ok)}.bolm.er{color:var(--bad)}
 .cw .meta b{color:var(--tx);font:700 16px var(--fd)}
 
 
@@ -517,7 +534,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v3.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v3.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -575,6 +592,13 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
       <div class="lbl">Nível do cartão</div><div class="dates" id="ct"></div>
       <div class="lbl">Final do cartão</div><input class="fld" id="cl" type="text" inputmode="numeric" maxlength="4" placeholder="Últimos 4 números (opcional)" autocomplete="off">
+      <div class="lbl">Limite do cartão</div><input class="fld" id="cli" type="text" inputmode="numeric" placeholder="R$ 0,00 (opcional)" autocomplete="off">
+      <div class="lbl">Dia do fechamento da fatura</div><input class="fld" id="ccl" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 25 (opcional)" autocomplete="off">
+    </div>
+    <div id="bolx" hidden>
+      <div class="lbl">Linha digitável do boleto</div>
+      <div style="display:flex;gap:8px"><input class="fld" id="bl" type="text" inputmode="numeric" placeholder="Cole o código do boleto" autocomplete="off"><button type="button" class="act" id="blp" style="flex:none;width:auto;padding:0 16px;margin:0">Colar</button></div>
+      <div class="bolm" id="blm" hidden></div>
     </div>
     <div class="lbl" id="fdl">Vencimento</div>
     <div class="dates" id="fdates">
@@ -607,7 +631,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='3.4';
+const VERSION='3.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -835,6 +859,26 @@ function cardGroups(mo){
   mo.forEach(o=>{if(o.b.cat==='cartao'){const k=kk(o.b);if(g[k])g[k].occ.push(o)}});
   return Object.keys(g).map(k=>g[k]);
 }
+function limHTML(g,t){
+  const b=g.b,lim=b.limit||0,cl=b.close||0;
+  if(!lim&&!cl)return '';
+  const kk=x=>(x.prov||x.name)+'|'+(x.last4||'');
+  const k=kk(b);
+  let used=g.occ.filter(o=>!o.paid).reduce((a,o)=>a+o.amt,0);
+  try{overdueAll().forEach(o=>{if(o.b.cat==='cartao'&&kk(o.b)===k&&!g.occ.some(x=>x.b.id===o.b.id&&x.date.getTime()===o.date.getTime()))used+=o.amt})}catch(e){}
+  let h='<div class="lim">';
+  if(lim){
+    const pc=Math.min(100,Math.round(used/lim*100)),cls=pc>=90?'d':pc>=70?'w':'';
+    h+='<div class="bar"><i class="'+cls+'" style="width:'+pc+'%"></i></div><div class="tx"><span>Usado <b class="num">'+brl(used)+'</b> · '+pc+'%</span><span>Disponível <b class="num">'+brl(Math.max(0,lim-used))+'</b></span></div>';
+  }
+  if(cl){
+    let y=t.getFullYear(),m=t.getMonth(),c=new Date(y,m,Math.min(cl,dim(y,m)));
+    if(c<t){m++;c=new Date(y,m,Math.min(cl,dim(y,m)))}
+    const n=Math.round((c-t)/864e5),bd=new Date(c.getFullYear(),c.getMonth(),c.getDate()+1).getDate();
+    h+='<div class="tx"><span>'+(n===0?'Fecha hoje':n===1?'Fecha amanhã':'Fecha em '+n+' dias')+' · dia '+cl+'</span><span>Melhor compra: dia '+bd+'</span></div>';
+  }
+  return h+'</div>';
+}
 function cardsHTML(gs){
   if(!gs.length) return '';
   const t=today0();
@@ -842,7 +886,8 @@ function cardsHTML(gs){
     const tot=sum(g.occ), allp=g.occ.length&&g.occ.every(o=>o.paid);
     const nx=g.occ.filter(o=>!o.paid).sort((a,b)=>a.date-b.date)[0];
     const st=!g.occ.length?'<span>Sem fatura</span>':allp?'<span style="color:var(--ok)">Paga</span>':(nx.date<t?'<span style="color:var(--bad)">Atrasada</span>':'<span>'+whenText(nx)+'</span>');
-    return '<div class="cw" data-id="'+g.b.id+'" data-key="'+mkey(V.y,V.m)+'" style="animation-delay:'+(i*60)+'ms">'+cardArt(g.b,false)+'<div class="meta"><b class="num">'+(g.occ.length?brl(tot):'—')+'</b>'+st+'</div></div>';
+    const lb=limHTML(g,t);
+    return '<div class="cw" data-id="'+g.b.id+'" data-key="'+mkey(V.y,V.m)+'" style="animation-delay:'+(i*60)+'ms">'+cardArt(g.b,false)+'<div class="meta"><b class="num">'+(g.occ.length?brl(tot):'—')+'</b>'+st+'</div>'+lb+'</div>';
   }).join('')+'</div></div>';
 }
 function renderHome(){
@@ -1062,6 +1107,7 @@ function syncForm(){
   $$('#fs2 button').forEach(b=>b.classList.toggle('on',b.dataset.sc===F.scope));
   const cc=F.cat==='cartao';
   $('#ccx').hidden=!cc;
+  $('#bolx').hidden=F.cat!=='boleto'||F.mode==='spent';
   if(cc){
     if(F.model&&!MODELS.some(x=>x.id===F.model&&x.provs.indexOf(F.prov)>-1))F.model='';
     {const ms=MODELS.filter(x=>x.provs.indexOf(F.prov)>-1);$('#cml').hidden=$('#cm').hidden=!ms.length;
@@ -1084,14 +1130,14 @@ function syncForm(){
 function openSheet(id,key){
   EDIT=null;const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',brand:'visa',tier:'standard',model:'',last4:'',img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
-  $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());$('#cl').value='';$('#ps').value='';
+  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
-    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?PROV[b.prov].n:'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
-    $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;
+    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?PROV[b.prov].n:'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
     if(o) ex+='<button type="button" class="act ok" id="xpay">'+(o.paid?'Desfazer pagamento deste mês':'Marcar este mês como paga')+'</button>';
@@ -1130,6 +1176,20 @@ $('#fc').addEventListener('click',e=>{
 });
 $('#ps').addEventListener('input',renderProv);
 let LASTDRAG=0;
+const HP=(function(){
+  const l=document.createElement('label');l.setAttribute('aria-hidden','true');
+  l.style.cssText='position:fixed;left:-60px;top:-60px;width:40px;height:40px;opacity:0;pointer-events:none';
+  const i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');l.appendChild(i);document.body.appendChild(l);
+  const tick=()=>{try{l.click()}catch(e){}};
+  const hasV=typeof navigator.vibrate==='function';
+  return function(k){
+    try{
+      if(k==='lift'){hasV?navigator.vibrate(28):tick()}
+      else if(k==='tick'){hasV?navigator.vibrate(7):tick()}
+      else if(k==='drop'){if(hasV)navigator.vibrate([14,40,22]);else{tick();setTimeout(tick,95)}}
+    }catch(e){}
+  };
+})();
 (function(){
   const grid=$('#pg');let st=null,timer=0,lastTouch=0;
   const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
@@ -1150,7 +1210,7 @@ let LASTDRAG=0;
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
     tiles.forEach(el=>{el.style.transition='transform .22s cubic-bezier(.2,.8,.2,1)'});
     document.body.classList.add('dragging');
-    try{navigator.vibrate&&navigator.vibrate(18)}catch(e){}
+    HP('lift');
     loop();
   }
   function layout(){
@@ -1169,7 +1229,7 @@ let LASTDRAG=0;
     const gr=grid.getBoundingClientRect(),gx=st.x-gr.left,gy=st.y-gr.top;
     let best=st.to,bd=Infinity;
     for(let i=1;i<st.slots.length;i++){const s=st.slots[i],dx=gx-(s.x+s.w/2),dy=gy-(s.y+s.h/2),d=dx*dx+dy*dy;if(d<bd){bd=d;best=i}}
-    if(best!==st.to){st.to=best;layout()}
+    if(best!==st.to){st.to=best;layout();HP('tick')}
   }
   function loop(){
     if(!st||!st.on)return;
@@ -1195,7 +1255,7 @@ let LASTDRAG=0;
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
         S.order[F.cat]=arr.filter(Boolean);S.pord='custom';save();
       }
-      LASTDRAG=Date.now();document.body.classList.remove('dragging');renderProv();
+      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');renderProv();
     }
     st=null;
   }
@@ -1235,6 +1295,71 @@ $('#ccx').addEventListener('click',e=>{
   if(m){F.model=m.dataset.m;if(F.model){F.brand='visa';F.tier='gold'}syncForm();return}
   if(b){F.brand=b.dataset.b;F.model='';syncForm()}
   if(t){F.tier=t.dataset.t;F.model='';syncForm()}
+});
+function parseBoleto(raw){
+  let d=String(raw).replace(/\D/g,'');
+  const dg=i=>+d[i];
+  const m10=t=>{let sm=0,w=2;for(let i=t.length-1;i>=0;i--){let x=+t[i]*w;if(x>9)x=Math.floor(x/10)+x%10;sm+=x;w=w===2?1:2}return (10-sm%10)%10};
+  const m11=t=>{let sm=0,w=2;for(let i=t.length-1;i>=0;i--){sm+=+t[i]*w;w=w===9?2:w+1}const r=sm%11;return r<2?0:11-r};
+  const m11b=t=>{let sm=0,w=2;for(let i=t.length-1;i>=0;i--){sm+=+t[i]*w;w=w===9?2:w+1}const r=11-sm%11;return (r===0||r===10||r===11)?1:r};
+  const bad={ok:false,err:'Código inválido. Confira os números e tente de novo.'};
+  if(d.length<44)return {ok:false,err:'Código incompleto.'};
+  let bar='';
+  if(d.length===48&&d[0]==='8'){
+    const f=m=>m==='6'||m==='7'?m10:m11;
+    const fn=f(d[2]);
+    for(let k=0;k<4;k++){const bk=d.slice(k*12,k*12+12);if(fn(bk.slice(0,11))!==+bk[11])return bad;bar+=bk.slice(0,11)}
+    if(fn(bar.slice(0,3)+bar.slice(4))!==+bar[3])return bad;
+  }else if(d.length===47){
+    const f1=d.slice(0,9),f2=d.slice(10,20),f3=d.slice(21,31);
+    if(m10(f1)!==dg(9)||m10(f2)!==dg(20)||m10(f3)!==dg(31))return bad;
+    bar=d.slice(0,4)+d[32]+d.slice(33,47)+d.slice(4,9)+d.slice(10,20)+d.slice(21,31);
+    if(m11b(bar.slice(0,4)+bar.slice(5))!==+bar[4])return bad;
+  }else if(d.length===44){
+    bar=d;
+    if(d[0]==='8'){const fn=(d[2]==='6'||d[2]==='7')?m10:m11;if(fn(d.slice(0,3)+d.slice(4))!==+d[3])return bad}
+    else if(m11b(d.slice(0,4)+d.slice(5))!==+d[4])return bad;
+  }else return bad;
+  let cents=0,date=null;
+  if(bar[0]==='8'){cents=parseInt(bar.slice(4,15),10)||0}
+  else{
+    cents=parseInt(bar.slice(9,19),10)||0;
+    const n=parseInt(bar.slice(5,9),10);
+    if(n>0){
+      const t=today0().getTime();let best=null;
+      for(let k=0;k<4;k++){const c=new Date(1997,9,7+n+9000*k);if(best===null||Math.abs(c-t)<Math.abs(best-t))best=c}
+      date=best;
+    }
+  }
+  return {ok:true,cents:cents,date:date,conv:bar[0]==='8'};
+}
+function boletoApply(code){
+  const m=$('#blm'),r=parseBoleto(code);
+  m.hidden=false;
+  if(!r.ok){m.className='bolm er';m.textContent=r.err;return false}
+  const parts=[];
+  if(r.cents){F.cents=r.cents;parts.push(brl(r.cents))}
+  if(r.date){$('#fd').value=toISO(r.date);parts.push('vence '+p2(r.date.getDate())+'/'+p2(r.date.getMonth()+1)+'/'+r.date.getFullYear())}
+  syncForm();
+  if(!parts.length){m.className='bolm';m.textContent='Código válido, mas sem valor nem vencimento. Preencha manualmente.'}
+  else{m.className='bolm ok';m.textContent='✔ '+parts.join(' · ')+(r.date?'':' · confira o vencimento')}
+  return true;
+}
+$('#bl').addEventListener('input',e=>{
+  const d=e.target.value.replace(/\D/g,'');
+  if(d.length<44){$('#blm').hidden=true;return}
+  boletoApply(d);
+});
+$('#blp').onclick=async function(){
+  try{const t=await navigator.clipboard.readText();$('#bl').value=t.replace(/\D/g,'');boletoApply(t)}
+  catch(e){$('#bl').focus();const m=$('#blm');m.hidden=false;m.className='bolm';m.textContent='Toque no campo e use Colar do teclado.'}
+};
+$('#cli').addEventListener('input',e=>{
+  const d=e.target.value.replace(/\D/g,'').slice(0,11);F.limit=d?parseInt(d,10):0;e.target.value=F.limit?brl(F.limit):'';
+});
+$('#ccl').addEventListener('input',e=>{
+  let v=e.target.value.replace(/\D/g,'').slice(0,2);if(v&&+v>31)v='31';if(v==='0')v='';
+  F.close=v?+v:0;e.target.value=v;
 });
 $('#cl').addEventListener('input',e=>{F.last4=e.target.value.replace(/\D/g,'').slice(0,4);e.target.value=F.last4;syncForm()});
 $('#fn').addEventListener('input',()=>{if(F.cat==='cartao')syncForm()});
@@ -1285,8 +1410,8 @@ $('#fcopy').onclick=async function(){
 function putExtra(b){
   if(F.prov)b.prov=F.prov;else delete b.prov;
   if(okImg(F.img))b.img=F.img;else delete b.img;
-  if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||''}
-  else{delete b.brand;delete b.tier;delete b.last4}
+  if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||'';if(F.limit)b.limit=F.limit;else delete b.limit;if(F.close)b.close=F.close;else delete b.close}
+  else{delete b.brand;delete b.tier;delete b.last4;delete b.limit;delete b.close}
 }
 $('#panel').addEventListener('submit',e=>{
   e.preventDefault();
