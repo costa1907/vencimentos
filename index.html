@@ -2,6 +2,11 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v4.3 · 12/10/2026 · Escolha do cartão em galeria
+   - Ao cadastrar um cartão, os modelos do banco aparecem como uma galeria
+     deslizável com a imagem de cada cartão, nome e bandeira/nível
+   - Filtro só com as bandeiras que o banco realmente tem
+   - Bandeira e nível manuais só aparecem em "Padrão do banco"
   v4.2 · 12/10/2026 · Cartões Banco do Brasil
    - 11 cartões do BB idênticos aos do app do banco, em alta resolução:
      Ourocard Black, Visa Gold, Elo Grafite, Elo Mais, Platinum Mastercard,
@@ -143,7 +148,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='4.2';
+(function(){var V='4.3';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -414,6 +419,22 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .imgrow .act{margin:0;height:42px;font-size:13px;flex:1}
 .pprev img{display:block;width:42px;height:42px;border-radius:12px;object-fit:cover;border:1px solid var(--line2)}
 .ccprev{margin:16px auto 0;max-width:290px}
+.cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
+.cbf::-webkit-scrollbar{display:none}
+.cbf .chip{height:34px;padding:0 15px;font-size:12.5px;border-radius:999px;flex:none}
+.cpk{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cpk::-webkit-scrollbar{display:none}
+.cpk[hidden],.cbf[hidden],#cgen[hidden]{display:none}
+.cpi{flex:none;width:66%;max-width:270px;scroll-snap-align:center;position:relative;text-align:left;border-radius:22px;padding:8px 8px 12px;background:rgba(255,255,255,.035);border:1px solid var(--line);opacity:.8;transform:scale(.975);transition:transform .3s var(--ease),border-color .25s,background .25s,opacity .25s,box-shadow .3s}
+.cpi.on{opacity:1;transform:none;border-color:rgba(232,178,74,.75);background:rgba(232,178,74,.09);box-shadow:0 16px 30px -18px rgba(232,178,74,.55)}
+.cpa{display:block;pointer-events:none}
+.cpa .cc{transition:none;box-shadow:0 10px 22px -12px rgba(0,0,0,.8)}
+.cpk .cc-num,.cpk .cc-fx{display:none}
+.cpn{display:block;margin:11px 5px 0;font:700 13px/1.25 var(--fb);color:var(--tx)}
+.cps{display:block;margin:3px 5px 0;font:500 11.5px var(--fb);color:var(--mu);letter-spacing:.02em}
+.cpc{position:absolute;top:15px;right:15px;width:24px;height:24px;border-radius:50%;background:var(--gold);display:none;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+.cpc::after{content:"";position:absolute;left:8px;top:4.5px;width:6px;height:11px;border:solid #1a1405;border-width:0 2.6px 2.6px 0;transform:rotate(45deg)}
+.cpi.on .cpc{display:block}
 .cc{position:relative;aspect-ratio:1.586;border-radius:18px;padding:14px 16px 12px;display:flex;flex-direction:column;justify-content:space-between;color:var(--t);overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.26),transparent 55%),linear-gradient(135deg,color-mix(in srgb,var(--c) 92%,#fff),color-mix(in srgb,var(--c) 60%,#000));box-shadow:0 18px 32px -16px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.25)}
 .cc::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%);transform:translateX(-110%);animation:ccs 6s 1.2s ease-in-out infinite;pointer-events:none}
 @keyframes ccs{0%,55%{transform:translateX(-110%)}100%{transform:translateX(110%)}}
@@ -572,7 +593,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v4.2</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v4.3</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -626,9 +647,11 @@ body.dragging{-webkit-user-select:none;user-select:none}
     <input type="file" id="pfile" accept="image/*" hidden>
     <div id="ccx" hidden>
       <div class="ccprev" id="ccprev"></div>
-      <div class="lbl" id="cml" hidden>Modelo do cartão</div><div class="dates" id="cm" hidden></div>
-      <div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
-      <div class="lbl">Nível do cartão</div><div class="dates" id="ct"></div>
+      <div class="lbl" id="cml" hidden>Escolha o cartão</div>
+      <div class="cbf" id="cbf" hidden></div>
+      <div class="cpk" id="cm" hidden></div>
+      <div id="cgen"><div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
+      <div class="lbl">Nível do cartão</div><div class="dates" id="ct"></div></div>
       <div class="lbl">Final do cartão</div><input class="fld" id="cl" type="text" inputmode="numeric" maxlength="4" placeholder="Últimos 4 números (opcional)" autocomplete="off">
       <div class="lbl">Limite do cartão</div><input class="fld" id="cli" type="text" inputmode="numeric" placeholder="R$ 0,00 (opcional)" autocomplete="off">
       <div class="lbl">Dia do fechamento da fatura</div><input class="fld" id="ccl" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 25 (opcional)" autocomplete="off">
@@ -669,7 +692,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='4.2';
+const VERSION='4.3';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1167,10 +1190,11 @@ function renderProv(){
   if(q)ids.sort(AZ);
   provBar(!!q);
   let g='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
-  g+=ids.map(id=>{const p=PROV[id];return '<button type="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
+  g+=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
   if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
   $('#pg').innerHTML=g;
 }
+let CF='',CK='';
 function syncForm(){
   $('#fa').value=fmtAmt(F.cents);
   const sp=F.mode==='spent';
@@ -1193,8 +1217,25 @@ function syncForm(){
   $('#bolx').hidden=F.cat!=='boleto'||F.mode==='spent';
   if(cc){
     if(F.model&&!MODELS.some(x=>x.id===F.model&&x.provs.indexOf(F.prov)>-1))F.model='';
-    {const ms=MODELS.filter(x=>x.provs.indexOf(F.prov)>-1);$('#cml').hidden=$('#cm').hidden=!ms.length;
-     $('#cm').innerHTML=ms.length?'<button type="button" class="chip'+(F.model?'':' on')+'" data-m="">Padrão do banco</button>'+ms.map(x=>'<button type="button" class="chip'+(F.model===x.id?' on':'')+'" data-m="'+x.id+'">'+x.n+'</button>').join(''):''}
+    {const ms=MODELS.filter(x=>x.provs.indexOf(F.prov)>-1),has=ms.length>0;
+     $('#cml').hidden=$('#cm').hidden=!has;
+     const brs=[];ms.forEach(x=>{if(brs.indexOf(x.br)<0)brs.push(x.br)});
+     if(CF&&brs.indexOf(CF)<0)CF='';
+     $('#cbf').hidden=!(has&&brs.length>1);
+     $('#cgen').hidden=has&&!!F.model;
+     const key=F.prov+'|'+CF+'|'+F.model+'|'+(F.model?'':F.brand+F.tier);
+     if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK=''}
+     else if(key!==CK){
+       const tr=$('#cm'),sl=tr.scrollLeft,moved=CK.split('|').slice(0,3).join('|')!==key.split('|').slice(0,3).join('|')||(CK.split('|')[2]!==F.model);
+       $('#cbf').innerHTML=brs.length>1?'<button type="button" class="chip'+(CF?'':' on')+'" data-f="">Todas</button>'+brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+BRANDS[b]+'</button>').join(''):'';
+       const sub=(br,t)=>BRANDS[br]+(t&&t!=='standard'?' · '+TIERS[t]:'');
+       let h='<button type="button" class="cpi'+(F.model?'':' on')+'" data-m=""><span class="cpa">'+cardArt({prov:F.prov,tier:F.tier,brand:F.brand,name:''},false)+'</span><span class="cpn">Padrão do banco</span><span class="cps">Escolher bandeira e nível</span><i class="cpc"></i></button>';
+       h+=ms.filter(x=>!CF||x.br===CF).map(x=>'<button type="button" class="cpi'+(F.model===x.id?' on':'')+'" data-m="'+x.id+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:''},false)+'</span><span class="cpn">'+esc(x.n)+'</span><span class="cps">'+sub(x.br,x.tr)+'</span><i class="cpc"></i></button>').join('');
+       tr.innerHTML=h;tr.scrollLeft=sl;CK=key;
+       const on=tr.querySelector('.cpi.on');
+       if(on&&moved){const L=on.offsetLeft-(tr.clientWidth-on.offsetWidth)/2;try{tr.scrollTo({left:Math.max(0,L),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,L)}}
+     }
+    }
     {const tq=tplFor({prov:F.prov,model:F.model},F.tier,F.brand);$('#ccprev').innerHTML=cardArt({prov:F.prov,model:F.model,tier:F.tier,brand:F.brand,last4:F.last4,name:$('#fn').value},false)+(F.last4&&tq&&!tq.n?'<div class="hint" style="text-align:center;margin-top:8px">••'+esc(F.last4)+'</div>':'')}
     $$('#cb .chip').forEach(c=>c.classList.toggle('on',c.dataset.b===F.brand));
     $$('#ct .chip').forEach(c=>c.classList.toggle('on',c.dataset.t===F.tier));
@@ -1214,7 +1255,7 @@ function openSheet(id,key){
   EDIT=null;const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
   F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
-  $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
+  $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
@@ -1383,6 +1424,7 @@ $('#pg').addEventListener('click',e=>{
   syncForm();
 });
 $('#ccx').addEventListener('click',e=>{
+  const f=e.target.closest('[data-f]');if(f){CF=f.dataset.f;syncForm();return}
   const b=e.target.closest('[data-b]'),t=e.target.closest('[data-t]'),m=e.target.closest('[data-m]');
   if(m){F.model=m.dataset.m;if(F.model){const md=MODELS.find(x=>x.id===F.model);F.brand=(md&&md.br)||'visa';F.tier=(md&&md.tr)||'gold'}syncForm();return}
   if(b){F.brand=b.dataset.b;F.model='';syncForm()}
