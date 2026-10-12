@@ -2,6 +2,9 @@
 <!--
   VENCIMENTOS — controle de contas a pagar
   ---------------------------------------------------------------
+  v3.4 · 11/10/2026 · Arrastar sem a cópia nativa do iPhone
+   - Segurar um ícone (logo do banco) não abre mais o arraste de imagem do
+     iPhone com o "+" verde; agora o ícone é movido dentro da lista
   v3.3 · 11/10/2026 · Arrastar sem falhas
    - Arrastar ícones refeito: sem buracos nem ícones sumindo no meio do
      arraste, o lugar de soltar aparece marcado e o ícone cai exatamente
@@ -496,6 +499,8 @@ body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .2s var(--ease),border-color .2s,background .2s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
 .pt.ghost{background:#222842;border-color:rgba(232,178,74,.7);box-shadow:0 18px 36px rgba(0,0,0,.6);transition:none;opacity:.98}
+.pt img,.pt .pv,.pt .pv *{pointer-events:none}
+img{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 .pt.ph{opacity:.5;border:1px dashed rgba(232,178,74,.9);background:rgba(232,178,74,.08)}
 body.dragging{-webkit-user-select:none;user-select:none}
 @media (prefers-reduced-motion:reduce){
@@ -512,7 +517,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f6d58b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" stroke-opacity=".35"/><path d="M8.2 12.4l2.8 2.8 5-6"/></svg></div>
       <h1>Vencimentos</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v3.3</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v3.4</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -602,7 +607,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='3.3';
+const VERSION='3.4';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -697,7 +702,7 @@ const LOGOS={"abril":"data:image/webp;base64,UklGRj4ZAABXRUJQVlA4WAoAAAAQAAAAvwA
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];return okImg(v)?v:''}
 function badge(p){
   const g=logo(p.id);
-  if(g) return '<div class="pv logo" style="--c:'+p.c+'"><img alt="" src="'+g+'"></div>';
+  if(g) return '<div class="pv logo" style="--c:'+p.c+'"><img alt="" draggable="false" decoding="async" src="'+g+'"></div>';
   return '<div class="pv" style="--c:'+p.c+';--t:'+p.t+'">'+esc(p.i)+'</div>';
 }
 const TPLS=[
@@ -1201,6 +1206,8 @@ let LASTDRAG=0;
   document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)});
   document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()});
   grid.addEventListener('contextmenu',e=>e.preventDefault());
+  grid.addEventListener('dragstart',e=>e.preventDefault());
+  grid.addEventListener('selectstart',e=>e.preventDefault());
 })();
 $('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.pord=b.dataset.o==='custom'?'custom':'az';save();renderProv()});
 $('#phint').addEventListener('click',e=>{
