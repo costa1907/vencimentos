@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='7.1';
+(function(){var V='7.2';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -471,12 +471,12 @@ body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!i
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .2s var(--ease),border-color .2s,background .2s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
-.pt.ghost{background:#222842;border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
+.pt.ghost{background-color:var(--card2);background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04));border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
 @keyframes gpop{from{scale:1;box-shadow:0 1px 3px rgba(0,0,0,.2)}to{scale:1.1}}
 body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .pt.ph.on{opacity:.5;border:1px dashed rgba(var(--ar),.9);background:rgba(var(--ar),.08);transform:none}
 .pt.ghost,.pt.ghost:active{transform:none}
-.pt.ghost.on{background:#2d2b2e}
+.pt.ghost.on{background-color:var(--card2);background-image:linear-gradient(rgba(var(--ar),.12),rgba(var(--ar),.12))}
 
 /* Aparência */
 .thm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
@@ -549,7 +549,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><svg width="22" height="22" viewBox="0 0 1024 1024" fill="none" stroke-linecap="round"><defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="260" y1="240" x2="780" y2="800"><stop offset="0" style="stop-color:var(--gold2)"/><stop offset=".5" style="stop-color:var(--gold)"/><stop offset="1" style="stop-color:var(--gold3)"/></linearGradient></defs><circle cx="512" cy="512" r="258" stroke="#fff" stroke-opacity=".12" stroke-width="64"/><path d="M512 254A258 258 0 1 1 289 383" stroke="url(#hg)" stroke-width="64"/><path d="M512 512L398 438" stroke="url(#hg)" stroke-width="54"/><circle cx="289" cy="383" r="34" fill="#fff4cf" stroke="none"/></svg></div>
       <h1>Prazo</h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v7.1</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v7.2</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -649,7 +649,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='7.1';
+const VERSION='7.2';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1530,7 +1530,7 @@ const HP=function(k){
       cancelAnimationFrame(st.raf);place();
       const g=st.ghost,gr=grid.getBoundingClientRect(),s=st.slots[st.to];
       g.style.animation='none';g.style.transition='translate .22s cubic-bezier(.2,.8,.2,1),scale .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s';
-      g.style.translate=(gr.left+s.x)+'px '+(gr.top+s.y-(st.sel?2:0))+'px';g.style.scale='1';g.style.boxShadow='0 1px 3px rgba(0,0,0,.2)';if(!st.sel){g.style.transition+=',border-color .22s,background-color .22s';g.style.borderColor='rgba(255,255,255,.07)';g.style.backgroundColor='rgba(255,255,255,.04)'}
+      g.style.translate=(gr.left+s.x)+'px '+(gr.top+s.y-(st.sel?2:0))+'px';g.style.scale='1';g.style.boxShadow='0 1px 3px rgba(0,0,0,.2)';if(!st.sel){g.style.transition+=',border-color .22s,background-color .22s';g.style.borderColor='rgba(255,255,255,.07)';g.style.backgroundColor='var(--card)'}
       const to=st.to;
       if(st.to!==st.from){
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
