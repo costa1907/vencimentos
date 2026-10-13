@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.5';
+(function(){var V='10.6';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -547,7 +547,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.5</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -647,7 +647,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='10.5';
+const VERSION='10.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1320,9 +1320,9 @@ function cpLayout(){
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
     const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
-    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='translateZ(0) scale(.86)'}continue}
+    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
-    el.style.transform='translateZ(0) scale('+(1-q*.14).toFixed(3)+')'}
+    el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
   if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
