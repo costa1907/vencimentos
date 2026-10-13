@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v11.3 · 13/10/2026 · Santander Unlimited corrigido volta ao nome original c-santander-unlimited.webp (substitui o arquivo com contorno); cache de imagens cartoes-12 para o iPhone pegar a imagem nova
+  v11.2 · 13/10/2026 · Santander Unlimited: removido o contorno cinza das bordas (sobra do fundo branco da imagem original); refeito do original sem perdas em c-santander-unlimited2.webp
   v11.1 · 13/10/2026 · Santander Unique Visa Infinite e Elite Visa Platinum refeitos a partir dos Unique/Elite Mastercard (melhor qualidade), trocando só a bandeira (novos arquivos c-santander-uniquevisa.webp e c-santander-elitevisa.webp)
   v11.0 · 13/10/2026 · Fluidez: imagens dos cartões na resolução da tela (880 px; ~36% menos memória e 1,1 MB menos para baixar; cache cartoes-11); index.html de 259 KB para 181 KB (ícone duplicado trocado por icon-180/192/512.png e logo da abertura em i-sobrou-mark.webp); seções da tela inicial e do Panorama fora da tela só são desenhadas ao chegar perto; marcar como paga reaproveita o carrossel de cartões quando ele não muda e os totais animam do valor anterior (não do zero)
   v10.9 · 13/10/2026 · Carrosséis: quando o iPhone não completa o encaixe e o cartão para fora do centro, o app faz uma única correção suave até o centro (sem a briga/tremida da correção antiga)

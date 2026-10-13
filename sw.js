@@ -3,7 +3,7 @@
    2) imagens dos cartões (c-*.webp) e dos ícones (i-*.webp) ficam guardadas;
    3) fontes do Google ficam guardadas.
    Se trocar uma imagem mantendo o mesmo nome, aumente o número em IMG (e IMGCACHE no index.html). */
-const IMG='cartoes-11', APP='app-1', FONT='fontes-1';
+const IMG='cartoes-12', APP='app-1', FONT='fontes-1';
 const INDEX=new URL('index.html',self.registration.scope).href;
 
 self.addEventListener('install',e=>{
