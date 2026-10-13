@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.7';
+(function(){var V='10.8';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -303,6 +303,11 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
 .cpa{display:block;pointer-events:none;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
+/* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
+@keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
+.sda .cpk .cpa{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
+.sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
+
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0;transition:opacity .25s}
 .cpi.ctr::after{opacity:1}
@@ -312,7 +317,6 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpk .cc-fx{display:none}
 /* seletor de cartões: sem transição nem sombra pesada nas imagens */
 .cpk .cc.w.tpl .cc-bg{transition:none}
-.cpa .cc,.cpa .cc.w{box-shadow:none!important}
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
 .cpk .cc::after,.cpk .cc *::after,.cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation:none!important;display:none}
 .cpk .cpi:not(.ctr) .cc-num{display:none}
@@ -529,6 +533,11 @@ body.dragging #sheet .panel{overflow:hidden;touch-action:none}
 /* com uma janela aberta, as animações decorativas da tela de trás param (a GPU fica livre para a janela) */
 body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::after{animation-play-state:paused}
 .fab::before{animation-iteration-count:4}
+/* desfoques só quando visíveis (o desfoque é refeito a cada quadro de rolagem) */
+body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
+.toast:not(.show){backdrop-filter:none;-webkit-backdrop-filter:none}
+/* brilho de fundo do topo: 2 ciclos e para (não fica gastando GPU/bateria parado) */
+.hero::before{animation-iteration-count:2}
 @media (prefers-reduced-motion:reduce){
   .cc-fx::after,.cc.w *{animation:none!important}
 
@@ -551,7 +560,7 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.7</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.8</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -651,7 +660,7 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 <script>
 (function(){
 'use strict';
-const VERSION='10.7';
+const VERSION='10.8';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -752,7 +761,7 @@ function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];re
 const ICOK={};
 function badge(p){
   const g=logo(p.id);
-  if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async'+(ICOK[g]?'':'" loading="lazy')+'" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
+  if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
   return '<div class="pv" style="--c:'+p.c+';--t:'+p.t+'">'+esc(p.i)+'</div>';
 }
 const TPLS=[
@@ -928,6 +937,9 @@ try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&Array.is
 if(!S.goals||typeof S.goals!=='object')S.goals={};
 if(!S.order||typeof S.order!=='object')S.order={};
 if(S.pord!=='custom')S.pord='az';
+/* garante que toda conta tem a estrutura mínima (dados antigos, backup ou nuvem) */
+function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(!b.paid||typeof b.paid!=='object')b.paid={};if(typeof b.amount!=='number')b.amount=+b.amount||0;if(!b.due)b.due=toISO(today0())})}
+normS();
 let EV=6;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.__sync)window.__sync()}
 const now0=new Date();
@@ -980,7 +992,7 @@ function tween(el,to,fmt,ms){
 }
 function burst(x,y){
   if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  const c=document.createElement('canvas');c.className='fx';const dpr=devicePixelRatio||1;
+  const c=document.createElement('canvas');c.className='fx';const dpr=Math.min(2,devicePixelRatio||1);
   c.width=innerWidth*dpr;c.height=innerHeight*dpr;document.body.appendChild(c);
   const g=c.getContext('2d');g.scale(dpr,dpr);
   const cols=['var(--gold2)','var(--gold)','#34d399','#5ee9b5','#ffffff'];
@@ -1027,7 +1039,7 @@ function limHTML(g,t){
   const kk=x=>(x.prov||x.name)+'|'+(x.model||'')+'|'+(x.last4||'');
   const k=kk(b);
   let used=g.occ.filter(o=>!o.paid).reduce((a,o)=>a+o.amt,0);
-  try{overdueAll().forEach(o=>{if(o.b.cat==='cartao'&&kk(o.b)===k&&!g.occ.some(x=>x.b.id===o.b.id&&x.date.getTime()===o.date.getTime()))used+=o.amt})}catch(e){}
+  try{(ODC||overdueAll()).forEach(o=>{if(o.b.cat==='cartao'&&kk(o.b)===k&&!g.occ.some(x=>x.b.id===o.b.id&&x.date.getTime()===o.date.getTime()))used+=o.amt})}catch(e){}
   let h='<div class="lim">';
   if(lim){
     const pc=Math.min(100,Math.round(used/lim*100)),cls=pc>=90?'d':pc>=70?'w':'';
@@ -1041,13 +1053,17 @@ function limHTML(g,t){
   }
   return h+'</div>';
 }
-let HCLS=0,HIG=0;
+let HCLS=0,HIG=0,ODC=null,HKEY='';
+/* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
+const SDA=(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
+if(SDA)document.documentElement.classList.add('sda');
 function cfLayout(tr){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
+    if(SDA)continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
     const el=its[i].querySelector('.cc');if(!el)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
@@ -1080,7 +1096,8 @@ function cardsHTML(gs){
 function renderHome(){
   const t=today0(), isCur=V.y===t.getFullYear()&&V.m===t.getMonth();
   const mo=monthOccs(V.y,V.m).sort((a,b)=>a.date-b.date);
-  const od=isCur?overdueAll():mo.filter(o=>!o.paid&&o.date<t);
+  ODC=overdueAll();
+  const od=isCur?ODC:mo.filter(o=>!o.paid&&o.date<t);
   const up=mo.filter(o=>!o.paid&&o.date>=t), pd=mo.filter(o=>o.paid);
   const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?Math.round(paid/total*100):0;
   const R=47,C=2*Math.PI*R;
@@ -1105,7 +1122,10 @@ function renderHome(){
     if(mo.length&&!up.length&&!od.length) h+='<div class="cheer">Tudo pago em '+MES[V.m]+'. Tá em dia.</div>';
     h+=section('done','Pagas',pd,od.length+up.length);
   }
-  const L=$('#list');L.className=ANIM?'':'noanim';L.innerHTML=h;cfInit();
+  const L=$('#list'),hk=V.y+'-'+V.m,oc=L.querySelector('.cards'),osl=(oc&&hk===HKEY)?oc.scrollLeft:0;HKEY=hk;
+  L.className=ANIM?'':'noanim';L.innerHTML=h;ODC=null;
+  if(osl){const nc=L.querySelector('.cards');if(nc)nc.scrollLeft=osl}
+  cfInit();
   tween($('#hbig'),rest,brl,ANIM?900:500);
   tween($('#rpc'),pct,v=>Math.round(v)+'%',ANIM?900:500);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const r=$('#rpr');if(r)r.style.strokeDashoffset=(C*(1-pct/100)).toFixed(1)}));
@@ -1213,7 +1233,7 @@ function renderSet(){
     catch(e){const ta=$('#bpaste');ta.value=txt;ta.select();toast('Selecione e copie o texto')}
   };
   $('#brest').onclick=()=>{
-    try{const o=JSON.parse($('#bpaste').value.trim());if(!o||!Array.isArray(o.bills))throw 0;S={bills:o.bills,goals:(o.goals&&typeof o.goals==='object')?o.goals:{},order:(o.order&&typeof o.order==='object')?o.order:{},pord:o.pord==='custom'?'custom':'az'};save();toast('Backup restaurado ('+S.bills.length+' contas)');renderSet()}
+    try{const o=JSON.parse($('#bpaste').value.trim());if(!o||!Array.isArray(o.bills))throw 0;S={bills:o.bills,goals:(o.goals&&typeof o.goals==='object')?o.goals:{},order:(o.order&&typeof o.order==='object')?o.order:{},pord:o.pord==='custom'?'custom':'az'};normS();save();toast('Backup restaurado ('+S.bills.length+' contas)');renderSet()}
     catch(e){toast('Backup inválido')}
   };
   let armed=0;
@@ -1323,6 +1343,7 @@ function cpLayout(){
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
     const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
+    if(SDA)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
@@ -1776,6 +1797,7 @@ $('#panel').addEventListener('submit',e=>{
   const name=$('#fn').value.trim()||(pv?pv.n:CAT[F.cat].l), due=$('#fd').value||toISO(today0()), note=$('#fo').value.trim();
   if(EDIT){
     const b=S.bills.find(v=>v.id===EDIT.id);
+    if(!b){closeSheet();renderAll();toast('Esta conta não existe mais');return}
     if(F.cents!==EDIT.orig){
       if(F.rep!=='once'&&F.scope==='one'){b.ov=b.ov||{};b.ov[EDIT.key]=F.cents}
       else{b.amount=F.cents;if(b.ov)delete b.ov[EDIT.key]}
@@ -1837,9 +1859,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 let LASTDAY=new Date().toDateString();
 /* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
-  const L=[$('#cm'),document.querySelector('.cards')].filter(Boolean);
-  L.forEach(el=>{el.style.overflowX='hidden'});
-  requestAnimationFrame(()=>{L.forEach(el=>{el.style.overflowX=''});try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
+  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -1926,7 +1946,7 @@ document.addEventListener('pointermove',e=>{if(ccHeld&&e.pointerType!=='touch')c
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,ccRelease,{passive:true}));
 
 window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
-  put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
+  put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
 setTab('home');
 })();
@@ -1948,7 +1968,7 @@ setTab('home');
   const jset=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
   const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const toast=m=>window.__app&&window.__app.toast(m);
-  let A=jget(AK),LIC=jget(LK)||{ate:0,created:0},tok='',tokExp=0,pulling=false,pushT=0,pushing=false,online=true,LST=[];
+  let A=jget(AK),LIC=jget(LK)||{ate:0,created:0},tok='',tokExp=0,pulling=false,applying=false,pushT=0,pushing=false,online=true,LST=[];
 
   /* ----- rede ----- */
   async function post(url,body,form){
@@ -2010,7 +2030,7 @@ setTab('home');
   /* ----- sincronização ----- */
   const payload=()=>JSON.stringify({s:window.__app.get(),t:(window.THEME&&window.THEME.cur)||[4,9]});
   window.__sync=function(){
-    if(!A||pulling)return;
+    if(!A||applying)return;
     try{localStorage.setItem(DK,'1');localStorage.setItem(UK,String(Date.now()))}catch(e){}
     clearTimeout(pushT);pushT=setTimeout(push,1500);
     uiSync();
@@ -2042,11 +2062,14 @@ setTab('home');
         if(force||(!dirty&&cu>=lu)||(!dirty&&!lu)){
           const o=JSON.parse(f.data.stringValue);
           const cur=JSON.stringify(window.__app.get());
-          if(JSON.stringify(o.s)!==cur){
-            try{localStorage.setItem(BK,cur)}catch(e){}
-            window.__app.put(o.s);
-          }
-          if(o.t&&window.THEME&&(o.t[0]!==THEME.cur[0]||o.t[1]!==THEME.cur[1])){THEME.set(o.t[0],o.t[1])}
+          applying=true;
+          try{
+            if(JSON.stringify(o.s)!==cur){
+              try{localStorage.setItem(BK,cur)}catch(e){}
+              window.__app.put(o.s);
+            }
+            if(o.t&&window.THEME&&(o.t[0]!==THEME.cur[0]||o.t[1]!==THEME.cur[1])){THEME.set(o.t[0],o.t[1])}
+          }finally{applying=false}
           try{localStorage.setItem(UK,String(cu));localStorage.removeItem(DK)}catch(e){}
         }else if(dirty){pulling=false;await push()}
       }else{
@@ -2056,6 +2079,7 @@ setTab('home');
       online=true;
     }catch(e){}
     pulling=false;uiSync();
+    if(A&&localStorage.getItem(DK)){clearTimeout(pushT);pushT=setTimeout(push,1500)}
   }
   function uiSync(){const el=$('#acsync');if(!el)return;const d=localStorage.getItem(DK);el.textContent=d?(navigator.onLine?'Sincronizando…':'Aguardando internet'):'Tudo salvo na nuvem';el.style.color=d?'var(--warn)':'var(--ok)'}
   window.addEventListener('online',()=>{if(A){if(localStorage.getItem(DK))push();else pull()}});
