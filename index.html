@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.3';
+(function(){var V='10.4';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -544,7 +544,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.3</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.4</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -644,7 +644,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='10.3';
+const VERSION='10.4';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -740,7 +740,7 @@ const LOGOS={"abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.we
 /* IV: só vira algo depois de "Limpar memória" (Ajustes): força baixar tudo de novo, como na 1ª vez */
 const IV=(()=>{try{return sessionStorage.getItem('imgv')||''}catch(e){return ''}})();
 const imgU=f=>IV?f+'?v='+IV:f;
-const IMGCACHE='cartoes-9';
+const IMGCACHE='cartoes-10';
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];return /^i-[a-z0-9_-]+\.webp$/.test(v||'')?imgU(v):''}
 const ICOK={};
 function badge(p){
@@ -1837,6 +1837,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)return;cons
 /* ---------- atualização automática ---------- */
 try{if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 /* em segundo plano: guarda no aparelho os cartões do que você usa, depois os ícones e os demais cartões */
+let LASTSC=0;
+['scroll','touchmove'].forEach(n=>document.addEventListener(n,()=>{LASTSC=Date.now()},{capture:true,passive:true}));
 function prewarm(){
   try{
     if(!('caches' in window)||!/^https?:/.test(location.protocol))return;
@@ -1851,13 +1853,16 @@ function prewarm(){
       let i=0;
       const next=()=>{
         if(i>=q.length)return;const u=q[i++];
-        c.match(u).then(h=>h?0:c.add(new Request(u,{cache:'no-cache'}))).catch(()=>{}).then(()=>setTimeout(next,40));
+        /* espera o dedo parar de rolar e a janela de cartões fechar: nada de baixar imagens enquanto você usa o app */
+        const go=()=>{const sh=document.getElementById('sheet');if(document.hidden||Date.now()-LASTSC<1500||(sh&&!sh.hidden)){setTimeout(go,800);return}
+          c.match(u).then(h=>h?0:c.add(new Request(u,{cache:'no-cache'}))).catch(()=>{}).then(()=>setTimeout(next,150))};
+        go();
       };
-      next();next();
+      next();
     }).catch(()=>{});
   }catch(e){}
 }
-setTimeout(prewarm,3500);
+setTimeout(prewarm,9000);
 /* confere só o arquivo minúsculo v.txt (uns 5 bytes); o index.html inteiro só é baixado se houver versão nova */
 function checkUpdate(manual){
   if(!/^https?:/.test(location.protocol)){if(manual)toast('Sem conexão com o site');return}

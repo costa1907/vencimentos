@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v10.4 · 13/10/2026 · Banco do Brasil: imagens refeitas no mesmo formato dos outros bancos (cantos arredondados embutidos); download de fundo dos cartões agora espera 9 s após abrir e pausa enquanto você rola ou usa a janela de cartões (cache cartoes-10)
   v10.3 · 13/10/2026 · Desempenho: removido o brilho animado contínuo dos cartões do seletor e dos cartões fora do centro na tela inicial (menos carga na GPU, causa provável das engasgadas ao rolar)
   v10.2 · 13/10/2026 · Atualização leve: o app e o service worker consultam só o arquivo v.txt (poucos bytes) e baixam o index.html inteiro apenas quando a versão mudou
   v10.1 · 13/10/2026 · Correção de travamentos: ao voltar do segundo plano o app não refaz mais a tela inteira, verifica atualização no máximo a cada 10 min e sincroniza com atraso; arrastar ícones é cancelado ao sair do app (evita tela presa); carrosséis são destravados ao voltar
