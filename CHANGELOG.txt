@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v10.7 · 13/10/2026 · Travamentos (analisados pela gravação de tela): carrosséis não corrigem mais a posição por conta própria (brigava com o encaixe do iPhone e fazia o cartão tremer/engasgar em ciclos); rolagem da grade de ícones não espera mais o JavaScript (toque passivo; arrastar bloqueia a rolagem só durante o arraste); animações decorativas da tela inicial pausam com janela aberta e o pulso do botão + roda só 4 vezes
   v10.6 · 13/10/2026 · Giro 3D dos cartões do seletor de volta (mantidas as demais melhorias de leveza da v10.5)
   v10.5 · 13/10/2026 · Carrossel do seletor de cartões mais leve: sem giro 3D nem sombra pesada, imagens decodificadas antes de aparecer e demais grupos do banco pré-baixados em segundo plano
   v10.4 · 13/10/2026 · Banco do Brasil: imagens refeitas no mesmo formato dos outros bancos (cantos arredondados embutidos); download de fundo dos cartões agora espera 9 s após abrir e pausa enquanto você rola ou usa a janela de cartões (cache cartoes-10)

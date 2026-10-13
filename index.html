@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.6';
+(function(){var V='10.7';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -525,6 +525,10 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 img{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 .pt.ph{opacity:.5;border:1px dashed rgba(var(--ar),.9);background:rgba(var(--ar),.08)}
 body.dragging{-webkit-user-select:none;user-select:none}
+body.dragging #sheet .panel{overflow:hidden;touch-action:none}
+/* com uma janela aberta, as animações decorativas da tela de trás param (a GPU fica livre para a janela) */
+body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::after{animation-play-state:paused}
+.fab::before{animation-iteration-count:4}
 @media (prefers-reduced-motion:reduce){
   .cc-fx::after,.cc.w *{animation:none!important}
 
@@ -547,7 +551,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.6</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.7</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -647,7 +651,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='10.6';
+const VERSION='10.7';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1055,8 +1059,7 @@ function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
   let raf=0,idle=0,tch=0;
-  const settle=()=>{if(tch)return;const bi=cfLayout(tr),it=tr.children[bi];if(!it)return;
-    const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;if(Math.abs(off)>2)tr.scrollLeft=Math.max(0,tr.scrollLeft+off)};
+  const settle=()=>{if(tch)return;cfLayout(tr)};
   cfLayout(tr);
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,200)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
@@ -1338,8 +1341,7 @@ function cpLabel(bi){
   function settle(){
     if(tch)return;
     const bi=cpLayout(),it=tr.children[bi];if(!it)return;
-    const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>2){tr.scrollLeft=Math.max(0,tr.scrollLeft+off);return}
+    /* o encaixe no centro é feito pelo próprio iPhone (scroll-snap); corrigir a posição aqui brigava com ele e fazia o cartão tremer/engasgar */
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1538,7 +1540,7 @@ const HP=function(k){
     g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;translate:'+r.left+'px '+r.top+'px';
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
     void grid.offsetWidth;tiles.forEach(el=>{el.style.transform='';el.style.transition='transform .22s cubic-bezier(.2,.8,.2,1)'});
-    HP('lift');
+    HP('lift');document.addEventListener('touchmove',block,{passive:false});
     loop();
   }
   function layout(){
@@ -1569,7 +1571,6 @@ const HP=function(k){
   function move(e){
     if(!st)return;const p=pt(e);st.x=p.clientX;st.y=p.clientY;
     if(!st.on){if(Math.hypot(st.x-st.x0,st.y-st.y0)>9){clearTimeout(timer);st=null}return}
-    if(e.cancelable)e.preventDefault();
   }
   function end(){
     clearTimeout(timer);if(!st)return;
@@ -1583,7 +1584,7 @@ const HP=function(k){
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
         S.order[F.cat]=arr.filter(Boolean);S.pord='custom';save();
       }
-      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');renderProv();
+      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);renderProv();
       {const nt=$$('#pg .pt')[to];if(nt){nt.style.visibility='hidden';setTimeout(()=>{nt.style.visibility='';nt.classList.add('land');g.remove();setTimeout(()=>nt.classList.remove('land'),520)},230)}else setTimeout(()=>g.remove(),230)}
     }
     st=null;
@@ -1598,14 +1599,15 @@ const HP=function(k){
   grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)});
   document.addEventListener('mouseup',()=>preOff(160));
   grid.addEventListener('touchstart',e=>{lastTouch=Date.now();start(e)},{passive:true});
-  grid.addEventListener('touchmove',move,{passive:false});
+  grid.addEventListener('touchmove',move,{passive:true});
+  const block=e=>{if(st&&st.on&&e.cancelable)e.preventDefault()};
   grid.addEventListener('touchend',end);grid.addEventListener('touchcancel',end);
   grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)});
   document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)});
   document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()});
   /* segurança: se o app for para segundo plano no meio de um toque/arraste, solta tudo (evita tela travada) */
   function abort(){
-    clearTimeout(timer);preOff();
+    clearTimeout(timer);preOff();document.removeEventListener('touchmove',block);
     if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');renderProv()}
     else document.body.classList.remove('dragging');
     $$('.ghost').forEach(x=>x.remove());
