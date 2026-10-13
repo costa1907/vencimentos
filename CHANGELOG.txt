@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v9.6 · 12/10/2026 · Cartões: Porto Seguro (Mastercard Gold/Platinum/Black e Visa Gold/Platinum/Infinite), Caixa Elo Diners, Santander SX, Unique e Elite Mastercard; Smiles Infinite/Platinum/Gold e AAdvantage Black refeitos em resolução maior, sem nome e número
   v9.5 · 12/10/2026 · Bradesco: 3 cartões novos (Disney Mickey Mágico, Disney Turma do Mickey e Star Wars, todos Visa Infinite) feitos das capturas do app do banco, com cantos arredondados
   v9.4 · 12/10/2026 · Santander Gol Smiles Infinite refeito a partir de foto mais nítida (menos ruído de compressão)
   v9.3 · 12/10/2026 · Santander Unique, Unlimited e Elite refeitos em alta resolução a partir das fotos: sem nome, números e datas; Elite sem a borda prateada e com Visa Platinum; Unlimited agora Visa Infinite
