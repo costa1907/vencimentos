@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.4';
+(function(){var V='10.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -310,6 +310,9 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpg i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:width .25s var(--ease),background .25s}
 .cpg i.on{width:20px;background:var(--gold2)}
 .cpk .cc-fx{display:none}
+/* seletor de cartões: sem transição nem sombra pesada nas imagens */
+.cpk .cc.w.tpl .cc-bg{transition:none}
+.cpa .cc,.cpa .cc.w{box-shadow:none!important}
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
 .cpk .cc::after,.cpk .cc *::after,.cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation:none!important;display:none}
 .cpk .cpi:not(.ctr) .cc-num{display:none}
@@ -544,7 +547,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -644,7 +647,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='10.4';
+const VERSION='10.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -893,7 +896,7 @@ function tplFor(o,tier,br){
   if(o.model){const m=MODELS.find(x=>x.id===o.model&&x.provs.indexOf(o.prov)>-1);if(m)return TPLS.find(x=>x.m===o.model&&x.p===o.prov)||TPLS.find(x=>x.m===o.model)||null}
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
-document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode)t.parentNode.classList.add('rd')},true);
+document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
@@ -1317,9 +1320,9 @@ function cpLayout(){
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
     const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
-    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
+    if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='translateZ(0) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
-    el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
+    el.style.transform='translateZ(0) scale('+(1-q*.14).toFixed(3)+')'}
   if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
@@ -1361,12 +1364,14 @@ function cpLoad(c){
   pend.sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
   const list=pend.map(x=>x[2]);
   (function pump(){
-    while(CPACT<3&&list.length){
+    while(CPACT<4&&list.length){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
-      im.addEventListener('load',fin,{once:true});im.addEventListener('error',fin,{once:true});
-      im.src=u;if(im.complete&&im.naturalWidth)fin();
+      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cc.classList.add('rd');fin()};
+      im.addEventListener('error',fin,{once:true});
+      im.addEventListener('load',()=>{(im.decode?im.decode():Promise.resolve()).then(ok,ok)},{once:true});
+      im.src=u;
     }
   })();
 }
@@ -1411,6 +1416,7 @@ function syncForm(){
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
          $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
+         setTimeout(()=>{try{const seen={};ms.forEach(x=>{if(lst.indexOf(x)>=0)return;const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s&&!seen[t.s]){seen[t.s]=1;fetch(imgU(t.s),{priority:'low'}).catch(()=>{})}})}catch(e){}},2500);
          {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0}
          CK=key;CSEL='';
        }else{$$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===CF))}
