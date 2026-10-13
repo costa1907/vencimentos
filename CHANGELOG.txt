@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v10.3 · 13/10/2026 · Desempenho: removido o brilho animado contínuo dos cartões do seletor e dos cartões fora do centro na tela inicial (menos carga na GPU, causa provável das engasgadas ao rolar)
   v10.2 · 13/10/2026 · Atualização leve: o app e o service worker consultam só o arquivo v.txt (poucos bytes) e baixam o index.html inteiro apenas quando a versão mudou
   v10.1 · 13/10/2026 · Correção de travamentos: ao voltar do segundo plano o app não refaz mais a tela inteira, verifica atualização no máximo a cada 10 min e sincroniza com atraso; arrastar ícones é cancelado ao sair do app (evita tela presa); carrosséis são destravados ao voltar
   v10.0 · 13/10/2026 · Santander: American Express Green trocado pela nova imagem (com contactless e 7997, como Platinum e Gold)
