@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='10.0';
+(function(){var V='10.2';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -542,7 +542,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v10.0</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v10.2</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -642,7 +642,7 @@ body.dragging{-webkit-user-select:none;user-select:none}
 <script>
 (function(){
 'use strict';
-const VERSION='10.0';
+const VERSION='10.2';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1595,6 +1595,17 @@ const HP=function(k){
   grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)});
   document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)});
   document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()});
+  /* segurança: se o app for para segundo plano no meio de um toque/arraste, solta tudo (evita tela travada) */
+  function abort(){
+    clearTimeout(timer);preOff();
+    if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');renderProv()}
+    else document.body.classList.remove('dragging');
+    $$('.ghost').forEach(x=>x.remove());
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)abort()});
+  window.addEventListener('pagehide',abort);window.addEventListener('blur',()=>{if(st&&st.on)abort()});
+  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},true);
+  document.addEventListener('touchcancel',()=>{if(st)end()},true);
   grid.addEventListener('contextmenu',e=>e.preventDefault());
   grid.addEventListener('dragstart',e=>e.preventDefault());
   grid.addEventListener('selectstart',e=>e.preventDefault());
@@ -1813,7 +1824,13 @@ $('#extra').addEventListener('click',function(e){
 })();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 /* ao voltar para o app, atualiza o "hoje" */
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&TAB==='home'){ANIM=false;renderHome()}});
+let LASTDAY=new Date().toDateString();
+/* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
+  const L=[$('#cm'),document.querySelector('.cards')].filter(Boolean);
+  L.forEach(el=>{el.style.overflowX='hidden'});
+  requestAnimationFrame(()=>{L.forEach(el=>{el.style.overflowX=''});try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
 try{if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
@@ -1839,8 +1856,18 @@ function prewarm(){
   }catch(e){}
 }
 setTimeout(prewarm,3500);
+/* confere só o arquivo minúsculo v.txt (uns 5 bytes); o index.html inteiro só é baixado se houver versão nova */
 function checkUpdate(manual){
   if(!/^https?:/.test(location.protocol)){if(manual)toast('Sem conexão com o site');return}
+  const nw=(x)=>{const a=x.split('.').map(Number),c=VERSION.split('.').map(Number);for(let i=0;i<3;i++){if((a[i]||0)!==(c[i]||0))return (a[i]||0)>(c[i]||0)}return false};
+  fetch('v.txt?chk='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+    t=(t||'').trim();
+    if(!/^\d+\.\d+(\.\d+)?$/.test(t))return checkFull(manual);
+    if(nw(t))return checkFull(manual);
+    if(manual)toast('Você já está na versão mais recente (v'+VERSION+')');
+  }).catch(()=>checkFull(manual));
+}
+function checkFull(manual){
   fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
     const m=t.match(/const VERSION='([\d.]+)'/);
     if(!m){if(manual)toast('Não consegui verificar');return}
@@ -1856,8 +1883,10 @@ function checkUpdate(manual){
     } else if(manual) toast('Você já está na versão mais recente (v'+VERSION+')');
   }).catch(()=>{if(manual)toast('Sem conexão para verificar')});
 }
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate(false)});
-window.addEventListener('pageshow',e=>{if(e.persisted)checkUpdate(false)});
+let LASTCHK=Date.now();
+function chkSoon(){const n=Date.now();if(n-LASTCHK<600000)return;LASTCHK=n;setTimeout(()=>checkUpdate(false),1500)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)chkSoon()});
+window.addEventListener('pageshow',e=>{if(e.persisted)chkSoon()});
 setTimeout(()=>checkUpdate(false),1200);
 
 /* ---------- efeitos de luxo nos cartões ---------- */
@@ -2018,7 +2047,7 @@ setTab('home');
   document.addEventListener('visibilitychange',()=>{
     if(!A)return;
     if(document.visibilityState==='hidden'){if(localStorage.getItem(DK))push()}
-    else{if(localStorage.getItem(DK))push();else pull();if(status().k==='exp'||!LIC.ate)checkLic()}
+    else{const n=Date.now();if(localStorage.getItem(DK))push();else if(n-(window.__lp||0)>30000){window.__lp=n;setTimeout(pull,1200)}if(status().k==='exp'||!LIC.ate)checkLic()}
   });
   window.addEventListener('pagehide',()=>{if(A&&localStorage.getItem(DK))push()});
 

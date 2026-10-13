@@ -25,9 +25,14 @@ self.addEventListener('fetch',e=>{
     const net=()=>fetch(new Request(INDEX,{cache:'no-cache'})).then(n=>{
       if(n.ok){const k=n.clone();caches.open(APP).then(c=>c.put(INDEX,k))}
       return n});
+    /* em segundo plano: só baixa o index.html inteiro se o v.txt (minúsculo) mostrar versão diferente da guardada */
+    const VER=new URL('v.txt',self.registration.scope).href;
+    const soft=()=>fetch(VER+'?t='+Date.now(),{cache:'no-store'}).then(v=>v.ok?v.text():Promise.reject()).then(t=>caches.open(APP).then(c=>c.match(VER).then(o=>o?o.text():'').then(old=>{
+      if(old.trim()===t.trim())return;
+      return net().then(()=>c.put(VER,new Response(t)))}))).catch(()=>net().catch(()=>{}));
     e.respondWith(caches.open(APP).then(c=>c.match(INDEX)).then(h=>{
       if(fresh||!h)return net().catch(()=>h||Response.error());
-      e.waitUntil(net().catch(()=>{}));
+      e.waitUntil(soft());
       return h;
     }));
     return;
