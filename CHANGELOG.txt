@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v11.8 · 14/10/2026 · Desfeitas as mudanças do carrossel da v11.7 (no iPhone pioraram: cartões do BB engasgando sem parar); ao salvar, editar ou excluir uma conta, a janela desce primeiro e a tela inicial é refeita só depois (diagnóstico: travada de 101 ms ao tocar em Adicionar conta)
   v11.7 · 14/10/2026 · Seletor de cartões: só os cartões próximos do centro ficam ativos na placa de vídeo (antes até 3 de cada lado; agora 2), o 3D nativo não reserva camada extra por cartão e o pré-download dos outros grupos não se repete a cada troca de aba (diagnóstico: engasgos de 55–90 ms ao rolar a janela e logo depois)
   v11.6 · 14/10/2026 · Janela de nova conta: ícones dos bancos são decodificados aos poucos logo ao abrir (4 por quadro), em vez de no meio da rolagem (diagnóstico mostrou engasgos de 55–113 ms rolando a janela)
   v11.5 · 13/10/2026 · Diagnóstico de fluidez (Ajustes): medidor ligável que anota no próprio aparelho cada engasgo (≥50 ms) e travada (≥100 ms) com a tela e a ação do momento; selo no canto com fps ao vivo e relatório copiável; desligado não roda nada
