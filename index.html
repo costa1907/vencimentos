@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='11.4';
+(function(){var V='11.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -540,6 +540,14 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
 body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
+/* diagnóstico de fluidez */
+.dgb{position:fixed;z-index:200;left:10px;top:calc(env(safe-area-inset-top,0px) + 6px);font:600 11px/1 var(--fb);color:#d8ffe6;background:rgba(10,40,25,.82);border:1px solid rgba(80,220,140,.5);border-radius:99px;padding:6px 9px;pointer-events:auto;transition:background .2s}
+.dgb b{font-weight:800}.dgb i{font-style:normal;color:#ffb3b3}.dgb.bad{background:rgba(120,20,20,.9)}
+.dgo{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.dgp{width:100%;max-width:560px;max-height:82dvh;overflow:auto;background:var(--p1,#14171f);border-radius:22px 22px 0 0;padding:16px 16px calc(env(safe-area-inset-bottom,0px) + 16px);color:var(--tx,#eef0f7)}
+.dgp h3{margin:0 0 10px;font:700 17px var(--fd)}
+.dgp pre{white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospace,Menlo,monospace;margin:0 0 12px;-webkit-user-select:text;user-select:text}
+.dga{display:flex;gap:8px}.dga button{flex:1;height:44px;border-radius:14px;border:1px solid var(--line2,#333);background:var(--card2,#222);color:inherit;font:600 14px var(--fb)}
 .toast:not(.show){backdrop-filter:none;-webkit-backdrop-filter:none}
 /* brilho de fundo do topo: 2 ciclos e para (não fica gastando GPU/bateria parado) */
 .hero::before{animation-iteration-count:2}
@@ -565,7 +573,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v11.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v11.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -665,7 +673,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='11.4';
+const VERSION='11.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1214,12 +1222,14 @@ function renderSet(){
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
+   (window.__diag?window.__diag.card():'')+
    '<div class="card"><h3>Memória de imagens</h3><div class="cap">Apaga as imagens guardadas no aparelho (ícones e cartões) e baixa tudo de novo, como na primeira vez. Seus lançamentos e dados <b>não</b> são apagados.</div><button class="act" id="bclr">Limpar memória e recarregar</button><button class="act" id="bchk">Verificar arquivos de imagem</button><div class="cap" id="bchkr" style="margin:10px 0 0"></div></div>'+
    '<div class="card"><h3>Dados</h3><div class="cap">'+S.bills.length+(S.bills.length===1?' conta cadastrada':' contas cadastradas')+' neste aparelho. O aplicativo da tela de início tem os próprios dados, separados do Safari.</div><button class="act danger" id="bwipe">Apagar tudo</button></div>'+
    '<p class="hint" style="text-align:center;margin-top:22px">Sobrou! v'+VERSION+'</p>';
   const thSync=()=>{const c=TH.cur;$$('#swb .swc').forEach(b=>b.classList.toggle('on',+b.dataset.b===c[0]));$$('#swa .swc').forEach(b=>b.classList.toggle('on',+b.dataset.a===c[1]));$$('#thm .tp').forEach(b=>{const p=TH.PR[+b.dataset.pr];b.classList.toggle('on',p[1]===c[0]&&p[2]===c[1])})};
   thSync();
   if(window.__acc)window.__acc.bind();
+  if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
@@ -1534,7 +1544,7 @@ $('#fc').addEventListener('click',e=>{
   $('#ps').value='';renderProv();syncForm();
 });
 $('#ps').addEventListener('input',renderProv);
-document.addEventListener('selectstart',e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest('input,textarea,[contenteditable]'))return;e.preventDefault()});
+document.addEventListener('selectstart',e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest('input,textarea,[contenteditable],.dgp pre'))return;e.preventDefault()});
 document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.closest('input,textarea'))return;e.preventDefault()});
 (function(){
   const vv=window.visualViewport;
@@ -1965,6 +1975,7 @@ document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.c
 document.addEventListener('pointermove',e=>{if(ccHeld&&e.pointerType!=='touch')ccTilt(ccHeld,e)},{passive:true});
 ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,ccRelease,{passive:true}));
 
+window.VERSION_STR=VERSION;window.__diagF=()=>{try{const c=CAT[F&&F.cat];let t=c?c.l:'';if(F&&F.prov&&PROV[F.prov])t+=' · '+PROV[F.prov].n;if(F&&F.cat==='cartao'&&CF)t+=' ('+(GLAB[CF]||CF)+')';return t}catch(e){return ''}};
 window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
   put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
@@ -2252,6 +2263,109 @@ setTab('home');
   }
   /* o tema também sobe para a nuvem */
   if(window.THEME&&THEME.set){const o=THEME.set;THEME.set=function(){const r=o.apply(this,arguments);if(window.__sync)window.__sync();return r}}
+})();
+
+/* ---------- Diagnóstico de fluidez (Ajustes → Diagnóstico) ----------
+   Mede no próprio aparelho cada quadro que demorou a aparecer, com a tela e a ação do momento.
+   Desligado, não roda nada. */
+(function(){
+  const K='sobrou.diag',KL='sobrou.diaglog';
+  let on=false,raf=0,last=0,ev=[],frames=[],lastAct={t:0,a:''},badge=null,sec={n:0,t0:0},fpsNow=0,startT=0,tot=0,totInt=0;
+  try{on=localStorage.getItem(K)==='1';ev=JSON.parse(localStorage.getItem(KL)||'[]')||[]}catch(e){ev=[]}
+  const $=s=>document.querySelector(s);
+  function scr(){
+    const sh=$('#sheet');
+    if(sh&&!sh.hidden&&sh.classList.contains('open')){
+      const cat=(window.__diagF&&window.__diagF())||'';return 'Janela'+(cat?' · '+cat:'');
+    }
+    const t=document.querySelector('.tab.on');return t?t.textContent.trim():'?';
+  }
+  function act(a){lastAct={t:performance.now(),a:a}}
+  function where(el){
+    if(!el||el===document||el===window||el===document.documentElement||el===document.body)return 'página';
+    if(el.closest){
+      if(el.closest('#cm'))return 'carrossel do seletor';
+      if(el.closest('.cards'))return 'carrossel da tela inicial';
+      if(el.closest('#pg'))return 'ícones de bancos';
+      if(el.closest('#panel'))return 'janela';
+    }
+    return 'página';
+  }
+  const onScroll=e=>act('rolando '+where(e.target));
+  const onTouch=e=>act('toque em '+where(e.target));
+  const onVis=()=>{if(!document.hidden){act('voltou do segundo plano');last=0}};
+  function loop(t){
+    raf=requestAnimationFrame(loop);
+    if(document.hidden){last=0;return}
+    if(last){
+      const d=t-last;frames.push(d);if(frames.length>240)frames.shift();
+      tot++;sec.n++;
+      const busy=t-lastAct.t<1200;
+      if(busy)totInt++;
+      if(d>=50){
+        const e={h:new Date().toLocaleTimeString('pt-BR'),ms:Math.round(d),tela:scr(),acao:busy?lastAct.a:'parado'};
+        ev.push(e);if(ev.length>300)ev.shift();
+        if(badge){badge.classList.add('bad');setTimeout(()=>badge&&badge.classList.remove('bad'),400)}
+      }
+    }
+    last=t;
+    if(t-sec.t0>=1000){fpsNow=Math.round(sec.n*1000/(t-sec.t0||1));sec={n:0,t0:t};paint()}
+  }
+  function paint(){
+    if(!badge)return;
+    const n=ev.length,b=ev.filter(x=>x.ms>=100).length;
+    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'');
+  }
+  function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
+  function start(){
+    if(raf)return;startT=Date.now();
+    document.addEventListener('scroll',onScroll,{capture:true,passive:true});
+    document.addEventListener('touchstart',onTouch,{capture:true,passive:true});
+    document.addEventListener('visibilitychange',onVis);
+    window.addEventListener('pagehide',save);
+    badge=document.createElement('button');badge.type='button';badge.className='dgb';badge.onclick=show;document.body.appendChild(badge);
+    sec={n:0,t0:performance.now()};last=0;raf=requestAnimationFrame(loop);paint();
+  }
+  function stop(){
+    cancelAnimationFrame(raf);raf=0;
+    document.removeEventListener('scroll',onScroll,{capture:true});
+    document.removeEventListener('touchstart',onTouch,{capture:true});
+    document.removeEventListener('visibilitychange',onVis);
+    window.removeEventListener('pagehide',save);
+    if(badge){badge.remove();badge=null}save();
+  }
+  function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
+  function report(){
+    const by={};ev.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
+    let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
+    t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
+    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+ev.length+' · travadas (≥100 ms): '+ev.filter(x=>x.ms>=100).length+'\n\n';
+    t+='POR TELA E AÇÃO (vezes · pior · média)\n';
+    keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
+    t+='\nÚLTIMOS 40\n';
+    ev.slice(-40).reverse().forEach(e=>{t+=e.h+' · '+e.ms+' ms · '+e.tela+' · '+e.acao+'\n'});
+    return t;
+  }
+  function show(){
+    let o=$('#dgo');if(o)o.remove();
+    o=document.createElement('div');o.id='dgo';o.className='dgo';
+    const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
+      const a=b.dataset.a;
+      if(a==='x')o.remove();
+      if(a==='z'){ev=[];save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
+      if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+    };
+    document.body.appendChild(o);
+  }
+  window.__diag={
+    card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
+    bind(){const b=$('#bdiag');if(b)b.onclick=()=>{on=!on;try{localStorage.setItem(K,on?'1':'0')}catch(e){}if(on)start();else stop();b.textContent=on?'Desligar diagnóstico':'Ligar diagnóstico';window.__app&&window.__app.toast(on?'Diagnóstico ligado: use o app normalmente':'Diagnóstico desligado')};
+      const r=$('#bdiagr');if(r)r.onclick=show}
+  };
+  if(on)start();
 })();
 
 /* Abertura: aparece só ao abrir o app (não a cada volta ao app); toque para pular */
