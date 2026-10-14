@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.1';
+(function(){var V='13.2';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -296,11 +296,6 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .fld.sm{height:42px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .imgrow{display:flex;gap:8px;align-items:center;margin-top:10px}
 .imgrow .act{margin:0;height:42px;font-size:13px;flex:1}
-.pvw{position:relative;flex:none;width:40px;height:40px}
-.pvw>.pv{width:40px;height:40px}
-.pvc{position:absolute;right:-6px;bottom:-6px;width:21px;height:21px;border-radius:8px;overflow:hidden;background:var(--card2);box-shadow:0 0 0 2.5px var(--card),0 3px 8px -2px rgba(0,0,0,.7);display:grid;place-items:center}
-.pvc .pv,.pvc .ico{width:100%;height:100%;border-radius:0;border:0;font-size:8px;box-shadow:none}
-.pvc .ico svg{width:13px;height:13px}
 .pprev img{display:block;width:42px;height:42px;border-radius:12px;object-fit:cover;border:1px solid var(--line2)}
 .ccprev{margin:16px auto 0;max-width:290px}
 .cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
@@ -581,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.1</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.2</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -686,7 +681,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.1';
+const VERSION='13.2';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -766,12 +761,12 @@ L('seguro',[P('portoseguro','Porto Seguro','#0A5BB5','PS'),P('azul','Azul Seguro
 L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im'),P('garagem','Garagem','#ff9a5c','Ga')]);
 L('educacao',[P('uninove','Uninove','#1B4F9C','Un'),P('faculdade','Faculdade','#a3e635','Fa'),P('posgraduacao','Pós-graduação','#a3e635','Pós'),P('curso','Curso','#a3e635','Cu'),P('cursoonline','Curso online','#a3e635','On'),P('idiomas','Idiomas','#a3e635','Id'),P('escola','Escola','#a3e635','Es')]);
 L('transferencia',BK);
-L('tag',[P('veloe','Veloe','#5ebfd1','Ve'),P('semparar','Sem Parar','#692454','SP'),P('tagoutra','Outra tag','#ffd166','Tg'),P('pedagio','Pedágio','#ffd166','Pd')]);
+L('tag',[P('veloe','Veloe','#5ebfd1','Ve'),P('semparar','Sem Parar','#692454','SP'),'portoseguro','bb','bradesco','santander','caixa',P('pedagio','Pedágio','#ffd166','Pd')]);
 Object.assign(PROV.kmv,{al:'kmv km de vantagens ipiranga'});
 L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('combustivel','Combustível','#ffd166','Cb')]);
 /* palavras extras para a busca (sem acento): o que a pessoa costuma digitar */
 Object.assign(PROV.semparar,{al:'semparar tag ipva'});Object.assign(PROV.veloe,{al:'tag pedagio'});Object.assign(PROV.shellbox,{al:'shell combustivel posto'});
-Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.tagoutra,{al:'conectcar move mais taggy c6 tag onda livre'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.combustivel,{al:'gasolina etanol diesel posto abastecimento'});
+Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.combustivel,{al:'gasolina etanol diesel posto abastecimento'});
 L('impostos',[P('ipva','IPVA','#d4a373','IPVA'),'iptu',P('licenciamento','Licenciamento','#d4a373','Lic'),P('das','DAS · MEI','#d4a373','DAS'),P('irpf','Imposto de Renda','#d4a373','IR'),P('multa','Multa','#d4a373','Mu'),P('detran','Detran','#d4a373','De')]);
 L('outros',[P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
 L('boleto',BK);
@@ -789,13 +784,13 @@ L('impostos',NEW([['cnh','CNH do Brasil','#1F7A3F','CNH']]));
 L('outros',NEW([['kiwify','Kiwify','#3FA06E','Ki']]).concat(['serasa','livelo']));
 
 /* ícones das empresas: arquivos i-<id>.webp na mesma pasta do index.html */
-const LOGOS={"veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","tagoutra":"i-tagoutra.webp","pedagio":"i-pedagio.webp","combustivel":"i-combustivel.webp","aluguel":"i-aluguel.webp","condominio":"i-condominio.webp","iptu":"i-iptu.webp","imobiliaria":"i-imobiliaria.webp","garagem":"i-garagem.webp","faculdade":"i-faculdade.webp","posgraduacao":"i-posgraduacao.webp","curso":"i-curso.webp","cursoonline":"i-cursoonline.webp","idiomas":"i-idiomas.webp","escola":"i-escola.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
+const LOGOS={"veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
 /* IV: só vira algo depois de "Limpar memória" (Ajustes): força baixar tudo de novo, como na 1ª vez */
 const IV=(()=>{try{return sessionStorage.getItem('imgv')||''}catch(e){return ''}})();
 const imgU=f=>IV?f+'?v='+IV:f;
 const IMGCACHE='cartoes-13';
-function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];return /^i-[a-z0-9_-]+\.webp$/.test(v||'')?imgU(v):''}
-const ICOK={};
+function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];if(!/^i-[a-z0-9_-]+\.webp$/.test(v||'')||ICMISS[v])return '';return imgU(v)}
+const ICOK={},ICMISS={};
 function badge(p){
   const g=logo(p.id);
   if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
@@ -946,6 +941,7 @@ function tplFor(o,tier,br){
   if(o.model){const m=MODELS.find(x=>x.id===o.model&&x.provs.indexOf(o.prov)>-1);if(m)return TPLS.find(x=>x.m===o.model&&x.p===o.prov)||TPLS.find(x=>x.m===o.model)||null}
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
+document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')&&t.dataset.r){const m=(t.getAttribute('src')||'').split('?')[0].match(/(i-[a-z0-9_-]+\.webp)$/);if(m)ICMISS[m[1]]=1}},true);
 document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
@@ -964,9 +960,8 @@ function lead(b){
   if(okImg(b.img)) return '<div class="pv img"><img alt="" src="'+b.img+'"></div>';
   if(b.cat==='cartao') return cardArt(b,true);
   const p=PROV[b.prov], bk=b.bank&&PROV[b.bank];
-  /* moradia paga por transferência: ícone do banco, com a miniatura do item (ex.: Garagem) no canto */
-  if(bk&&BANKCATS.indexOf(b.cat)>-1) return '<div class="pvw">'+badge(bk)+'<span class="pvc">'+(p?badge(p):'<div class="ico" style="--c:'+c.c+'">'+svg(b.cat)+'</div>')+'</span></div>';
-  if(b.cat==='transferencia'&&p) return '<div class="pvw">'+badge(p)+'<span class="pvc"><div class="ico" style="--c:'+c.c+'">'+svg('transferencia')+'</div></span></div>';
+  /* pago por transferência: mostra só o ícone do banco escolhido */
+  if(bk&&BANKCATS.indexOf(b.cat)>-1) return badge(bk);
   if(p) return badge(p);
   return '<div class="ico" style="--c:'+c.c+'">'+svg(b.cat in IC?b.cat:'outros')+'</div>';
 }
