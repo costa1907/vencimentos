@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v11.4 · 13/10/2026 · Janela de nova conta/edição: depois de aberta, a tela de trás (tela inicial, carrossel 3D, abas e botão +) deixa de ser desenhada, liberando memória e GPU; volta a aparecer antes da janela descer ou ao arrastá-la para baixo
   v11.3 · 13/10/2026 · Santander Unlimited corrigido volta ao nome original c-santander-unlimited.webp (substitui o arquivo com contorno); cache de imagens cartoes-12 para o iPhone pegar a imagem nova
   v11.2 · 13/10/2026 · Santander Unlimited: removido o contorno cinza das bordas (sobra do fundo branco da imagem original); refeito do original sem perdas em c-santander-unlimited2.webp
   v11.1 · 13/10/2026 · Santander Unique Visa Infinite e Elite Visa Platinum refeitos a partir dos Unique/Elite Mastercard (melhor qualidade), trocando só a bandeira (novos arquivos c-santander-uniquevisa.webp e c-santander-elitevisa.webp)
