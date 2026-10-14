@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.7';
+(function(){var V='12.8';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -542,7 +542,7 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
 body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
-.jsnap .cpk,.jsnap .cards,.cpk.jsm,.cards.jsm{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
+.jsnap .cpk,.jsnap .cards{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
 /* diagnóstico de fluidez */
 .dgb{position:fixed;z-index:200;left:10px;top:calc(env(safe-area-inset-top,0px) + 6px);font:600 11px/1 var(--fb);color:#d8ffe6;background:rgba(10,40,25,.82);border:1px solid rgba(80,220,140,.5);border-radius:99px;padding:6px 9px;pointer-events:auto;transition:background .2s}
 .dgb b{font-weight:800}.dgb i{font-style:normal;color:#ffb3b3}.dgb.bad{background:rgba(120,20,20,.9)}
@@ -576,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.7</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.8</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -676,7 +676,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.7';
+const VERSION='12.8';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1123,41 +1123,27 @@ function snapper(tr,done){
     tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-3,Math.min(s0+3,tgt))));
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
-  if(tr._js==null)tr._js=JSNAP;
-  tr.addEventListener('touchstart',e=>{if(!tr._js)return;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchstart',e=>{stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
-    if(!tr._js)return;const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
+    const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy))dir='h';else if(Math.abs(dy)>6)dir='v';else return}
     if(dir!=='h')return;
     sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();
     tr.scrollLeft=sl0-dx;
   },{passive:true});
-  tr.addEventListener('touchend',()=>{if(tr._js&&dir==='h')release()},{passive:true});
-  tr.addEventListener('touchcancel',()=>{if(tr._js&&dir==='h')release()},{passive:true});
-  tr._snapTo=function(i){if(!tr._js){const it=tr.children[i];if(it)try{tr.scrollTo({left:Math.max(0,it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2),behavior:'smooth'})}catch(e){}return}const cx=centers();if(cx[i]==null)return;const W=tr.clientWidth;animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),0)};
+  tr.addEventListener('touchend',()=>{if(dir==='h')release()},{passive:true});
+  tr.addEventListener('touchcancel',()=>{if(dir==='h')release()},{passive:true});
+  tr._snapTo=function(i){const cx=centers();if(cx[i]==null)return;const W=tr.clientWidth;animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),0)};
 }
-/* Se o encaixe do iPhone começar a falhar seguido (acontece depois que o app volta do segundo plano),
-   o carrossel passa sozinho para o encaixe do app até o app ser aberto de novo. */
-const SNAPFAIL=[];
-function snapFailed(tr,off){
-  if(Math.abs(off)<12||tr._js)return;
-  const n=Date.now();SNAPFAIL.push(n);while(SNAPFAIL.length&&n-SNAPFAIL[0]>20000)SNAPFAIL.shift();
-  if(SNAPFAIL.length>=2){
-    [$('#cm'),document.querySelector('#list .cards')].forEach(el=>{if(el){el._js=true;el.classList.add('jsm')}});
-    JSMODE=true;window.__diagNote&&window.__diagNote('encaixe do iPhone falhando: carrossel passou para o encaixe do app');
-  }
-}
-let JSMODE=false;
 function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
   let raf=0,idle=0,tch=0,fixd=0;
   const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
-    if(tr._js)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>2&&!fixd){fixd=1;snapFailed(tr,off);window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
+    if(tr._snap)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr);
-  if(JSMODE){tr._js=true;tr.classList.add('jsm')}
-  snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
+  if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
@@ -1470,11 +1456,11 @@ function cpLabel(bi){
   function settle(){
     if(tch)return;
     tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
-    if(!tr._js){
+    if(!JSNAP){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>2&&!fixd){fixd=1;snapFailed(tr,off);window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1487,7 +1473,7 @@ function cpLabel(bi){
     clearTimeout(idle);idle=setTimeout(settle,140);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
-  snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
+  if(JSNAP)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
 })();
@@ -1556,7 +1542,7 @@ function syncForm(){
           cm.innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');}}
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
          setTimeout(()=>{try{ms.forEach(x=>{if(lst.indexOf(x)>=0)return;const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s&&!PREF.has(t.s)){PREF.add(t.s);fetch(imgU(t.s),{priority:'low'}).catch(()=>{})}})}catch(e){}},2500);
-         {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0;if(t0._gone)requestAnimationFrame(()=>snapFix('carrossel montado após segundo plano',t0))}
+         {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0}
          CK=key;CSEL='';
        }else{$$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===CF))}
        const tr=$('#cm');
@@ -1606,7 +1592,6 @@ function openSheet(id,key){
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
   document.body.style.overflow='hidden';pn.scrollTop=0;
   renderProv();syncForm();
-  if(SNAPGONE||$('#cm')._gone)requestAnimationFrame(()=>snapFix('janela aberta após segundo plano',$('#cm')));
   if(!b)setTimeout(()=>{const a=$('#fa');a.focus();const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
@@ -1978,28 +1963,9 @@ $('#extra').addEventListener('click',function(e){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 /* ao voltar para o app, atualiza o "hoje" */
 let LASTDAY=new Date().toDateString();
-/* Depois que o app volta do segundo plano, o iPhone perde os pontos de encaixe dos carrosséis (o cartão passa a parar
-   fora do centro em quase todo deslize — visto no diagnóstico). Reconstruir a rolagem dos carrosséis devolve o encaixe.
-   Feito ao voltar ao app e ao abrir a janela; custa um quadro, uma vez. */
-let SNAPGONE=false;
-function snapFix(why,only){
-  /* inclui o carrossel da janela mesmo vazio: o elemento de rolagem dele é o mesmo desde que o app abriu */
-  const L=(only?[only]:[$('#cm'),document.querySelector('#list .cards')]).filter(Boolean);
-  if(!L.length)return;
-  L.forEach(el=>{el._gone=false});
-  const keep=L.map(el=>el.scrollLeft);
-  L.forEach(el=>{el.style.scrollSnapType='none';el.style.overflowX='hidden'});
-  void document.body.offsetHeight;
-  requestAnimationFrame(()=>{L.forEach((el,i)=>{el.style.overflowX='';el.style.scrollSnapType='';el.scrollLeft=keep[i];el._k=''});
-    try{if($('#cm').children.length)cpLayout()}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}
-    if(why)window.__diagNote&&window.__diagNote('encaixe refeito ('+why+')')});
-  SNAPGONE=false;
-}
-const markGone=()=>{SNAPGONE=true;const c=$('#cm');if(c)c._gone=true};
-['pagehide','blur'].forEach(n=>window.addEventListener(n,markGone));
-document.addEventListener('visibilitychange',()=>{if(document.hidden){markGone();return}snapFix('voltou ao app')});
-window.addEventListener('pageshow',e=>{if(e.persisted||SNAPGONE)snapFix('voltou ao app')});
-window.addEventListener('focus',()=>{if(SNAPGONE)snapFix('voltou ao app')});
+/* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
+  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -2412,7 +2378,7 @@ setTab('home');
       tot++;sec.n++;
       const busy=t-lastAct.t<1200;
       if(busy)totInt++;
-      if(d>=50&&d<3000){
+      if(d>=50){
         const e={h:new Date().toLocaleTimeString('pt-BR'),ms:Math.round(d),tela:scr(),acao:busy?lastAct.a:'parado'};
         ev.push(e);if(ev.length>300)ev.shift();
         if(badge){badge.classList.add('bad');setTimeout(()=>badge&&badge.classList.remove('bad'),400)}
@@ -2423,7 +2389,7 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&/completado|corrigido/.test(x.acao)).length;
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.length-n;
     badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
@@ -2446,7 +2412,7 @@ setTab('home');
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&/completado|corrigido/.test(x.acao));const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms);const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
