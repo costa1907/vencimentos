@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.9';
+(function(){var V='13.0';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -296,6 +296,11 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .fld.sm{height:42px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .imgrow{display:flex;gap:8px;align-items:center;margin-top:10px}
 .imgrow .act{margin:0;height:42px;font-size:13px;flex:1}
+.pvw{position:relative;flex:none;width:40px;height:40px}
+.pvw>.pv{width:40px;height:40px}
+.pvc{position:absolute;right:-6px;bottom:-6px;width:21px;height:21px;border-radius:8px;overflow:hidden;background:var(--card2);box-shadow:0 0 0 2.5px var(--card),0 3px 8px -2px rgba(0,0,0,.7);display:grid;place-items:center}
+.pvc .pv,.pvc .ico{width:100%;height:100%;border-radius:0;border:0;font-size:8px;box-shadow:none}
+.pvc .ico svg{width:13px;height:13px}
 .pprev img{display:block;width:42px;height:42px;border-radius:12px;object-fit:cover;border:1px solid var(--line2)}
 .ccprev{margin:16px auto 0;max-width:290px}
 .cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
@@ -576,7 +581,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.9</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.0</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -628,6 +633,11 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
     <div class="pgrid" id="pg"></div>
     <div class="imgrow"><span class="pprev" id="pprev"></span><button type="button" class="act" id="pimg">Usar minha foto ou logo</button><button type="button" class="act danger" id="pdel" hidden style="flex:none;width:auto;padding:0 14px">Remover</button></div>
     <input type="file" id="pfile" accept="image/*" hidden>
+    <div id="bkx" hidden>
+      <div class="lbl">Pago por transferência para</div>
+      <p class="phint" style="margin-bottom:8px">Opcional. Escolha o banco e o ícone dele aparece na conta.</p>
+      <div class="pgrid" id="bkg"></div>
+    </div>
     <div id="ccx" hidden>
       <div class="ccprev" id="ccprev"></div>
       <div class="lbl" id="cml" hidden>Escolha o cartão</div>
@@ -676,7 +686,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.9';
+const VERSION='13.0';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -710,12 +720,14 @@ const IC={
  compras:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
  viagem:'<path d="M21 3L3 10.5l7 2.5 2.5 7z"/><path d="M10 13l11-10"/>',
  transporte:'<path d="M5 16v-5l2-5h10l2 5v5M3 16h18M7 16v2M17 16v2"/><circle cx="8" cy="13" r=".9"/><circle cx="16" cy="13" r=".9"/>',
+ educacao:'<path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.8V16c0 1.6 2.5 3 5.5 3s5.5-1.4 5.5-3v-4.2M21.5 9.5V15"/>',
+ transferencia:'<path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/>',
  outros:'<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>'
 };
 const CAT={
  boleto:{l:'Boleto',c:'var(--gold)'}, cartao:{l:'Cartão',c:'#a99cff'}, financ:{l:'Financiam.',c:'#5fa8ff'}, consorcio:{l:'Consórcio',c:'#2fd3bd'},
- assinatura:{l:'Assinatura',c:'#f27aa8'}, moradia:{l:'Moradia',c:'#ff9a5c'}, servicos:{l:'Luz·Água·Gás',c:'#7bd88f'},
- telecom:{l:'Internet',c:'#64d2ff'}, saude:{l:'Saúde',c:'#ff6b8a'}, seguro:{l:'Seguro',c:'#8fb8ff'}, impostos:{l:'Impostos',c:'#d4a373'},
+ assinatura:{l:'Assinatura',c:'#f27aa8'}, moradia:{l:'Moradia',c:'#ff9a5c'}, transferencia:{l:'Transferência',c:'#b983ff'}, servicos:{l:'Luz·Água·Gás',c:'#7bd88f'},
+ telecom:{l:'Internet',c:'#64d2ff'}, saude:{l:'Saúde',c:'#ff6b8a'}, seguro:{l:'Seguro',c:'#8fb8ff'}, educacao:{l:'Educação',c:'#a3e635'}, impostos:{l:'Impostos',c:'#d4a373'},
  alimentacao:{l:'Alimentação',c:'#ff7a59'}, compras:{l:'Compras',c:'#e879f9'}, viagem:{l:'Viagem',c:'#38bdf8'}, transporte:{l:'Transporte',c:'#e6c84b'}, outros:{l:'Outros',c:'#9aa3b8'}
 };
 const svg=k=>'<svg viewBox="0 0 24 24">'+IC[k]+'</svg>';
@@ -750,9 +762,11 @@ L('servicos',[P('sabesp','Sabesp','#0066B3','Sb'),P('copasa','Copasa','#0071BC',
 L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('algar','Algar','#F58220','Al'),P('brisanet','Brisanet','#00A859','Br'),P('desktop','Desktop','#E4002B','De'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
 L('saude',[P('unimed','Unimed','#00995D','Un'),P('amil','Amil','#0072CE','Am'),P('bradescosaude','Bradesco Saúde','#CC092F','BS'),P('sulamerica','SulAmérica','#F58220','Su'),P('hapvida','Hapvida','#00A3E0','Hv'),P('notredame','NotreDame','#0067B1','ND'),P('portosaude','Porto Saúde','#0A5BB5','PS'),P('smartfit','Smart Fit','#FFC20E','SF'),P('bluefit','Bluefit','#0072CE','Bf'),P('bodytech','Bodytech','#E4002B','Bt'),P('dentista','Dentista','#ff6b8a','De'),P('odonto','Odonto Empresas','#1B3A8C','Od'),P('wellhub','Wellhub','#E8556D','Wh')]);
 L('seguro',[P('portoseguro','Porto Seguro','#0A5BB5','PS'),P('azul','Azul Seguros','#0057B8','Az'),P('tokio','Tokio Marine','#E4002B','TM'),P('allianz','Allianz','#003781','Al'),P('hdi','HDI','#00A859','HDI'),P('mapfre','Mapfre','#E4002B','Mp'),P('liberty','Liberty','#0057B8','Lb'),P('segvida','Seguro de vida','#8fb8ff','SV'),P('segauto','Seguro do carro','#8fb8ff','SA'),P('segresid','Seguro residencial','#8fb8ff','SR')]);
-L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im')]);
+L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im'),P('garagem','Garagem','#ff9a5c','Ga')]);
+L('educacao',[P('uninove','Uninove','#1B4F9C','Un'),P('faculdade','Faculdade','#a3e635','Fa'),P('posgraduacao','Pós-graduação','#a3e635','Pós'),P('curso','Curso','#a3e635','Cu'),P('cursoonline','Curso online','#a3e635','On'),P('idiomas','Idiomas','#a3e635','Id'),P('escola','Escola','#a3e635','Es')]);
+L('transferencia',BK);
 L('impostos',[P('ipva','IPVA','#d4a373','IPVA'),'iptu',P('licenciamento','Licenciamento','#d4a373','Lic'),P('das','DAS · MEI','#d4a373','DAS'),P('irpf','Imposto de Renda','#d4a373','IR'),P('multa','Multa','#d4a373','Mu'),P('detran','Detran','#d4a373','De')]);
-L('outros',[P('escola','Escola','#9aa3b8','Es'),P('faculdade','Faculdade','#9aa3b8','Fa'),P('curso','Curso','#9aa3b8','Cu'),P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
+L('outros',[P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
 L('boleto',BK);
 L('financ',BK.concat(VEH));
 L('consorcio',['portoseguro','honda','itau','bradesco','santander','bb','caixa',P('embracon','Embracon','#0B3D91','Em'),P('rodobens','Rodobens','#E4002B','Ro'),P('ademicon','Ademicon','#00A0DF','Ad'),'magalu',P('yamaha','Yamaha','#E2231A','Ya'),'vw','toyota',P('hs','HS Consórcios','#E30613','HS')]);
@@ -768,7 +782,7 @@ L('impostos',NEW([['cnh','CNH do Brasil','#1F7A3F','CNH']]));
 L('outros',NEW([['kiwify','Kiwify','#3FA06E','Ki']]).concat(['serasa','livelo']));
 
 /* ícones das empresas: arquivos i-<id>.webp na mesma pasta do index.html */
-const LOGOS={"abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
+const LOGOS={"aluguel":"i-aluguel.webp","condominio":"i-condominio.webp","iptu":"i-iptu.webp","imobiliaria":"i-imobiliaria.webp","garagem":"i-garagem.webp","faculdade":"i-faculdade.webp","posgraduacao":"i-posgraduacao.webp","curso":"i-curso.webp","cursoonline":"i-cursoonline.webp","idiomas":"i-idiomas.webp","escola":"i-escola.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
 /* IV: só vira algo depois de "Limpar memória" (Ajustes): força baixar tudo de novo, como na 1ª vez */
 const IV=(()=>{try{return sessionStorage.getItem('imgv')||''}catch(e){return ''}})();
 const imgU=f=>IV?f+'?v='+IV:f;
@@ -942,7 +956,10 @@ function lead(b){
   const c=CAT[b.cat]||CAT.outros;
   if(okImg(b.img)) return '<div class="pv img"><img alt="" src="'+b.img+'"></div>';
   if(b.cat==='cartao') return cardArt(b,true);
-  const p=PROV[b.prov];
+  const p=PROV[b.prov], bk=b.bank&&PROV[b.bank];
+  /* moradia paga por transferência: ícone do banco, com a miniatura do item (ex.: Garagem) no canto */
+  if(bk&&BANKCATS.indexOf(b.cat)>-1) return '<div class="pvw">'+badge(bk)+'<span class="pvc">'+(p?badge(p):'<div class="ico" style="--c:'+c.c+'">'+svg(b.cat)+'</div>')+'</span></div>';
+  if(b.cat==='transferencia'&&p) return '<div class="pvw">'+badge(p)+'<span class="pvc"><div class="ico" style="--c:'+c.c+'">'+svg('transferencia')+'</div></span></div>';
   if(p) return badge(p);
   return '<div class="ico" style="--c:'+c.c+'">'+svg(b.cat in IC?b.cat:'outros')+'</div>';
 }
@@ -1367,7 +1384,9 @@ function togglePaid(id,key,x,y){
 
 /* ---------- cadastro ---------- */
 let F=null, EDIT=null;
-const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro'];
+const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro','educacao','transferencia'];
+const BANKCATS=['moradia'];   /* tipos que aceitam "pago por transferência para o banco X" */
+const AN=(p,cat)=>cat==='transferencia'?'Transferência '+p.n:p.n;
 const VARIAVEL=['cartao','servicos','telecom'];
 const SPEND=['alimentacao','compras','viagem','transporte'];
 function autoCat(){
@@ -1395,6 +1414,7 @@ function provBar(searching){
   ph.innerHTML='Segure um ícone e arraste para onde quiser.'+(cu?' <button type="button" id="prst">Voltar para A–Z</button>':'');
 }
 function renderProv(){
+  {const pl=$('#pl');if(pl)pl.textContent=F.cat==='transferencia'?'Para qual banco?':'Quem é?'}
   const q=($('#ps').value||'').trim().toLowerCase();
   let ids;
   if(q){ids=Object.keys(PROV).filter(id=>PROV[id].n.toLowerCase().indexOf(q)>-1)}
@@ -1410,6 +1430,20 @@ function renderProv(){
   $('#pg').innerHTML=g;
   icoDecode();
 }
+/* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
+let BKB=false;
+function renderBank(){
+  const show=BANKCATS.indexOf(F.cat)>-1;
+  $('#bkx').hidden=!show;
+  if(!show)return;
+  if(!BKB){
+    BKB=true;
+    $('#bkg').innerHTML='<div role="button" class="pt" data-b=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Nenhum</span></div>'+
+      BK.slice().sort(AZ).map(id=>{const p=PROV[id];return '<div role="button" class="pt" data-b="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span></div>'}).join('');
+  }
+  $$('#bkg .pt').forEach(x=>x.classList.toggle('on',x.dataset.b===(F.bank||'')));
+}
+$('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';renderBank()});
 /* decodifica os ícones aos poucos logo que a janela abre (4 por quadro), para o iPhone não decodificar no meio da rolagem */
 const ICDEC=new Set();let ICJOB=0;
 function icoDecode(){
@@ -1500,6 +1534,7 @@ function cpLoad(c){
 function cpNums(){const t='•••• '+(F.last4||'');$$('#cm .cc-num').forEach(n=>{if(n.textContent!==t)n.textContent=t})}
 function syncForm(){
   $('#fa').value=fmtAmt(F.cents);
+  renderBank();
   const sp=F.mode==='spent';
   $('#fm').hidden=!!EDIT;
   $$('#fm button').forEach(b=>b.classList.toggle('on',b.dataset.m===F.mode));
@@ -1573,13 +1608,13 @@ function syncForm(){
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
-    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?PROV[b.prov].n:'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
     $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
@@ -1618,7 +1653,7 @@ $('#fc').addEventListener('click',e=>{
   if(F.prov&&(LIST[F.cat]||[]).indexOf(F.prov)<0){
     if($('#fn').value===F.auto)$('#fn').value='';
     F.auto='';F.prov='';
-  }
+  }else if(F.prov&&PROV[F.prov]&&$('#fn').value===F.auto){const nn=AN(PROV[F.prov],F.cat);$('#fn').value=nn;F.auto=nn}
   $('#ps').value='';renderProv();syncForm();
 });
 $('#ps').addEventListener('input',renderProv);
@@ -1770,7 +1805,7 @@ $('#pg').addEventListener('click',e=>{
 /* escolhe a empresa (nome automático + seleção); usado no toque e ao começar a arrastar */
 function setProv(id){
   const p=PROV[id], fn=$('#fn');
-  if(p){if(!fn.value.trim()||fn.value===F.auto)fn.value=p.n;F.auto=p.n}
+  if(p){const an=AN(p,F.cat);if(!fn.value.trim()||fn.value===F.auto)fn.value=an;F.auto=an}
   else{if(fn.value===F.auto)fn.value='';F.auto=''}
   F.prov=id||'';
 }
@@ -1894,6 +1929,7 @@ $('#fcopy').onclick=async function(){
 };
 function putExtra(b){
   if(F.prov)b.prov=F.prov;else delete b.prov;
+  if(F.bank&&PROV[F.bank]&&BANKCATS.indexOf(F.cat)>-1)b.bank=F.bank;else delete b.bank;
   if(okImg(F.img))b.img=F.img;else delete b.img;
   if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||'';if(F.limit)b.limit=F.limit;else delete b.limit;if(F.close)b.close=F.close;else delete b.close}
   else{delete b.brand;delete b.tier;delete b.last4;delete b.limit;delete b.close}
@@ -1902,7 +1938,7 @@ $('#panel').addEventListener('submit',e=>{
   e.preventDefault();
   if(!F.cents){const a=$('#amtbox');a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');$('#fa').focus();return}
   const pv=PROV[F.prov];
-  const name=$('#fn').value.trim()||(pv?pv.n:CAT[F.cat].l), due=$('#fd').value||toISO(today0()), note=$('#fo').value.trim();
+  const name=$('#fn').value.trim()||(pv?AN(pv,F.cat):CAT[F.cat].l), due=$('#fd').value||toISO(today0()), note=$('#fo').value.trim();
   if(EDIT){
     const b=S.bills.find(v=>v.id===EDIT.id);
     if(!b){closeSheet();renderAll();toast('Esta conta não existe mais');return}
