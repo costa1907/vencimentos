@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.4';
+(function(){var V='12.5';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -576,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.4</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.5</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -676,7 +676,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.4';
+const VERSION='12.5';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1592,6 +1592,7 @@ function openSheet(id,key){
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
   document.body.style.overflow='hidden';pn.scrollTop=0;
   renderProv();syncForm();
+  if(SNAPGONE)requestAnimationFrame(()=>snapFix('janela aberta após segundo plano'));
   if(!b)setTimeout(()=>{const a=$('#fa');a.focus();const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
@@ -1963,9 +1964,25 @@ $('#extra').addEventListener('click',function(e){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 /* ao voltar para o app, atualiza o "hoje" */
 let LASTDAY=new Date().toDateString();
-/* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
-document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
-  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
+/* Depois que o app volta do segundo plano, o iPhone perde os pontos de encaixe dos carrosséis (o cartão passa a parar
+   fora do centro em quase todo deslize — visto no diagnóstico). Reconstruir a rolagem dos carrosséis devolve o encaixe.
+   Feito ao voltar ao app e ao abrir a janela; custa um quadro, uma vez. */
+let SNAPGONE=false;
+function snapFix(why){
+  const L=[$('#cm'),document.querySelector('#list .cards')].filter(el=>el&&el.children.length);
+  if(!L.length)return;
+  const keep=L.map(el=>el.scrollLeft);
+  L.forEach(el=>{el.style.scrollSnapType='none';el.style.overflowX='hidden'});
+  void document.body.offsetHeight;
+  requestAnimationFrame(()=>{L.forEach((el,i)=>{el.style.overflowX='';el.style.scrollSnapType='';el.scrollLeft=keep[i];el._k=''});
+    try{if($('#cm').children.length)cpLayout()}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}
+    if(why)window.__diagNote&&window.__diagNote('encaixe refeito ('+why+')')});
+  SNAPGONE=false;
+}
+['pagehide','blur'].forEach(n=>window.addEventListener(n,()=>{SNAPGONE=true}));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){SNAPGONE=true;return}snapFix('voltou ao app')});
+window.addEventListener('pageshow',e=>{if(e.persisted||SNAPGONE)snapFix('voltou ao app')});
+window.addEventListener('focus',()=>{if(SNAPGONE)snapFix('voltou ao app')});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -2378,7 +2395,7 @@ setTab('home');
       tot++;sec.n++;
       const busy=t-lastAct.t<1200;
       if(busy)totInt++;
-      if(d>=50){
+      if(d>=50&&d<3000){
         const e={h:new Date().toLocaleTimeString('pt-BR'),ms:Math.round(d),tela:scr(),acao:busy?lastAct.a:'parado'};
         ev.push(e);if(ev.length>300)ev.shift();
         if(badge){badge.classList.add('bad');setTimeout(()=>badge&&badge.classList.remove('bad'),400)}
@@ -2389,7 +2406,7 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.length-n;
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&/completado|corrigido/.test(x.acao)).length;
     badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
@@ -2412,7 +2429,7 @@ setTab('home');
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms);const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&/completado|corrigido/.test(x.acao));const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
