@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='11.8';
+(function(){var V='11.9';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -353,7 +353,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.mini .cc-top,.cc.mini .cc-bot,.cc.mini .cc-num{display:none}
 .cc.mini .cc-chip{width:11px;height:8px;border-radius:2px;margin-top:2px}
 .cc.mini::after{display:none}
-.cards{--cw:min(272px,76vw);display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cards::-webkit-scrollbar{display:none}
 .cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) both}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
@@ -573,7 +573,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v11.8</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v11.9</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -673,7 +673,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='11.8';
+const VERSION='11.9';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1068,7 +1068,9 @@ function limHTML(g,t){
 }
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
-const SDA=(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
+/* v11.9: giro 3D calculado pelo app (mais estável no iPhone). Para voltar ao 3D nativo, troque NATIVO3D para true */
+const NATIVO3D=false;
+const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
 function cfLayout(tr){
   const its=tr.children,n=its.length;if(!n)return -1;
@@ -1088,7 +1090,7 @@ function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
   let raf=0,idle=0,tch=0,fixd=0;
-  const settle=()=>{if(tch)return;const bi=cfLayout(tr),it=tr.children[bi];if(!it)return;
+  const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
     if(Math.abs(off)>3&&!fixd){fixd=1;try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr);
@@ -1403,7 +1405,7 @@ function cpLabel(bi){
   const tr=document.getElementById('cm');
   function settle(){
     if(tch)return;
-    const bi=cpLayout(),it=tr.children[bi];if(!it)return;
+    tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
