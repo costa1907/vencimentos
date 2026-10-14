@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.1';
+(function(){var V='12.2';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -542,6 +542,7 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
 body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
+.jsnap .cpk,.jsnap .cards{scroll-snap-type:none}
 /* diagnóstico de fluidez */
 .dgb{position:fixed;z-index:200;left:10px;top:calc(env(safe-area-inset-top,0px) + 6px);font:600 11px/1 var(--fb);color:#d8ffe6;background:rgba(10,40,25,.82);border:1px solid rgba(80,220,140,.5);border-radius:99px;padding:6px 9px;pointer-events:auto;transition:background .2s}
 .dgb b{font-weight:800}.dgb i{font-style:normal;color:#ffb3b3}.dgb.bad{background:rgba(120,20,20,.9)}
@@ -575,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.1</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.2</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -675,7 +676,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.1';
+const VERSION='12.2';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1068,12 +1069,15 @@ function limHTML(g,t){
   }
   return h+'</div>';
 }
+/* true = encaixe calculado pelo app (preciso); false = encaixe automático do iPhone */
+const JSNAP=true;
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
 /* v11.9: giro 3D calculado pelo app (mais estável no iPhone). Para voltar ao 3D nativo, troque NATIVO3D para true */
 const NATIVO3D=false;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
+if(JSNAP)document.documentElement.classList.add('jsnap');
 function cfLayout(tr){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
@@ -1088,14 +1092,56 @@ function cfLayout(tr){
   if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
+/* Encaixe próprio dos carrosséis: o dedo arrasta com a rolagem nativa (lisa); ao soltar, o app calcula o cartão pela
+   velocidade do gesto e desliza até o centro exato. Substitui o encaixe automático do iPhone, que às vezes parava no meio. */
+function snapper(tr,done){
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,on=false;
+  const ease=k=>1-Math.pow(1-k,3);
+  function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
+  function stop(){if(anim){cancelAnimationFrame(anim);anim=0}if(on){on=false;tr.style.overflowX=''}}
+  function go(){
+    const cx=centers();if(!cx.length){done&&done();return}
+    const W=tr.clientWidth,c=tr.scrollLeft+W/2,now=performance.now();
+    const rec=sm.filter(p=>now-p.t<110);let v=0;
+    if(rec.length>1){const a=rec[0],b=rec[rec.length-1];if(b.t>a.t)v=(b.x-a.x)/(b.t-a.t)}   /* px/ms; >0 = dedo para a direita */
+    let near=0,bd=1e9;cx.forEach((x,i)=>{const d=Math.abs(x-c);if(d<bd){bd=d;near=i}});
+    let s0=0;{let b0=1e9;cx.forEach((x,i)=>{const d=Math.abs(x-(sl0+W/2));if(d<b0){b0=d;s0=i}})}
+    let tgt=near;
+    const proj=c-v*240;{let b2=1e9;cx.forEach((x,i)=>{const d=Math.abs(x-proj);if(d<b2){b2=d;tgt=i}})}
+    const pitch=cx.length>1?cx[1]-cx[0]:W,moved=tr.scrollLeft-sl0;
+    if(tgt===s0){
+      if(Math.abs(v)>0.2)tgt=s0+(v<0?1:-1);                      /* peteleco: passa um cartão */
+      else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);  /* arrastou mais de ~1/4 do cartão: passa */
+    }
+    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-3,Math.min(s0+3,tgt))));
+    const from=tr.scrollLeft,to=Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),dist=to-from;
+    if(Math.abs(dist)<0.5){done&&done();return}
+    const dur=Math.max(240,Math.min(520,240+Math.abs(dist)*0.45));
+    on=true;tr.style.overflowX='hidden';                         /* corta a inércia do iPhone */
+    const t0=performance.now();
+    const f=t=>{const k=Math.min(1,(t-t0)/dur);tr.scrollLeft=from+dist*ease(k);if(k<1)anim=requestAnimationFrame(f);else{anim=0;on=false;tr.style.overflowX='';done&&done()}};
+    anim=requestAnimationFrame(f);
+  }
+  tr.addEventListener('touchstart',e=>{stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchmove',e=>{const p=e.touches[0];sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift()},{passive:true});
+  tr.addEventListener('touchend',e=>{
+    const p=e.changedTouches[0],dx=p?p.clientX-x0:0;
+    if(Math.abs(tr.scrollLeft-sl0)<1&&Math.abs(dx)<4){return}     /* toque simples: nada a fazer */
+    go();
+  },{passive:true});
+  tr.addEventListener('touchcancel',()=>go(),{passive:true});
+  tr._snapTo=function(i){stop();sl0=tr.scrollLeft;sm=[];const cx=centers();if(!cx[i])return;const W=tr.clientWidth;const from=tr.scrollLeft,to=Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),dist=to-from;if(Math.abs(dist)<0.5){done&&done();return}
+    const dur=Math.max(240,Math.min(520,240+Math.abs(dist)*0.45)),t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/dur);tr.scrollLeft=from+dist*ease(k);if(k<1)anim=requestAnimationFrame(f);else{anim=0;done&&done()}};anim=requestAnimationFrame(f)};
+}
 function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
   let raf=0,idle=0,tch=0,fixd=0;
   const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
-    const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
+    if(tr._snap)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
     if(Math.abs(off)>8&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe corrigido pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr);
+  if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true}));
@@ -1408,10 +1454,11 @@ function cpLabel(bi){
   function settle(){
     if(tch)return;
     tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
+    if(!JSNAP){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>8&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe corrigido pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}
+    if(Math.abs(off)>8&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe corrigido pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1424,6 +1471,7 @@ function cpLabel(bi){
     clearTimeout(idle);idle=setTimeout(settle,600);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
+  if(JSNAP)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true}));
 })();
