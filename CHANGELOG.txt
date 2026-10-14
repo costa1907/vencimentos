@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v11.6 · 14/10/2026 · Janela de nova conta: ícones dos bancos são decodificados aos poucos logo ao abrir (4 por quadro), em vez de no meio da rolagem (diagnóstico mostrou engasgos de 55–113 ms rolando a janela)
   v11.5 · 13/10/2026 · Diagnóstico de fluidez (Ajustes): medidor ligável que anota no próprio aparelho cada engasgo (≥50 ms) e travada (≥100 ms) com a tela e a ação do momento; selo no canto com fps ao vivo e relatório copiável; desligado não roda nada
   v11.4 · 13/10/2026 · Janela de nova conta/edição: depois de aberta, a tela de trás (tela inicial, carrossel 3D, abas e botão +) deixa de ser desenhada, liberando memória e GPU; volta a aparecer antes da janela descer ou ao arrastá-la para baixo
   v11.3 · 13/10/2026 · Santander Unlimited corrigido volta ao nome original c-santander-unlimited.webp (substitui o arquivo com contorno); cache de imagens cartoes-12 para o iPhone pegar a imagem nova

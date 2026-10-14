@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='11.5';
+(function(){var V='11.6';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -573,7 +573,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v11.5</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v11.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -673,7 +673,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='11.5';
+const VERSION='11.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1356,6 +1356,22 @@ function renderProv(){
   g+='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
   if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
   $('#pg').innerHTML=g;
+  icoDecode();
+}
+/* decodifica os ícones aos poucos logo que a janela abre (4 por quadro), para o iPhone não decodificar no meio da rolagem */
+const ICDEC=new Set();let ICJOB=0;
+function icoDecode(){
+  const job=++ICJOB,list=[...document.querySelectorAll('#pg img')].filter(im=>!ICDEC.has(im.getAttribute('src')));
+  let i=0;
+  const step=()=>{
+    if(job!==ICJOB||$('#sheet').hidden)return;
+    for(let k=0;k<4&&i<list.length;k++,i++){
+      const im=list[i],u=im.getAttribute('src');if(!u||ICDEC.has(u))continue;ICDEC.add(u);
+      try{(im.decode?im.decode():Promise.resolve()).catch(()=>ICDEC.delete(u))}catch(e){}
+    }
+    if(i<list.length)requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
