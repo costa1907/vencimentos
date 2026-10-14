@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='11.6';
+(function(){var V='11.7';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -305,7 +305,8 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpk::-webkit-scrollbar{display:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
-.cpa{display:block;pointer-events:none;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
+.cpa{display:block;pointer-events:none;transform-origin:50% 60%;backface-visibility:hidden}
+html:not(.sda) .cpa{will-change:transform}
 /* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
 .sda .cpk .cpa{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
@@ -573,7 +574,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v11.6</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v11.7</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -673,7 +674,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='11.6';
+const VERSION='11.7';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1373,7 +1374,7 @@ function icoDecode(){
   };
   requestAnimationFrame(step);
 }
-let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;
+let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
 function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
@@ -1384,7 +1385,7 @@ function cpLayout(){
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
-    const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
+    const far=d>2.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
     if(SDA)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
@@ -1484,7 +1485,7 @@ function syncForm(){
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
          $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
-         setTimeout(()=>{try{const seen={};ms.forEach(x=>{if(lst.indexOf(x)>=0)return;const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s&&!seen[t.s]){seen[t.s]=1;fetch(imgU(t.s),{priority:'low'}).catch(()=>{})}})}catch(e){}},2500);
+         setTimeout(()=>{try{ms.forEach(x=>{if(lst.indexOf(x)>=0)return;const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s&&!PREF.has(t.s)){PREF.add(t.s);fetch(imgU(t.s),{priority:'low'}).catch(()=>{})}})}catch(e){}},2500);
          {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0}
          CK=key;CSEL='';
        }else{$$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===CF))}
