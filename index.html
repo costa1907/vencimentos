@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.8';
+(function(){var V='12.9';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -576,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.8</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.9</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -676,7 +676,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.8';
+const VERSION='12.9';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1522,6 +1522,8 @@ function syncForm(){
     if(F.model&&!MF(F.prov).some(x=>x.id===F.model))F.model='';
     {const ms=MF(F.prov),has=ms.length>0,gen=!!ms[0].gen;
      if(gen&&!F.model&&EDIT&&F.brand&&ms.some(x=>x.id==='g_'+F.brand)){F.model='g_'+F.brand}
+     /* conta antiga sem modelo (cadastrada antes de o banco ter cartões): escolhe o modelo da mesma bandeira e categoria */
+     if(!gen&&has&&!F.model&&EDIT){const mm=ms.find(x=>x.br===F.brand&&x.tr===F.tier)||ms.find(x=>x.br===F.brand);if(mm){F.model=mm.id;F.tier=mm.tr;CF=''}}
      const brs=[];ms.forEach(x=>{const g=CG(x);if(brs.indexOf(g)<0)brs.push(g)});
      brs.sort((a,b)=>(GORD.indexOf(a)<0?99:GORD.indexOf(a))-(GORD.indexOf(b)<0?99:GORD.indexOf(b)));
      if(gen)CF='';
