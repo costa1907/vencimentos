@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='11.9';
+(function(){var V='12.0';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -573,7 +573,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v11.9</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.0</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -673,7 +673,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='11.9';
+const VERSION='12.0';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1375,7 +1375,7 @@ function icoDecode(){
   };
   requestAnimationFrame(step);
 }
-let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set();
+let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
 function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
@@ -1484,7 +1484,10 @@ function syncForm(){
      else{
        if(key!==CK){
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
-         $('#cm').innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');
+         /* carrosséis já montados ficam guardados (com as imagens prontas): voltar a uma aba é instantâneo */
+         {const cm=$('#cm');if(CK&&cm.children.length){const fr=document.createDocumentFragment();while(cm.firstChild)fr.appendChild(cm.firstChild);CPC.set(CK,fr);if(CPC.size>8)CPC.delete(CPC.keys().next().value)}
+          const hit=CPC.get(key);if(hit){CPC.delete(key);cm.appendChild(hit)}else{
+          cm.innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');}}
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
          setTimeout(()=>{try{ms.forEach(x=>{if(lst.indexOf(x)>=0)return;const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s&&!PREF.has(t.s)){PREF.add(t.s);fetch(imgU(t.s),{priority:'low'}).catch(()=>{})}})}catch(e){}},2500);
          {const t0=$('#cm');t0._c=-1;t0._k='';t0.scrollLeft=0}
@@ -1514,7 +1517,7 @@ function syncForm(){
   $('#fcopy').hidden=!$('#fo').value.trim();
 }
 function openSheet(id,key){
-  EDIT=null;const sh=$('#sheet'),pn=$('#panel');
+  EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
   F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
@@ -1542,6 +1545,7 @@ function openSheet(id,key){
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 function afterClose(fn){setTimeout(fn,RMq()?0:460)}
 function closeSheet(){
+  CPC.clear();
   const sh=$('#sheet');clearTimeout(window.__sft);document.body.classList.remove('sfull');sh.classList.remove('open');document.body.classList.remove('so');document.body.style.overflow='';
   $('#fa').blur();setTimeout(()=>{if(!sh.classList.contains('open'))sh.hidden=true},430);
   $('#panel').style.transform='';
