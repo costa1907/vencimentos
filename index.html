@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='12.0';
+(function(){var V='12.1';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -321,8 +321,10 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 /* seletor de cartões: sem transição nem sombra pesada nas imagens */
 .cpk .cc.w.tpl .cc-bg{transition:none}
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
-.cpk .cc::after,.cpk .cc *::after,.cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation:none!important;display:none}
-.cpk .cpi:not(.ctr) .cc-num{display:none}
+.cpk .cc::after,.cpk .cc *::after{animation:none!important;display:none}
+/* trocas do cartão do centro durante a rolagem não podem mudar o layout (o iPhone recalcula o encaixe e abandona o deslize) */
+.cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation-play-state:paused;visibility:hidden}
+.cpk .cpi:not(.ctr) .cc-num{visibility:hidden}
 .cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center}
 .cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance}
 .cps{font:500 13px var(--fb);color:var(--mu);letter-spacing:.04em}
@@ -359,7 +361,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 .cw .meta,.cw .lim{transition:opacity .25s}
 .cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
-.cards.cf .cw:not(.ctr) .cc-num{display:none}
+.cards.cf .cw:not(.ctr) .cc-num{visibility:hidden}
 .cw:active .cc{transform:scale(.98)}
 .cw .cc{transition:transform .25s var(--ease)}
 .cw .meta{display:flex;justify-content:space-between;align-items:center;margin:12px 4px 0;font-size:13px;color:var(--mu)}
@@ -573,7 +575,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v12.0</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v12.1</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -673,7 +675,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='12.0';
+const VERSION='12.1';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1092,11 +1094,11 @@ function cfInit(){
   let raf=0,idle=0,tch=0,fixd=0;
   const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>3&&!fixd){fixd=1;try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
+    if(Math.abs(off)>8&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe corrigido pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr);
-  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,250)},{passive:true});
+  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
-  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,260)},{passive:true}));
+  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true}));
   setTimeout(()=>{cfLayout(tr);settle()},60);
 }
 function cardsHTML(gs){
@@ -1409,7 +1411,7 @@ function cpLabel(bi){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>3&&!fixd){fixd=1;try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}
+    if(Math.abs(off)>8&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe corrigido pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1419,11 +1421,11 @@ function cpLabel(bi){
   }
   tr.addEventListener('scroll',()=>{CPLS=Date.now();
     if(!raf)raf=requestAnimationFrame(()=>{raf=0;const bi=cpLayout();if(bi!==lb){lb=bi;cpLabel(bi)}});
-    clearTimeout(idle);idle=setTimeout(settle,250);
+    clearTimeout(idle);idle=setTimeout(settle,600);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
-  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,260)},{passive:true}));
+  ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,600)},{passive:true}));
 })();
 /* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
 let CPACT=0;
@@ -2337,8 +2339,8 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const n=ev.length,b=ev.filter(x=>x.ms>=100).length;
-    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'');
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.length-n;
+    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
   function start(){
@@ -2360,15 +2362,15 @@ setTab('home');
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const by={};ev.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms);const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+ev.length+' · travadas (≥100 ms): '+ev.filter(x=>x.ms>=100).length+'\n\n';
+    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
-    ev.slice(-40).reverse().forEach(e=>{t+=e.h+' · '+e.ms+' ms · '+e.tela+' · '+e.acao+'\n'});
+    ev.slice(-40).reverse().forEach(e=>{t+=e.h+' · '+(e.ms?e.ms+' ms · ':'')+e.tela+' · '+e.acao+'\n'});
     return t;
   }
   function show(){
@@ -2384,6 +2386,7 @@ setTab('home');
     };
     document.body.appendChild(o);
   }
+  window.__diagNote=function(txt){if(!on)return;ev.push({h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt});if(ev.length>300)ev.shift();paint()};
   window.__diag={
     card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
     bind(){const b=$('#bdiag');if(b)b.onclick=()=>{on=!on;try{localStorage.setItem(K,on?'1':'0')}catch(e){}if(on)start();else stop();b.textContent=on?'Desligar diagnóstico':'Ligar diagnóstico';window.__app&&window.__app.toast(on?'Diagnóstico ligado: use o app normalmente':'Diagnóstico desligado')};
