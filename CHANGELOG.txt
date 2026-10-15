@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.8 · 14/10/2026 · Transporte: novo item Guincho e ícones para Guincho e Mecânico (a busca acha Guincho por "reboque").
   v13.7 · 14/10/2026 · Transporte ganha Pirelli, Michelin, Bridgestone (com ícone) e Mecânico (sem ícone por enquanto; a busca acha por "pneu" e "oficina"). A forma de pagamento agora também tem Crédito e Dinheiro.
   v13.6 · 14/10/2026 · Lista de contas: a linha do cartão de crédito (ícone mais largo) agora fica alinhada com as demais; todos os ícones ocupam a mesma faixa e os textos começam no mesmo ponto.
   v13.5 · 14/10/2026 · Cores padronizadas: o nome da categoria na lista e o tipo selecionado no cadastro (Boleto, Cartão, Moradia...) agora usam a cor do tema escolhido, em vez de uma cor diferente por categoria.
