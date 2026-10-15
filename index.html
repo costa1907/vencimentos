@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.8';
+(function(){var V='13.9';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -582,7 +582,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.8</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.9</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -689,7 +689,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.8';
+const VERSION='13.9';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -763,7 +763,7 @@ L('assinatura',[P('netflix','Netflix','#E50914','N'),P('prime','Prime Video','#0
 L('servicos',[P('sabesp','Sabesp','#0066B3','Sb'),P('copasa','Copasa','#0071BC','Cp'),P('sanepar','Sanepar','#00A3E0','Sn'),P('cedae','Cedae','#0057A8','Cd'),P('embasa','Embasa','#0078C8','Eb'),P('compesa','Compesa','#0A5BB5','Cm'),P('caesb','Caesb','#0077B6','Ce'),P('aegea','Aegea','#00A859','Ae'),
  P('enel','Enel','#1F4EB4','En'),P('cpfl','CPFL','#0072BC','CPFL'),P('light','Light','#F58220','Li'),P('cemig','Cemig','#00A859','Cg'),P('neoenergia','Neoenergia','#00A1DE','Ne'),P('copel','Copel','#0057B8','Co'),P('energisa','Energisa','#E4002B','Es'),P('equatorial','Equatorial','#F58220','Eq'),P('elektro','Elektro','#E1251B','El'),P('edp','EDP','#E4002B','EDP'),
  P('comgas','Comgás','#F58220','Cg'),P('naturgy','Naturgy','#F58220','Na'),P('ultragaz','Ultragaz','#E4002B','Ug'),P('liquigas','Liquigás','#00A859','Lq'),P('copagaz','Copagaz','#0057B8','Cz'),P('supergasbras','Supergasbras','#E4002B','Sg')]);
-L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('algar','Algar','#F58220','Al'),P('brisanet','Brisanet','#00A859','Br'),P('desktop','Desktop','#E4002B','De'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
+L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('brisanet','Brisanet','#00A859','Br'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
 L('saude',[P('unimed','Unimed','#00995D','Un'),P('amil','Amil','#0072CE','Am'),P('bradescosaude','Bradesco Saúde','#CC092F','BS'),P('sulamerica','SulAmérica','#F58220','Su'),P('hapvida','Hapvida','#00A3E0','Hv'),P('notredame','NotreDame','#0067B1','ND'),P('portosaude','Porto Saúde','#0A5BB5','PS'),P('smartfit','Smart Fit','#FFC20E','SF'),P('bluefit','Bluefit','#0072CE','Bf'),P('bodytech','Bodytech','#E4002B','Bt'),P('dentista','Dentista','#ff6b8a','De'),P('odonto','Odonto Empresas','#1B3A8C','Od'),P('wellhub','Wellhub','#E8556D','Wh')]);
 L('seguro',[P('portoseguro','Porto Seguro','#0A5BB5','PS'),P('azul','Azul Seguros','#0057B8','Az'),P('tokio','Tokio Marine','#E4002B','TM'),P('allianz','Allianz','#003781','Al'),P('hdi','HDI','#00A859','HDI'),P('mapfre','Mapfre','#E4002B','Mp'),P('liberty','Liberty','#0057B8','Lb'),P('segvida','Seguro de vida','#8fb8ff','SV'),P('segauto','Seguro do carro','#8fb8ff','SA'),P('segresid','Seguro residencial','#8fb8ff','SR')]);
 L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im'),P('garagem','Garagem','#ff9a5c','Ga')]);
@@ -771,10 +771,10 @@ L('educacao',[P('uninove','Uninove','#1B4F9C','Un'),P('faculdade','Faculdade','#
 L('transferencia',BK);
 L('tag',[P('veloe','Veloe','#5ebfd1','Ve'),P('semparar','Sem Parar','#692454','SP'),'portoseguro','bb','bradesco','santander','caixa',P('pedagio','Pedágio','#ffd166','Pd')]);
 Object.assign(PROV.kmv,{al:'kmv km de vantagens ipiranga'});
-L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('combustivel','Combustível','#ffd166','Cb'),P('pirelli','Pirelli','#F6D200','Pi'),P('michelin','Michelin','#1F4E9E','Mi'),P('bridgestone','Bridgestone','#1c1c1e','Bs'),P('mecanico','Mecânico','#3b82c4','Me'),P('guincho','Guincho','#2f7bf0','Gu')]);
+L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('pirelli','Pirelli','#F6D200','Pi'),P('michelin','Michelin','#1F4E9E','Mi'),P('bridgestone','Bridgestone','#1c1c1e','Bs'),P('mecanico','Mecânico','#3b82c4','Me'),P('guincho','Guincho','#2f7bf0','Gu')]);
 /* palavras extras para a busca (sem acento): o que a pessoa costuma digitar */
 Object.assign(PROV.semparar,{al:'semparar tag ipva'});Object.assign(PROV.veloe,{al:'tag pedagio'});Object.assign(PROV.shellbox,{al:'shell combustivel posto'});
-Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.pirelli,{al:'pneu pneus borracharia'});Object.assign(PROV.michelin,{al:'pneu pneus borracharia'});Object.assign(PROV.bridgestone,{al:'pneu pneus borracharia'});Object.assign(PROV.guincho,{al:'reboque socorro meuguincho plataforma'});Object.assign(PROV.mecanico,{al:'oficina carro moto revisao conserto troca de oleo funilaria'});Object.assign(PROV.combustivel,{al:'gasolina etanol diesel posto abastecimento'});
+Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.pirelli,{al:'pneu pneus borracharia'});Object.assign(PROV.michelin,{al:'pneu pneus borracharia'});Object.assign(PROV.bridgestone,{al:'pneu pneus borracharia'});Object.assign(PROV.guincho,{al:'reboque socorro meuguincho plataforma'});Object.assign(PROV.mecanico,{al:'oficina carro moto revisao conserto troca de oleo funilaria'});
 L('impostos',[P('ipva','IPVA','#d4a373','IPVA'),'iptu',P('licenciamento','Licenciamento','#d4a373','Lic'),P('das','DAS · MEI','#d4a373','DAS'),P('irpf','Imposto de Renda','#d4a373','IR'),P('multa','Multa','#d4a373','Mu'),P('detran','Detran','#d4a373','De')]);
 L('outros',[P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
 L('boleto',BK);
@@ -1194,7 +1194,7 @@ function renderHome(){
   ODC=overdueAll();
   const od=isCur?ODC:mo.filter(o=>!o.paid&&o.date<t);
   const up=mo.filter(o=>!o.paid&&o.date>=t), pd=mo.filter(o=>o.paid);
-  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?Math.round(paid/total*100):0;
+  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?(rest>0?Math.min(99,Math.round(paid/total*100)):Math.round(paid/total*100)):0; /* só mostra 100% quando não falta nada (antes arredondava 99,6% para 100%) */
   const R=47,C=2*Math.PI*R;
   const nxt=up[0], hk=V.y+'-'+V.m, same=!ANIM&&hk===HKEY&&HPREV; /* mesma tela: totais animam do valor anterior, não do zero */
   const r0=same?HPREV.rest:0,p0=same?HPREV.pct:0;
