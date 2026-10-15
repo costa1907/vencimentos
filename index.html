@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.19';
+(function(){var V='13.20';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -84,6 +84,7 @@
   --gold:var(--gold); --gold2:var(--gold2); --ok:#34d399; --bad:#fb6f6f; --warn:#f5a524;
   --fd:'Bricolage Grotesque',ui-rounded,system-ui,sans-serif; --fb:'Figtree',system-ui,-apple-system,sans-serif;
   --ease:cubic-bezier(.22,1,.36,1);
+  --st:max(env(safe-area-inset-top,0px),6px);
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -92,6 +93,7 @@ html,body{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px;-webkit-text-size-adjust:100%}
 body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action:manipulation;-webkit-font-smoothing:antialiased;
   background:
+   linear-gradient(var(--bg) var(--st),transparent calc(var(--st) + 48px)) top/100% calc(var(--st) + 48px) no-repeat,
    radial-gradient(900px 420px at 80% -8%,rgba(var(--ar),.10),transparent 60%),
    radial-gradient(700px 500px at -10% 30%,rgba(95,130,255,.07),transparent 60%),
    var(--bg);
@@ -193,6 +195,10 @@ svg{display:block}
 .cta:active{transform:scale(.97)}
 .cheer{margin-top:18px;padding:14px 16px;border-radius:18px;background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.25);color:#9af0cc;font-weight:600;text-align:center}
 
+/* faixa sólida atrás do relógio/bateria: o conteúdo some por baixo dela ao rolar, em vez de aparecer desfocado ou com sombra.
+   No iOS 26 o próprio iPhone usa a cor de uma faixa fixa no topo para pintar a área do relógio.
+   O fundo da página (1ª camada do body) já sai liso logo abaixo dela, então não aparece emenda com o brilho do topo */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--st);background:var(--bg);z-index:40;pointer-events:none}
 /* barra e botão + (sem desfoque por trás: o desfoque era refeito a cada quadro enquanto a lista rolava por baixo) */
 .tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:#141828;border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.7);z-index:20}
 .tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:rgba(255,255,255,.08);transition:transform .45s var(--ease)}
@@ -603,6 +609,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 </style>
 </head>
 <body>
+<div class="topbar" aria-hidden="true"></div>
 <div class="spl" id="spl" aria-hidden="true">
   <div class="spl-in">
     <div class="spl-mw"><img data-mk alt=""></div>
@@ -617,7 +624,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.19</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.20</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -727,7 +734,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.19';
+const VERSION='13.20';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
