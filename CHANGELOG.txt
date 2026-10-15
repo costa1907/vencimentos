@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.10 · 15/10/2026 · Abertura com sinal fraco: o fundo escuro aparece no primeiro quadro (sem tela branca), as fontes do Google não travam mais a abertura (a página aparece na hora e as fontes entram depois) e, se a internet falhar, o app abre o que está guardado (espera no máximo 4 s) ou mostra uma tela "Sem sinal" com botão Tentar de novo, em vez do erro do Safari. sw.js mudou: suba junto.
   v13.9 · 14/10/2026 · Corrigido: o anel do mês mostrava 100% pago mesmo faltando uma conta (arredondava 99,6%); agora só mostra 100% quando não falta nada. Removidos Combustível (Transporte), Algar e Desktop (Internet).
   v13.8 · 14/10/2026 · Transporte: novo item Guincho e ícones para Guincho e Mecânico (a busca acha Guincho por "reboque").
   v13.7 · 14/10/2026 · Transporte ganha Pirelli, Michelin, Bridgestone (com ícone) e Mecânico (sem ícone por enquanto; a busca acha por "pneu" e "oficina"). A forma de pagamento agora também tem Crédito e Dinheiro.
