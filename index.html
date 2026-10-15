@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.2';
+(function(){var V='13.3';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -576,7 +576,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.2</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.3</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -629,8 +629,10 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
     <div class="imgrow"><span class="pprev" id="pprev"></span><button type="button" class="act" id="pimg">Usar minha foto ou logo</button><button type="button" class="act danger" id="pdel" hidden style="flex:none;width:auto;padding:0 14px">Remover</button></div>
     <input type="file" id="pfile" accept="image/*" hidden>
     <div id="bkx" hidden>
-      <div class="lbl">Pago por transferência para</div>
-      <p class="phint" style="margin-bottom:8px">Opcional. Escolha o banco e o ícone dele aparece na conta.</p>
+      <div class="lbl">Como você paga</div>
+      <p class="phint" style="margin-bottom:8px">Opcional. Escolha a forma e o banco; o ícone do banco aparece na conta quando ela não tem um logo próprio.</p>
+      <div class="seg" id="fv" style="grid-template-columns:repeat(4,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button></div>
+      <div class="lbl" style="margin-top:2px">Banco</div>
       <div class="pgrid" id="bkg"></div>
     </div>
     <div id="ccx" hidden>
@@ -681,7 +683,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.2';
+const VERSION='13.3';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -960,8 +962,8 @@ function lead(b){
   if(okImg(b.img)) return '<div class="pv img"><img alt="" src="'+b.img+'"></div>';
   if(b.cat==='cartao') return cardArt(b,true);
   const p=PROV[b.prov], bk=b.bank&&PROV[b.bank];
-  /* pago por transferência: mostra só o ícone do banco escolhido */
-  if(bk&&BANKCATS.indexOf(b.cat)>-1) return badge(bk);
+  /* banco escolhido: vira o ícone da conta quando ela não tem logo próprio (com logo, o banco aparece só no texto) */
+  if(bk&&bankOk(b.cat)&&(!p||!logo(p.id))) return badge(bk);
   if(p) return badge(p);
   return '<div class="ico" style="--c:'+c.c+'">'+svg(b.cat in IC?b.cat:'outros')+'</div>';
 }
@@ -1052,6 +1054,7 @@ function row(o,i){
   let meta=c.l+' · '+(o.b.spent?whenText(o).replace('paga em','gasto em'):whenText(o));
   if(o.b.repeat==='inst') meta+=' · '+o.n+'/'+o.b.total;
   else if(o.b.repeat==='monthly') meta+=' · mensal';
+  if(o.b.cat!=='cartao'){const vb=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' ');if(vb)meta+=' · '+vb}
   return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
     '<button type="button" class="chk" aria-label="Marcar como paga">'+CHECK+'</button>'+
     lead(o.b)+
@@ -1387,7 +1390,8 @@ function togglePaid(id,key,x,y){
 /* ---------- cadastro ---------- */
 let F=null, EDIT=null;
 const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro','educacao','transferencia','tag'];
-const BANKCATS=['moradia'];   /* tipos que aceitam "pago por transferência para o banco X" */
+const bankOk=cat=>cat!=='cartao'&&cat!=='transferencia';   /* todos os tipos aceitam "como você paga" (forma + banco), menos cartão e transferência (que já são o próprio banco) */
+const VIA={boleto:'Boleto',pix:'PIX',transf:'Transferência',debito:'Débito'};
 const AN=(p,cat)=>cat==='transferencia'?'Transferência '+p.n:p.n;
 const VARIAVEL=['cartao','servicos','telecom','tag'];
 const SPEND=['alimentacao','compras','viagem','transporte'];
@@ -1435,7 +1439,7 @@ function renderProv(){
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
 let BKB=false;
 function renderBank(){
-  const show=BANKCATS.indexOf(F.cat)>-1;
+  const show=bankOk(F.cat);
   $('#bkx').hidden=!show;
   if(!show)return;
   if(!BKB){
@@ -1444,7 +1448,9 @@ function renderBank(){
       BK.slice().sort(AZ).map(id=>{const p=PROV[id];return '<div role="button" class="pt" data-b="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span></div>'}).join('');
   }
   $$('#bkg .pt').forEach(x=>x.classList.toggle('on',x.dataset.b===(F.bank||'')));
+  $$('#fv button').forEach(x=>x.classList.toggle('on',x.dataset.v===(F.via||'')));
 }
+$('#fv').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;F.via=F.via===t.dataset.v?'':t.dataset.v;renderBank()});
 $('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';renderBank()});
 /* decodifica os ícones aos poucos logo que a janela abre (4 por quadro), para o iPhone não decodificar no meio da rolagem */
 const ICDEC=new Set();let ICJOB=0;
@@ -1610,13 +1616,13 @@ function syncForm(){
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
-    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
     $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
@@ -1931,7 +1937,8 @@ $('#fcopy').onclick=async function(){
 };
 function putExtra(b){
   if(F.prov)b.prov=F.prov;else delete b.prov;
-  if(F.bank&&PROV[F.bank]&&BANKCATS.indexOf(F.cat)>-1)b.bank=F.bank;else delete b.bank;
+  if(F.bank&&PROV[F.bank]&&bankOk(F.cat))b.bank=F.bank;else delete b.bank;
+  if(F.via&&VIA[F.via]&&bankOk(F.cat))b.via=F.via;else delete b.via;
   if(okImg(F.img))b.img=F.img;else delete b.img;
   if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||'';if(F.limit)b.limit=F.limit;else delete b.limit;if(F.close)b.close=F.close;else delete b.close}
   else{delete b.brand;delete b.tier;delete b.last4;delete b.limit;delete b.close}
