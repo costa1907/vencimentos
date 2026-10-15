@@ -1,9 +1,9 @@
 /* sw.js — deixa o app rápido e funcionando sem internet:
    1) o próprio app (index.html) abre na hora do aparelho e é conferido/atualizado em segundo plano;
    2) imagens dos cartões (c-*.webp) e dos ícones (i-*.webp) ficam guardadas;
-   3) fontes do Google ficam guardadas.
+   3) as fontes (f-*.woff2) ficam guardadas.
    Se trocar uma imagem mantendo o mesmo nome, aumente o número em IMG (e IMGCACHE no index.html). */
-const IMG='cartoes-13', APP='app-1', FONT='fontes-1';
+const IMG='cartoes-13', APP='app-1', FONT='fontes-2';
 const INDEX=new URL('index.html',self.registration.scope).href;
 /* se a internet estiver ruim, espera no máximo isto pela rede antes de usar o que está guardado */
 const ESPERA=4000;
@@ -43,12 +43,9 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  /* fontes do Google */
-  if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com'){
-    e.respondWith(caches.open(FONT).then(c=>c.match(r).then(h=>{
-      const net=fetch(r).then(n=>{if(n.ok||n.type==='opaque')c.put(r,n.clone());return n}).catch(()=>h);
-      return h||net;
-    })));
+  /* fontes do app (f-*.woff2, no próprio GitHub): ficam guardadas e abrem na hora */
+  if(u.origin===location.origin&&/\/f-[a-z0-9_-]+\.woff2$/.test(u.pathname)){
+    e.respondWith(caches.open(FONT).then(c=>c.match(r).then(h=>h||fetch(r).then(n=>{if(n.ok)c.put(r,n.clone());return n}))));
     return;
   }
 

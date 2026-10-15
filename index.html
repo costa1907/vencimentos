@@ -8,10 +8,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<style>html{background:#0a0c13}</style>
+<style>html{background:#0a0c13}
+/* fontes guardadas no próprio GitHub (nada de Google): f-figtree.woff2 e f-bricolage.woff2 */
+@font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;src:url(f-figtree.woff2) format('woff2')}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.12';
+(function(){var V='13.13';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -32,10 +35,8 @@
 <link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width:402px) and (device-height:874px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width:440px) and (device-height:956px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="font" type="font/woff2" href="f-figtree.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="f-bricolage.woff2" crossorigin>
 <link rel="preload" as="image" href="i-sobrou-mark.webp">
 <script>window.MARK="i-sobrou-mark.webp";</script>
 <script>
@@ -152,7 +153,7 @@ svg{display:block}
 .sec.late h3{color:var(--bad)} .sec.late h3 em{background:rgba(251,111,111,.16);color:var(--bad)}
 .sec.done h3{color:var(--ok)}
 .group{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) both;animation-delay:calc(var(--i,0)*45ms)}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
 .noanim .row{animation:none}
@@ -370,7 +371,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.mini::after{display:none}
 .cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cards::-webkit-scrollbar{display:none}
-.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) both}
+.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 .cw .meta,.cw .lim{transition:opacity .25s}
 .cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
@@ -589,7 +590,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.12</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.13</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -699,7 +700,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.12';
+const VERSION='13.13';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
