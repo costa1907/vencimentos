@@ -8,14 +8,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<script>try{if(localStorage.getItem('sobrou.fx')==='0')document.documentElement.classList.add('nofx')}catch(e){}</script>
-<style>html{background:#0a0c13}
-/* fontes guardadas no próprio GitHub (nada de Google): f-figtree.woff2 e f-bricolage.woff2 */
-@font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;src:url(f-figtree.woff2) format('woff2')}
-@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.16';
+(function(){var V='13.6';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -36,8 +31,9 @@
 <link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width:402px) and (device-height:874px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width:440px) and (device-height:956px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
-<link rel="preload" as="font" type="font/woff2" href="f-figtree.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="f-bricolage.woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="i-sobrou-mark.webp">
 <script>window.MARK="i-sobrou-mark.webp";</script>
 <script>
@@ -146,20 +142,18 @@ svg{display:block}
 
 /* lista */
 .sec{margin-top:24px}
-/* quadros do Panorama fora da tela só são desenhados quando chegam perto. A lista de contas é desenhada inteira de uma vez:
-   montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
-#pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
+/* listas e quadros fora da tela só são desenhados quando chegam perto (menos trabalho ao abrir e ao rolar) */
+#list>.sec:not(.cardsec),#pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .sec h3 em{font-style:normal;background:rgba(255,255,255,.08);color:var(--tx);border-radius:99px;padding:3px 8px;font-size:11px;letter-spacing:0}
 .sec h3 span{margin-left:auto;letter-spacing:0;text-transform:none;font:600 13px var(--fb)}
 .sec.late h3{color:var(--bad)} .sec.late h3 em{background:rgba(251,111,111,.16);color:var(--bad)}
 .sec.done h3{color:var(--ok)}
 .group{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) both;animation-delay:calc(var(--i,0)*45ms)}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
 .noanim .row{animation:none}
-.row.na{animation:none}
 @keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .chk{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;color:transparent;transition:all .3s var(--ease);position:relative}
 .chk svg{width:16px;height:16px;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .4s .05s var(--ease)}
@@ -297,11 +291,6 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .pv{flex:none;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;font:800 14px/1 var(--fd);letter-spacing:-.03em;color:var(--t);background:linear-gradient(145deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px -8px var(--c);overflow:hidden;white-space:nowrap}
 .pv.img{background:rgba(255,255,255,.06);border:1px solid var(--line2);box-shadow:none}
 .pv img{width:100%;height:100%;object-fit:cover;display:block}
-.bsel{width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px 8px 10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--tx);font:600 14.5px var(--fb);text-align:left}
-.bsel .bselv{display:flex;align-items:center;gap:10px;min-width:0}
-.bsel .bselv .pv{width:34px;height:34px;border-radius:11px;font-size:12px}
-.bsel .bselv .mu{color:var(--mu);font-weight:500;padding-left:6px}
-.bsel i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--gold2);flex:none}
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:2px}
 .pt{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0;transition:all .25s var(--ease)}
 .pt .pv{width:44px;height:44px;border-radius:15px;font-size:15px}
@@ -318,7 +307,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
 .cbf::-webkit-scrollbar{display:none}
 .cbf .chip{height:34px;padding:0 15px;font-size:12.5px;border-radius:999px;flex:none}
-.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:none}
+.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cpk::-webkit-scrollbar{display:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
@@ -331,23 +320,20 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0;transition:opacity .25s}
 .cpi.ctr::after{opacity:1}
-/* bolinhas: a atual cresce com transform (antes mudava a largura e refazia o layout a cada quadro do deslize) */
-.cpg{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;height:8px;contain:layout style}
-.cpg i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:transform .25s var(--ease),background .25s}
-.cpg i.on{background:var(--gold2);transform:scaleX(2.4)}
+.cpg{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:10px;height:8px}
+.cpg i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:width .25s var(--ease),background .25s}
+.cpg i.on{width:20px;background:var(--gold2)}
 .cpk .cc-fx{display:none}
 /* seletor de cartões: sem transição nem sombra pesada nas imagens */
 .cpk .cc.w.tpl .cc-bg{transition:none}
-/* carrosséis sem o "elástico" nas pontas (overscroll-behavior-x:none): no fim da fila o cartão para firme, sem o vai e volta que fazia o giro 3D tremer */
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
 .cpk .cc::after,.cpk .cc *::after{animation:none!important;display:none}
 /* trocas do cartão do centro durante a rolagem não podem mudar o layout (o iPhone recalcula o encaixe e abandona o deslize) */
 .cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation-play-state:paused;visibility:hidden}
 .cpk .cpi:not(.ctr) .cc-num{visibility:hidden}
-/* nome e detalhes do cartão com altura fixa: o nome muda durante o deslize, mas a janela não muda de tamanho (mudar de tamanho no meio do deslize fazia o iPhone desistir do encaixe) */
-.cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center;contain:layout style}
-.cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance;height:2.4em;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.cps{font:500 13px/1.3 var(--fb);color:var(--mu);letter-spacing:.04em;height:1.3em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center}
+.cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance}
+.cps{font:500 13px var(--fb);color:var(--mu);letter-spacing:.04em}
 .cpd{font:600 11px var(--fb);color:var(--mu);letter-spacing:.16em;text-transform:uppercase;opacity:.8}
 .cc{position:relative;aspect-ratio:1.586;border-radius:18px;padding:14px 16px 12px;display:flex;flex-direction:column;justify-content:space-between;color:var(--t);overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.26),transparent 55%),linear-gradient(135deg,color-mix(in srgb,var(--c) 92%,#fff),color-mix(in srgb,var(--c) 60%,#000));box-shadow:0 18px 32px -16px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.25)}
 .cc::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%);transform:translateX(-110%);animation:ccs 6s 1.2s ease-in-out infinite;pointer-events:none}
@@ -375,9 +361,9 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.mini .cc-top,.cc.mini .cc-bot,.cc.mini .cc-num{display:none}
 .cc.mini .cc-chip{width:11px;height:8px;border-radius:2px;margin-top:2px}
 .cc.mini::after{display:none}
-.cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:none}
+.cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cards::-webkit-scrollbar{display:none}
-.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
+.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) both}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 .cw .meta,.cw .lim{transition:opacity .25s}
 .cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
@@ -490,11 +476,8 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.w.tpl.rd .cc-bg{opacity:1}
 .cc.w.tpl:not(.rd) .cc-num{opacity:0}
 .cc.w.tpl:not(.rd){background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-/* a rodinha só aparece se a imagem demorar mais de 0,4 s (as que vêm da memória do aparelho abrem sem piscar a rodinha) */
-.cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);opacity:0;animation:ccspin .8s linear infinite,ccld .25s .4s ease forwards;pointer-events:none}
-@keyframes ccld{to{opacity:1}}
-/* sumir sem mexer no layout: display:none aqui refazia o layout dentro do carrossel quando a imagem terminava de carregar, no meio do deslize, e o iPhone abandonava o encaixe */
-.cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{visibility:hidden;animation:none}
+.cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);animation:ccspin .8s linear infinite;pointer-events:none}
+.cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{display:none}
 @keyframes ccspin{to{transform:rotate(360deg)}}
 .cw:active .cc{transform:none}
 .pbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0 8px;flex-wrap:wrap}
@@ -507,8 +490,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
 .scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
-/* com a janela aberta, pausa as animações da tela de trás (os cartões DENTRO da janela continuam: senão a rodinha de carregamento do seletor ficava parada) */
-body.so .page *,body.so .fab::before{animation-play-state:paused!important}
+body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
@@ -578,25 +560,6 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 .toast:not(.show){backdrop-filter:none;-webkit-backdrop-filter:none}
 /* brilho de fundo do topo: 2 ciclos e para (não fica gastando GPU/bateria parado) */
 .hero::before{animation-iteration-count:2}
-/* ===== Efeitos especiais DESLIGADOS (Ajustes): tudo plano e parado, para rolar liso em qualquer aparelho ===== */
-.nofx .cards .cw .cc,.nofx .cpk .cpa{animation:none!important;transform:none!important;will-change:auto!important}
-.nofx .cc.w{will-change:auto;transition:none}
-.nofx .cw,.nofx .row,.nofx .page,.nofx .pm .tr i,.nofx .gl .tr i,.nofx .chk.pop,.nofx .pt.land,.nofx .pgrid.org .pt{animation:none!important}
-.nofx .cc-fx,.nofx .ccr,.nofx .cpi::after,.nofx .hero::before,.nofx .hero::after,.nofx .fab::before,.nofx .cc::after{display:none!important}
-.nofx .cards.cf .cw:not(.ctr) .cc-num,.nofx .cpk .cpi:not(.ctr) .cc-num{visibility:visible}
-.nofx .cw .meta,.nofx .cw .lim{transition:none}
-.nofx .tabs{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(20,24,40,.97)}
-.nofx .toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#232941f5}
-.nofx .ring .pr{filter:none}
-.nofx .pv.logo img{opacity:1;transition:none}
-.nofx .cc.w.tpl .cc-bg{transition:none}
-/* chave liga/desliga (Ajustes) */
-.fxrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
-.fxrow b{font:600 14.5px var(--fb)}
-.swt{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.16);transition:background .2s}
-.swt::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s}
-.swt[aria-checked="true"]{background:var(--gold)}
-.swt[aria-checked="true"]::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){
   .cc-fx::after,.cc.w *{animation:none!important}
 
@@ -619,7 +582,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.16</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -674,12 +637,9 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
     <div id="bkx" hidden>
       <div class="lbl">Como você paga</div>
       <p class="phint" style="margin-bottom:8px">Opcional. Escolha a forma e o banco; o ícone do banco aparece na conta quando ela não tem um logo próprio.</p>
-      <div class="seg" id="fv" style="grid-template-columns:repeat(3,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button><button type="button" data-v="credito">Crédito</button><button type="button" data-v="dinheiro">Dinheiro</button></div>
-      <div id="bkb">
-        <div class="lbl" style="margin-top:2px">Banco</div>
-        <button type="button" class="bsel" id="bsel"><span class="bselv" id="bselv"></span><i id="bsela">Escolher</i></button>
-        <div class="pgrid" id="bkg" hidden style="margin-top:8px"></div>
-      </div>
+      <div class="seg" id="fv" style="grid-template-columns:repeat(4,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button></div>
+      <div class="lbl" style="margin-top:2px">Banco</div>
+      <div class="pgrid" id="bkg"></div>
     </div>
     <div id="ccx" hidden>
       <div class="ccprev" id="ccprev"></div>
@@ -729,7 +689,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.16';
+const VERSION='13.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -803,7 +763,7 @@ L('assinatura',[P('netflix','Netflix','#E50914','N'),P('prime','Prime Video','#0
 L('servicos',[P('sabesp','Sabesp','#0066B3','Sb'),P('copasa','Copasa','#0071BC','Cp'),P('sanepar','Sanepar','#00A3E0','Sn'),P('cedae','Cedae','#0057A8','Cd'),P('embasa','Embasa','#0078C8','Eb'),P('compesa','Compesa','#0A5BB5','Cm'),P('caesb','Caesb','#0077B6','Ce'),P('aegea','Aegea','#00A859','Ae'),
  P('enel','Enel','#1F4EB4','En'),P('cpfl','CPFL','#0072BC','CPFL'),P('light','Light','#F58220','Li'),P('cemig','Cemig','#00A859','Cg'),P('neoenergia','Neoenergia','#00A1DE','Ne'),P('copel','Copel','#0057B8','Co'),P('energisa','Energisa','#E4002B','Es'),P('equatorial','Equatorial','#F58220','Eq'),P('elektro','Elektro','#E1251B','El'),P('edp','EDP','#E4002B','EDP'),
  P('comgas','Comgás','#F58220','Cg'),P('naturgy','Naturgy','#F58220','Na'),P('ultragaz','Ultragaz','#E4002B','Ug'),P('liquigas','Liquigás','#00A859','Lq'),P('copagaz','Copagaz','#0057B8','Cz'),P('supergasbras','Supergasbras','#E4002B','Sg')]);
-L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('brisanet','Brisanet','#00A859','Br'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
+L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('algar','Algar','#F58220','Al'),P('brisanet','Brisanet','#00A859','Br'),P('desktop','Desktop','#E4002B','De'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
 L('saude',[P('unimed','Unimed','#00995D','Un'),P('amil','Amil','#0072CE','Am'),P('bradescosaude','Bradesco Saúde','#CC092F','BS'),P('sulamerica','SulAmérica','#F58220','Su'),P('hapvida','Hapvida','#00A3E0','Hv'),P('notredame','NotreDame','#0067B1','ND'),P('portosaude','Porto Saúde','#0A5BB5','PS'),P('smartfit','Smart Fit','#FFC20E','SF'),P('bluefit','Bluefit','#0072CE','Bf'),P('bodytech','Bodytech','#E4002B','Bt'),P('dentista','Dentista','#ff6b8a','De'),P('odonto','Odonto Empresas','#1B3A8C','Od'),P('wellhub','Wellhub','#E8556D','Wh')]);
 L('seguro',[P('portoseguro','Porto Seguro','#0A5BB5','PS'),P('azul','Azul Seguros','#0057B8','Az'),P('tokio','Tokio Marine','#E4002B','TM'),P('allianz','Allianz','#003781','Al'),P('hdi','HDI','#00A859','HDI'),P('mapfre','Mapfre','#E4002B','Mp'),P('liberty','Liberty','#0057B8','Lb'),P('segvida','Seguro de vida','#8fb8ff','SV'),P('segauto','Seguro do carro','#8fb8ff','SA'),P('segresid','Seguro residencial','#8fb8ff','SR')]);
 L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im'),P('garagem','Garagem','#ff9a5c','Ga')]);
@@ -811,10 +771,10 @@ L('educacao',[P('uninove','Uninove','#1B4F9C','Un'),P('faculdade','Faculdade','#
 L('transferencia',BK);
 L('tag',[P('veloe','Veloe','#5ebfd1','Ve'),P('semparar','Sem Parar','#692454','SP'),'portoseguro','bb','bradesco','santander','caixa',P('pedagio','Pedágio','#ffd166','Pd')]);
 Object.assign(PROV.kmv,{al:'kmv km de vantagens ipiranga'});
-L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('pirelli','Pirelli','#F6D200','Pi'),P('michelin','Michelin','#1F4E9E','Mi'),P('bridgestone','Bridgestone','#1c1c1e','Bs'),P('mecanico','Mecânico','#3b82c4','Me'),P('guincho','Guincho','#2f7bf0','Gu')]);
+L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('combustivel','Combustível','#ffd166','Cb')]);
 /* palavras extras para a busca (sem acento): o que a pessoa costuma digitar */
 Object.assign(PROV.semparar,{al:'semparar tag ipva'});Object.assign(PROV.veloe,{al:'tag pedagio'});Object.assign(PROV.shellbox,{al:'shell combustivel posto'});
-Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.pirelli,{al:'pneu pneus borracharia'});Object.assign(PROV.michelin,{al:'pneu pneus borracharia'});Object.assign(PROV.bridgestone,{al:'pneu pneus borracharia'});Object.assign(PROV.guincho,{al:'reboque socorro meuguincho plataforma'});Object.assign(PROV.mecanico,{al:'oficina carro moto revisao conserto troca de oleo funilaria'});
+Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.combustivel,{al:'gasolina etanol diesel posto abastecimento'});
 L('impostos',[P('ipva','IPVA','#d4a373','IPVA'),'iptu',P('licenciamento','Licenciamento','#d4a373','Lic'),P('das','DAS · MEI','#d4a373','DAS'),P('irpf','Imposto de Renda','#d4a373','IR'),P('multa','Multa','#d4a373','Mu'),P('detran','Detran','#d4a373','De')]);
 L('outros',[P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
 L('boleto',BK);
@@ -832,16 +792,13 @@ L('impostos',NEW([['cnh','CNH do Brasil','#1F7A3F','CNH']]));
 L('outros',NEW([['kiwify','Kiwify','#3FA06E','Ki']]).concat(['serasa','livelo']));
 
 /* ícones das empresas: arquivos i-<id>.webp na mesma pasta do index.html */
-const LOGOS={"guincho":"i-guincho.webp","mecanico":"i-mecanico.webp","pirelli":"i-pirelli.webp","michelin":"i-michelin.webp","bridgestone":"i-bridgestone.webp","veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
+const LOGOS={"veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
 /* IV: só vira algo depois de "Limpar memória" (Ajustes): força baixar tudo de novo, como na 1ª vez */
 const IV=(()=>{try{return sessionStorage.getItem('imgv')||''}catch(e){return ''}})();
 const imgU=f=>IV?f+'?v='+IV:f;
 const IMGCACHE='cartoes-13';
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];if(!/^i-[a-z0-9_-]+\.webp$/.test(v||'')||ICMISS[v])return '';return imgU(v)}
 const ICOK={},ICMISS={};
-/* ícones que já abriram antes aparecem direto, sem o "acender" (são dezenas de camadas a menos para o iPhone montar ao abrir a janela) */
-try{JSON.parse(localStorage.getItem('sobrou.icok')||'[]').forEach(u=>{ICOK[u]=1})}catch(e){}
-let ICOKT=0;function icokSave(){clearTimeout(ICOKT);ICOKT=setTimeout(()=>{try{localStorage.setItem('sobrou.icok',JSON.stringify(Object.keys(ICOK).slice(-400)))}catch(e){}},1500)}
 function badge(p){
   const g=logo(p.id);
   if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
@@ -993,7 +950,7 @@ function tplFor(o,tier,br){
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')&&t.dataset.r){const m=(t.getAttribute('src')||'').split('?')[0].match(/(i-[a-z0-9_-]+\.webp)$/);if(m)ICMISS[m[1]]=1}},true);
-document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){const u=t.getAttribute('src');if(!ICOK[u]){ICOK[u]=1;icokSave()}t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
+document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
@@ -1072,12 +1029,12 @@ function whenText(o){
 function tween(el,to,fmt,ms){
   if(!el) return;
   const from=Number(el.dataset.v||0); el.dataset.v=to;
-  if(from===to||RMq()){el.textContent=fmt(to);return}
+  if(from===to||matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=fmt(to);return}
   const t0=performance.now(); ms=ms||700;
   (function f(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
 }
 function burst(x,y){
-  if(RMq()) return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
   const c=document.createElement('canvas');c.className='fx';const dpr=Math.min(2,devicePixelRatio||1);
   c.width=innerWidth*dpr;c.height=innerHeight*dpr;document.body.appendChild(c);
   const g=c.getContext('2d');g.scale(dpr,dpr);
@@ -1104,7 +1061,7 @@ function row(o,i){
   if(o.b.repeat==='inst') meta+=' · '+o.n+'/'+o.b.total;
   else if(o.b.repeat==='monthly') meta+=' · mensal';
   let pay='';if(o.b.cat!=='cartao'){pay=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' · ')}
-  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+(i>=10?' na':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
+  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
     '<button type="button" class="chk" aria-label="Marcar como paga">'+CHECK+'</button>'+
     lead(o.b)+
     '<div class="mid"><i class="k">'+esc(c.l)+'</i><b>'+esc(o.b.name)+'</b><span class="m">'+esc(meta)+'</span>'+(pay?'<span class="m p">'+esc(pay)+'</span>':'')+'</div>'+
@@ -1142,8 +1099,6 @@ function limHTML(g,t){
 }
 /* true = encaixe calculado pelo app (preciso); false = encaixe automático do iPhone */
 const JSNAP=false;
-/* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
-function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
 /* v11.9: giro 3D calculado pelo app (mais estável no iPhone). Para voltar ao 3D nativo, troque NATIVO3D para true */
@@ -1151,19 +1106,18 @@ const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
 if(JSNAP)document.documentElement.classList.add('jsnap');
-function cfLayout(tr,mark){
+function cfLayout(tr){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
-    if(SDA||NOFX())continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
+    if(SDA)continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
     const el=its[i].querySelector('.cc');if(!el)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  /* a marcação do cartão do centro (texto, número, brilho) só muda com a rolagem parada: trocar no meio do deslize obrigava o iPhone a redesenhar dois cartões */
-  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 /* Carrosséis com arraste próprio (v12.3): o dedo move os cartões direto (sem a rolagem/inércia do iPhone),
@@ -1212,22 +1166,16 @@ function snapper(tr,done){
 function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
-  let raf=0,idle=0,tch=0,fixd=0,sl0=-1;
-  const settle=()=>{if(tch)return;
-    /* confere a posição duas vezes: se ainda mudou, o iPhone ainda está encaixando (corrigir agora brigava com ele e dava o tranco) */
-    const sl=tr.scrollLeft;if(Math.abs(sl-sl0)>0.5){sl0=sl;clearTimeout(idle);idle=setTimeout(settle,120);return}sl0=-1;
-    tr._k='';const bi=cfLayout(tr,true),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
+  let raf=0,idle=0,tch=0,fixd=0;
+  const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
     if(tr._snap)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
-  cfLayout(tr,true);
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
+  cfLayout(tr);
   if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
-  setTimeout(()=>{cfLayout(tr,true);settle()},60);
-  /* decodifica as imagens dos cartões logo após abrir (uma por vez), para o deslize nunca esperar por decodificação */
-  [...tr.querySelectorAll('img.cc-bg')].forEach((im,i)=>setTimeout(()=>{try{im.decode&&im.decode().catch(()=>{})}catch(e){}},250+i*150));
+  setTimeout(()=>{cfLayout(tr);settle()},60);
 }
 function cardsHTML(gs){
   if(!gs.length) return '';
@@ -1246,7 +1194,7 @@ function renderHome(){
   ODC=overdueAll();
   const od=isCur?ODC:mo.filter(o=>!o.paid&&o.date<t);
   const up=mo.filter(o=>!o.paid&&o.date>=t), pd=mo.filter(o=>o.paid);
-  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?(rest>0?Math.min(99,Math.round(paid/total*100)):Math.round(paid/total*100)):0; /* só mostra 100% quando não falta nada (antes arredondava 99,6% para 100%) */
+  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?Math.round(paid/total*100):0;
   const R=47,C=2*Math.PI*R;
   const nxt=up[0], hk=V.y+'-'+V.m, same=!ANIM&&hk===HKEY&&HPREV; /* mesma tela: totais animam do valor anterior, não do zero */
   const r0=same?HPREV.rest:0,p0=same?HPREV.pct:0;
@@ -1351,7 +1299,6 @@ function renderSet(){
    '<div class="lbl" style="margin-top:14px">Temas prontos</div><div class="thm" id="thm">'+TH.PR.map((p,i)=>'<button type="button" class="tp" data-pr="'+i+'"><span class="tpv" style="background:'+TH.hsl(TH.BG[p[1]][1],TH.BG[p[1]][2],i===9||p[1]===1?3:11)+'"><i style="background:'+TH.AC[p[2]][1]+'"></i><b style="background:'+TH.AC[p[2]][1]+'"></b></span><span>'+p[0]+'</span></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
-   '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
@@ -1364,7 +1311,6 @@ function renderSet(){
   if(window.__acc)window.__acc.bind();
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
-  $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
   $('#swa').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(TH.cur[0],+b.dataset.a);thSync()};
@@ -1450,10 +1396,8 @@ function togglePaid(id,key,x,y){
 /* ---------- cadastro ---------- */
 let F=null, EDIT=null;
 const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro','educacao','transferencia','tag'];
-const BANKPROV=['boleto','financ','consorcio'];   /* nesses tipos o "Quem é?" já é o banco: não repete a lista de bancos */
-const bankPick=cat=>bankOk(cat)&&BANKPROV.indexOf(cat)<0;
 const bankOk=cat=>cat!=='cartao'&&cat!=='transferencia';   /* todos os tipos aceitam "como você paga" (forma + banco), menos cartão e transferência (que já são o próprio banco) */
-const VIA={boleto:'Boleto',pix:'PIX',transf:'Transferência',debito:'Débito',credito:'Crédito',dinheiro:'Dinheiro'};
+const VIA={boleto:'Boleto',pix:'PIX',transf:'Transferência',debito:'Débito'};
 const AN=(p,cat)=>cat==='transferencia'?'Transferência '+p.n:p.n;
 const VARIAVEL=['cartao','servicos','telecom','tag'];
 const SPEND=['alimentacao','compras','viagem','transporte'];
@@ -1499,27 +1443,21 @@ function renderProv(){
   icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
-let BKB=false,BKOPEN=false;
+let BKB=false;
 function renderBank(){
   const show=bankOk(F.cat);
   $('#bkx').hidden=!show;
   if(!show)return;
-  const pk=bankPick(F.cat);
-  $('#bkb').hidden=!pk;
   if(!BKB){
     BKB=true;
     $('#bkg').innerHTML='<div role="button" class="pt" data-b=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Nenhum</span></div>'+
       BK.slice().sort(AZ).map(id=>{const p=PROV[id];return '<div role="button" class="pt" data-b="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span></div>'}).join('');
   }
   $$('#bkg .pt').forEach(x=>x.classList.toggle('on',x.dataset.b===(F.bank||'')));
-  const bp=F.bank&&PROV[F.bank];
-  $('#bselv').innerHTML=bp?badge(bp)+'<span>'+esc(bp.n)+'</span>':'<span class="mu">Nenhum</span>';
-  $('#bkg').hidden=!BKOPEN;$('#bsela').textContent=BKOPEN?'Fechar':(bp?'Trocar':'Escolher');
   $$('#fv button').forEach(x=>x.classList.toggle('on',x.dataset.v===(F.via||'')));
 }
 $('#fv').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;F.via=F.via===t.dataset.v?'':t.dataset.v;renderBank()});
-$('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';BKOPEN=false;renderBank()});
-$('#bsel').addEventListener('click',()=>{BKOPEN=!BKOPEN;renderBank()});
+$('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';renderBank()});
 /* decodifica os ícones aos poucos logo que a janela abre (4 por quadro), para o iPhone não decodificar no meio da rolagem */
 const ICDEC=new Set();let ICJOB=0;
 function icoDecode(){
@@ -1539,19 +1477,19 @@ let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
 function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
-function cpLayout(mark){
+function cpLayout(){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
-    const far=d>3.2&&!NOFX();if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada. Com efeitos desligados os cartões nem usam a GPU: não precisa esconder */
-    if(SDA||NOFX())continue;
+    const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
+    if(SDA)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 function cpLabel(bi){
@@ -1561,18 +1499,16 @@ function cpLabel(bi){
   $('#cpn').textContent=it.dataset.n;$('#cps').textContent=it.dataset.s;{const g=$$('#cpg i');g.forEach((d,i)=>d.classList.toggle('on',i===bi))}
 }
 (function(){
-  let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1;
+  let raf=0,idle=0,lb=-2,tch=0,fixd=0;
   const tr=document.getElementById('cm');
   function settle(){
     if(tch)return;
-    /* confere a posição duas vezes: se ainda mudou, o iPhone ainda está encaixando (corrigir agora brigava com ele e dava o tranco) */
-    const sl=tr.scrollLeft;if(Math.abs(sl-sl0)>0.5){sl0=sl;clearTimeout(idle);idle=setTimeout(settle,120);return}sl0=-1;
-    tr._k='';const bi=cpLayout(true),it=tr.children[bi];if(!it)return;
+    tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
     if(!JSNAP){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1588,13 +1524,9 @@ function cpLabel(bi){
   if(JSNAP)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
 /* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
 let CPACT=0;
-/* imagens que ficam prontas juntas aparecem uma por quadro, para não acumular o desenho de vários cartões no mesmo quadro */
-const RDQ=[];let RDT=0;
-function rdQ(cc){RDQ.push(cc);if(RDT)return;RDT=requestAnimationFrame(function f(){RDT=0;const c=RDQ.shift();if(c)c.classList.add('rd');if(RDQ.length)RDT=requestAnimationFrame(f)})}
 function cpLoad(c){
   const its=$$('#cm .cpi');if(!its.length)return;
   if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
@@ -1606,7 +1538,7 @@ function cpLoad(c){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
-      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)rdQ(cc);fin()};
+      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cc.classList.add('rd');fin()};
       im.addEventListener('error',fin,{once:true});
       im.addEventListener('load',()=>{(im.decode?im.decode():Promise.resolve()).then(ok,ok)},{once:true});
       im.src=u;
@@ -1667,7 +1599,7 @@ function syncForm(){
        const tr=$('#cm');
        $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el.dataset.m===F.model));
        cpNums();
-       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
+       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout();window.cpSettle&&window.cpSettle()}
        cpLabel();
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -1690,13 +1622,13 @@ function syncForm(){
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  BKOPEN=false;F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
-    BKOPEN=false;F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
     $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
@@ -1707,16 +1639,14 @@ function openSheet(id,key){
   } else {
     $('#st').textContent='Nova conta';$('#fs').textContent='Adicionar conta';
   }
-  /* monta tudo com a janela ainda fora da tela e só depois começa a subida: o trabalho pesado não cai no meio da animação */
-  sh.hidden=false;document.body.style.overflow='hidden';pn.scrollTop=0;
-  renderProv();syncForm();
-  void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
+  sh.hidden=false;void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
+  document.body.style.overflow='hidden';pn.scrollTop=0;
+  renderProv();syncForm();
+  if(!b)setTimeout(()=>{const a=$('#fa');a.focus();const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
-/* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
-function afterClose(fn){let r=false;try{r=matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){}setTimeout(fn,r?0:460)}
+function afterClose(fn){setTimeout(fn,RMq()?0:460)}
 function closeSheet(){
   CPC.clear();
   const sh=$('#sheet');clearTimeout(window.__sft);document.body.classList.remove('sfull');sh.classList.remove('open');document.body.classList.remove('so');document.body.style.overflow='';
@@ -2013,7 +1943,7 @@ $('#fcopy').onclick=async function(){
 };
 function putExtra(b){
   if(F.prov)b.prov=F.prov;else delete b.prov;
-  if(F.bank&&PROV[F.bank]&&bankPick(F.cat))b.bank=F.bank;else delete b.bank;
+  if(F.bank&&PROV[F.bank]&&bankOk(F.cat))b.bank=F.bank;else delete b.bank;
   if(F.via&&VIA[F.via]&&bankOk(F.cat))b.via=F.via;else delete b.via;
   if(okImg(F.img))b.img=F.img;else delete b.img;
   if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||'';if(F.limit)b.limit=F.limit;else delete b.limit;if(F.close)b.close=F.close;else delete b.close}
@@ -2088,7 +2018,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 let LASTDAY=new Date().toDateString();
 /* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
-  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout(true)}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc,true)}catch(e){}})});
+  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -2154,7 +2084,7 @@ window.addEventListener('pageshow',e=>{if(e.persisted)chkSoon()});
 setTimeout(()=>checkUpdate(false),1200);
 
 /* ---------- efeitos de luxo nos cartões ---------- */
-function RMq(){if(NOFX())return true;try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
+function RMq(){try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
 function ccFx(card,cx,cy){
   if(!card||RMq())return;
   card._fx=Date.now();
@@ -2201,10 +2131,8 @@ setTab('home');
   let A=jget(AK),LIC=jget(LK)||{ate:0,created:0},tok='',tokExp=0,pulling=false,applying=false,pushT=0,pushing=false,online=true,LST=[];
 
   /* ----- rede ----- */
-  /* com sinal fraco o pedido podia ficar pendurado para sempre e travar a sincronização; agora desiste em 15 s e tenta de novo depois */
-  const tfetch=(url,opt,ms)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||15000);return fetch(url,Object.assign({signal:c.signal},opt)).finally(()=>clearTimeout(t))};
   async function post(url,body,form){
-    const r=await tfetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:form?body:JSON.stringify(body)});
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:form?body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.code=(j.error&&j.error.message)||'erro';e.http=r.status;throw e}
     return j;
@@ -2226,7 +2154,7 @@ setTab('home');
   }
   async function fs(method,path,body){
     const t=await idToken();
-    const r=await tfetch(FS+path,{method:method,headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    const r=await fetch(FS+path,{method:method,headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
     if(r.status===404)return null;
     const j=await r.json().catch(()=>({}));
     if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.http=r.status;throw e}
@@ -2494,16 +2422,12 @@ setTab('home');
   }
   const onScroll=e=>act('rolando '+where(e.target));
   const onTouch=e=>act('toque em '+where(e.target));
-  let fora=0; /* quando o app saiu da frente (outro app, central de notificações, tela bloqueada) */
-  const onVis=()=>{if(document.hidden)fora=performance.now();else{act('voltou do segundo plano');last=0}};
-  const onBlur=()=>{fora=performance.now()};
+  const onVis=()=>{if(!document.hidden){act('voltou do segundo plano');last=0}};
   function loop(t){
     raf=requestAnimationFrame(loop);
     if(document.hidden){last=0;return}
     if(last){
-      const d=t-last;
-      if(d>=10000||(d>=300&&fora>=last-50)){last=t;return} /* pausa porque o app saiu da frente: não é engasgo */
-      frames.push(d);if(frames.length>240)frames.shift();
+      const d=t-last;frames.push(d);if(frames.length>240)frames.shift();
       tot++;sec.n++;
       const busy=t-lastAct.t<1200;
       if(busy)totInt++;
@@ -2526,7 +2450,7 @@ setTab('home');
     if(raf)return;startT=Date.now();
     document.addEventListener('scroll',onScroll,{capture:true,passive:true});
     document.addEventListener('touchstart',onTouch,{capture:true,passive:true});
-    document.addEventListener('visibilitychange',onVis);window.addEventListener('blur',onBlur);
+    document.addEventListener('visibilitychange',onVis);
     window.addEventListener('pagehide',save);
     badge=document.createElement('button');badge.type='button';badge.className='dgb';badge.onclick=show;document.body.appendChild(badge);
     sec={n:0,t0:performance.now()};last=0;raf=requestAnimationFrame(loop);paint();
@@ -2535,7 +2459,7 @@ setTab('home');
     cancelAnimationFrame(raf);raf=0;
     document.removeEventListener('scroll',onScroll,{capture:true});
     document.removeEventListener('touchstart',onTouch,{capture:true});
-    document.removeEventListener('visibilitychange',onVis);window.removeEventListener('blur',onBlur);
+    document.removeEventListener('visibilitychange',onVis);
     window.removeEventListener('pagehide',save);
     if(badge){badge.remove();badge=null}save();
   }
@@ -2545,7 +2469,7 @@ setTab('home');
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
+    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2587,7 +2511,6 @@ setTab('home');
     document.body.appendChild(el);run(el,3200);
   };
   const el=document.getElementById('spl');if(!el)return;
-  if(document.documentElement.classList.contains('nofx')){el.remove();return}
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
