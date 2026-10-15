@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.15';
+(function(){var V='13.16';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -318,7 +318,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cbf{display:flex;gap:8px;margin:2px 0 12px;overflow-x:auto;scrollbar-width:none}
 .cbf::-webkit-scrollbar{display:none}
 .cbf .chip{height:34px;padding:0 15px;font-size:12.5px;border-radius:999px;flex:none}
-.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:none}
 .cpk::-webkit-scrollbar{display:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
@@ -338,6 +338,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cpk .cc-fx{display:none}
 /* seletor de cartões: sem transição nem sombra pesada nas imagens */
 .cpk .cc.w.tpl .cc-bg{transition:none}
+/* carrosséis sem o "elástico" nas pontas (overscroll-behavior-x:none): no fim da fila o cartão para firme, sem o vai e volta que fazia o giro 3D tremer */
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
 .cpk .cc::after,.cpk .cc *::after{animation:none!important;display:none}
 /* trocas do cartão do centro durante a rolagem não podem mudar o layout (o iPhone recalcula o encaixe e abandona o deslize) */
@@ -374,7 +375,7 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.mini .cc-top,.cc.mini .cc-bot,.cc.mini .cc-num{display:none}
 .cc.mini .cc-chip{width:11px;height:8px;border-radius:2px;margin-top:2px}
 .cc.mini::after{display:none}
-.cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:none}
 .cards::-webkit-scrollbar{display:none}
 .cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
@@ -489,7 +490,9 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .cc.w.tpl.rd .cc-bg{opacity:1}
 .cc.w.tpl:not(.rd) .cc-num{opacity:0}
 .cc.w.tpl:not(.rd){background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-.cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);animation:ccspin .8s linear infinite;pointer-events:none}
+/* a rodinha só aparece se a imagem demorar mais de 0,4 s (as que vêm da memória do aparelho abrem sem piscar a rodinha) */
+.cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);opacity:0;animation:ccspin .8s linear infinite,ccld .25s .4s ease forwards;pointer-events:none}
+@keyframes ccld{to{opacity:1}}
 /* sumir sem mexer no layout: display:none aqui refazia o layout dentro do carrossel quando a imagem terminava de carregar, no meio do deslize, e o iPhone abandonava o encaixe */
 .cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{visibility:hidden;animation:none}
 @keyframes ccspin{to{transform:rotate(360deg)}}
@@ -504,7 +507,8 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
 .scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
-body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!important}
+/* com a janela aberta, pausa as animações da tela de trás (os cartões DENTRO da janela continuam: senão a rodinha de carregamento do seletor ficava parada) */
+body.so .page *,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
@@ -615,7 +619,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.15</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.16</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -725,7 +729,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.15';
+const VERSION='13.16';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1588,6 +1592,9 @@ function cpLabel(bi){
 })();
 /* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
 let CPACT=0;
+/* imagens que ficam prontas juntas aparecem uma por quadro, para não acumular o desenho de vários cartões no mesmo quadro */
+const RDQ=[];let RDT=0;
+function rdQ(cc){RDQ.push(cc);if(RDT)return;RDT=requestAnimationFrame(function f(){RDT=0;const c=RDQ.shift();if(c)c.classList.add('rd');if(RDQ.length)RDT=requestAnimationFrame(f)})}
 function cpLoad(c){
   const its=$$('#cm .cpi');if(!its.length)return;
   if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
@@ -1599,7 +1606,7 @@ function cpLoad(c){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
-      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cc.classList.add('rd');fin()};
+      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)rdQ(cc);fin()};
       im.addEventListener('error',fin,{once:true});
       im.addEventListener('load',()=>{(im.decode?im.decode():Promise.resolve()).then(ok,ok)},{once:true});
       im.src=u;
