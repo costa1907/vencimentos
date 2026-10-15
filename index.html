@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.3';
+(function(){var V='13.4';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -168,8 +168,12 @@ svg{display:block}
 .mid{flex:1;min-width:0}
 .mid b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mid span{display:block;margin-top:3px;font-size:12.5px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid .k{display:block;font-style:normal;font-weight:700;font-size:10.5px;line-height:1.2;letter-spacing:.07em;text-transform:uppercase;color:var(--c);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mid span.m{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.mid span.p{margin-top:1px}
 .row.late .mid span{color:var(--bad)}
 .row.today .mid span{color:var(--warn)}
+.row .mid span.m.p{color:var(--mu)}
 .row.paid .mid b{color:var(--mu);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
 .amt{flex:none;font:700 15px var(--fd);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .row.paid .amt{color:var(--mu)}
@@ -576,7 +580,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.3</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.4</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -683,7 +687,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.3';
+const VERSION='13.4';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1051,14 +1055,14 @@ function toast(msg,undo){
 /* ---------- tela principal ---------- */
 function row(o,i){
   const c=CAT[o.b.cat]||CAT.outros, t=today0(), late=!o.paid&&o.date<t, tod=!o.paid&&ddiff(o.date,t)===0;
-  let meta=c.l+' · '+(o.b.spent?whenText(o).replace('paga em','gasto em'):whenText(o));
+  let meta=(o.b.spent?whenText(o).replace('paga em','gasto em'):whenText(o));
   if(o.b.repeat==='inst') meta+=' · '+o.n+'/'+o.b.total;
   else if(o.b.repeat==='monthly') meta+=' · mensal';
-  if(o.b.cat!=='cartao'){const vb=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' ');if(vb)meta+=' · '+vb}
+  let pay='';if(o.b.cat!=='cartao'){pay=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' · ')}
   return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
     '<button type="button" class="chk" aria-label="Marcar como paga">'+CHECK+'</button>'+
     lead(o.b)+
-    '<div class="mid"><b>'+esc(o.b.name)+'</b><span>'+esc(meta)+'</span></div>'+
+    '<div class="mid"><i class="k" style="--c:'+c.c+'">'+esc(c.l)+'</i><b>'+esc(o.b.name)+'</b><span class="m">'+esc(meta)+'</span>'+(pay?'<span class="m p">'+esc(pay)+'</span>':'')+'</div>'+
     '<div class="amt">'+brl(o.amt)+'</div></div>';
 }
 function section(cls,title,arr,start){
