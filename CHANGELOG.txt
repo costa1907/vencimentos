@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.5 · 14/10/2026 · Cores padronizadas: o nome da categoria na lista e o tipo selecionado no cadastro (Boleto, Cartão, Moradia...) agora usam a cor do tema escolhido, em vez de uma cor diferente por categoria.
   v13.4 · 14/10/2026 · Lista de contas sem texto cortado: a categoria agora fica numa linha própria, em cor, acima do nome; embaixo ficam a data/repetição e, em outra linha, a forma de pagamento e o banco (ex.: "PIX · Nubank"); nada termina com "...".
   v13.3 · 14/10/2026 · Novo bloco "Como você paga" em todos os tipos (menos Cartão e Transferência): escolha a forma (Boleto, PIX, Transferência, Débito) e o banco. O ícone do banco aparece na conta quando ela não tem logo próprio; com logo, o banco aparece no texto (ex.: "PIX Caixa"). Contas antigas com banco continuam iguais.
   v13.2 · 14/10/2026 · Removidos os ícones pequenos sobre o ícone do banco (aparece só o banco); corrigido o piscar ao abrir Moradia/Educação (o app não pede mais ícones que não existem); Tag agora com Porto Seguro, Banco do Brasil, Bradesco, Santander e Caixa (sem "Outra tag").
