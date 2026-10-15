@@ -8,13 +8,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>try{if(localStorage.getItem('sobrou.fx')==='0')document.documentElement.classList.add('nofx')}catch(e){}</script>
 <style>html{background:#0a0c13}
 /* fontes guardadas no próprio GitHub (nada de Google): f-figtree.woff2 e f-bricolage.woff2 */
 @font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;src:url(f-figtree.woff2) format('woff2')}
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.13';
+(function(){var V='13.14';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -157,6 +158,7 @@ svg{display:block}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
 .noanim .row{animation:none}
+.row.na{animation:none}
 @keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .chk{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;color:transparent;transition:all .3s var(--ease);position:relative}
 .chk svg{width:16px;height:16px;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .4s .05s var(--ease)}
@@ -568,6 +570,25 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 .toast:not(.show){backdrop-filter:none;-webkit-backdrop-filter:none}
 /* brilho de fundo do topo: 2 ciclos e para (não fica gastando GPU/bateria parado) */
 .hero::before{animation-iteration-count:2}
+/* ===== Efeitos especiais DESLIGADOS (Ajustes): tudo plano e parado, para rolar liso em qualquer aparelho ===== */
+.nofx .cards .cw .cc,.nofx .cpk .cpa{animation:none!important;transform:none!important;will-change:auto!important}
+.nofx .cc.w{will-change:auto;transition:none}
+.nofx .cw,.nofx .row,.nofx .page,.nofx .pm .tr i,.nofx .gl .tr i,.nofx .chk.pop,.nofx .pt.land,.nofx .pgrid.org .pt{animation:none!important}
+.nofx .cc-fx,.nofx .ccr,.nofx .cpi::after,.nofx .hero::before,.nofx .hero::after,.nofx .fab::before,.nofx .cc::after{display:none!important}
+.nofx .cards.cf .cw:not(.ctr) .cc-num,.nofx .cpk .cpi:not(.ctr) .cc-num{visibility:visible}
+.nofx .cw .meta,.nofx .cw .lim{transition:none}
+.nofx .tabs{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(20,24,40,.97)}
+.nofx .toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#232941f5}
+.nofx .ring .pr{filter:none}
+.nofx .pv.logo img{opacity:1;transition:none}
+.nofx .cc.w.tpl .cc-bg{transition:none}
+/* chave liga/desliga (Ajustes) */
+.fxrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.fxrow b{font:600 14.5px var(--fb)}
+.swt{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.16);transition:background .2s}
+.swt::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s}
+.swt[aria-checked="true"]{background:var(--gold)}
+.swt[aria-checked="true"]::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){
   .cc-fx::after,.cc.w *{animation:none!important}
 
@@ -590,7 +611,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.13</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.14</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -700,7 +721,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.13';
+const VERSION='13.14';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -810,6 +831,9 @@ const imgU=f=>IV?f+'?v='+IV:f;
 const IMGCACHE='cartoes-13';
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];if(!/^i-[a-z0-9_-]+\.webp$/.test(v||'')||ICMISS[v])return '';return imgU(v)}
 const ICOK={},ICMISS={};
+/* ícones que já abriram antes aparecem direto, sem o "acender" (são dezenas de camadas a menos para o iPhone montar ao abrir a janela) */
+try{JSON.parse(localStorage.getItem('sobrou.icok')||'[]').forEach(u=>{ICOK[u]=1})}catch(e){}
+let ICOKT=0;function icokSave(){clearTimeout(ICOKT);ICOKT=setTimeout(()=>{try{localStorage.setItem('sobrou.icok',JSON.stringify(Object.keys(ICOK).slice(-400)))}catch(e){}},1500)}
 function badge(p){
   const g=logo(p.id);
   if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
@@ -961,7 +985,7 @@ function tplFor(o,tier,br){
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')&&t.dataset.r){const m=(t.getAttribute('src')||'').split('?')[0].match(/(i-[a-z0-9_-]+\.webp)$/);if(m)ICMISS[m[1]]=1}},true);
-document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
+document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){const u=t.getAttribute('src');if(!ICOK[u]){ICOK[u]=1;icokSave()}t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
@@ -1040,12 +1064,12 @@ function whenText(o){
 function tween(el,to,fmt,ms){
   if(!el) return;
   const from=Number(el.dataset.v||0); el.dataset.v=to;
-  if(from===to||matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=fmt(to);return}
+  if(from===to||RMq()){el.textContent=fmt(to);return}
   const t0=performance.now(); ms=ms||700;
   (function f(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
 }
 function burst(x,y){
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if(RMq()) return;
   const c=document.createElement('canvas');c.className='fx';const dpr=Math.min(2,devicePixelRatio||1);
   c.width=innerWidth*dpr;c.height=innerHeight*dpr;document.body.appendChild(c);
   const g=c.getContext('2d');g.scale(dpr,dpr);
@@ -1072,7 +1096,7 @@ function row(o,i){
   if(o.b.repeat==='inst') meta+=' · '+o.n+'/'+o.b.total;
   else if(o.b.repeat==='monthly') meta+=' · mensal';
   let pay='';if(o.b.cat!=='cartao'){pay=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' · ')}
-  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
+  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+(i>=10?' na':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
     '<button type="button" class="chk" aria-label="Marcar como paga">'+CHECK+'</button>'+
     lead(o.b)+
     '<div class="mid"><i class="k">'+esc(c.l)+'</i><b>'+esc(o.b.name)+'</b><span class="m">'+esc(meta)+'</span>'+(pay?'<span class="m p">'+esc(pay)+'</span>':'')+'</div>'+
@@ -1110,6 +1134,8 @@ function limHTML(g,t){
 }
 /* true = encaixe calculado pelo app (preciso); false = encaixe automático do iPhone */
 const JSNAP=false;
+/* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
+function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
 /* v11.9: giro 3D calculado pelo app (mais estável no iPhone). Para voltar ao 3D nativo, troque NATIVO3D para true */
@@ -1117,18 +1143,19 @@ const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
 if(JSNAP)document.documentElement.classList.add('jsnap');
-function cfLayout(tr){
+function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
-    if(SDA)continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
+    if(SDA||NOFX())continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
     const el=its[i].querySelector('.cc');if(!el)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  /* a marcação do cartão do centro (texto, número, brilho) só muda com a rolagem parada: trocar no meio do deslize obrigava o iPhone a redesenhar dois cartões */
+  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 /* Carrosséis com arraste próprio (v12.3): o dedo move os cartões direto (sem a rolagem/inércia do iPhone),
@@ -1178,15 +1205,17 @@ function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
   let raf=0,idle=0,tch=0,fixd=0;
-  const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
+  const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr,true),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
     if(tr._snap)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
     if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
-  cfLayout(tr);
+  cfLayout(tr,true);
   if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  setTimeout(()=>{cfLayout(tr);settle()},60);
+  setTimeout(()=>{cfLayout(tr,true);settle()},60);
+  /* decodifica as imagens dos cartões logo após abrir (uma por vez), para o deslize nunca esperar por decodificação */
+  [...tr.querySelectorAll('img.cc-bg')].forEach((im,i)=>setTimeout(()=>{try{im.decode&&im.decode().catch(()=>{})}catch(e){}},250+i*150));
 }
 function cardsHTML(gs){
   if(!gs.length) return '';
@@ -1310,6 +1339,7 @@ function renderSet(){
    '<div class="lbl" style="margin-top:14px">Temas prontos</div><div class="thm" id="thm">'+TH.PR.map((p,i)=>'<button type="button" class="tp" data-pr="'+i+'"><span class="tpv" style="background:'+TH.hsl(TH.BG[p[1]][1],TH.BG[p[1]][2],i===9||p[1]===1?3:11)+'"><i style="background:'+TH.AC[p[2]][1]+'"></i><b style="background:'+TH.AC[p[2]][1]+'"></b></span><span>'+p[0]+'</span></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
+   '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
@@ -1322,6 +1352,7 @@ function renderSet(){
   if(window.__acc)window.__acc.bind();
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
+  $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
   $('#swa').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(TH.cur[0],+b.dataset.a);thSync()};
@@ -1496,19 +1527,19 @@ let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
 function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
-function cpLayout(){
+function cpLayout(mark){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
-    const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
-    if(SDA)continue;
+    const far=d>3.2&&!NOFX();if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada. Com efeitos desligados os cartões nem usam a GPU: não precisa esconder */
+    if(SDA||NOFX())continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 function cpLabel(bi){
@@ -1522,7 +1553,7 @@ function cpLabel(bi){
   const tr=document.getElementById('cm');
   function settle(){
     if(tch)return;
-    tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
+    tr._k='';const bi=cpLayout(true),it=tr.children[bi];if(!it)return;
     if(!JSNAP){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
@@ -1618,7 +1649,7 @@ function syncForm(){
        const tr=$('#cm');
        $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el.dataset.m===F.model));
        cpNums();
-       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout();window.cpSettle&&window.cpSettle()}
+       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -1665,7 +1696,8 @@ function openSheet(id,key){
   if(!b)setTimeout(()=>{const a=$('#fa');a.focus();const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
-function afterClose(fn){setTimeout(fn,RMq()?0:460)}
+/* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
+function afterClose(fn){let r=false;try{r=matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){}setTimeout(fn,r?0:460)}
 function closeSheet(){
   CPC.clear();
   const sh=$('#sheet');clearTimeout(window.__sft);document.body.classList.remove('sfull');sh.classList.remove('open');document.body.classList.remove('so');document.body.style.overflow='';
@@ -2037,7 +2069,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 let LASTDAY=new Date().toDateString();
 /* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
-  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
+  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout(true)}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc,true)}catch(e){}})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -2103,7 +2135,7 @@ window.addEventListener('pageshow',e=>{if(e.persisted)chkSoon()});
 setTimeout(()=>checkUpdate(false),1200);
 
 /* ---------- efeitos de luxo nos cartões ---------- */
-function RMq(){try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
+function RMq(){if(NOFX())return true;try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
 function ccFx(card,cx,cy){
   if(!card||RMq())return;
   card._fx=Date.now();
@@ -2490,7 +2522,7 @@ setTab('home');
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2532,6 +2564,7 @@ setTab('home');
     document.body.appendChild(el);run(el,3200);
   };
   const el=document.getElementById('spl');if(!el)return;
+  if(document.documentElement.classList.contains('nofx')){el.remove();return}
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
