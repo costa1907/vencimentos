@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.20';
+(function(){var V='13.21';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -296,7 +296,9 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 168px);transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 18px;border-radius:18px;border:1px solid var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.5);font-weight:600;font-size:14px;white-space:nowrap;z-index:70;transition:all .4s var(--ease);background:#232941}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{color:var(--gold2);font-weight:700}
-canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:80}
+/* confete: cada bolinha é animada pelo compositor do iPhone (sem desenhar quadro a quadro no processador) */
+.fxb{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:80}
+.fxb i{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none}
 
 
 /* empresas, selos e cartões */
@@ -512,7 +514,9 @@ canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
 .scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
-body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!important}
+/* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
+   qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
+body.so .page .row,body.so .page .chk,body.so .page .cw,body.so .page .cc,body.so .page .bc .b,body.so .page .tr i,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
@@ -624,7 +628,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.20</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.21</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -734,7 +738,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.20';
+const VERSION='13.21';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1083,17 +1087,30 @@ function tween(el,to,fmt,ms){
 }
 function burst(x,y){
   if(RMq()) return;
-  const c=document.createElement('canvas');c.className='fx';const dpr=Math.min(2,devicePixelRatio||1);
-  c.width=innerWidth*dpr;c.height=innerHeight*dpr;document.body.appendChild(c);
-  const g=c.getContext('2d');g.scale(dpr,dpr);
-  const cols=['var(--gold2)','var(--gold)','#34d399','#5ee9b5','#ffffff'];
-  const P=Array.from({length:34},()=>{const a=Math.random()*Math.PI*2,v=2+Math.random()*5.5;return{x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2.5,r:2+Math.random()*3,c:cols[Math.random()*cols.length|0],l:1}});
-  const t0=performance.now();
-  (function f(t){
-    const k=(t-t0)/900;g.clearRect(0,0,innerWidth,innerHeight);
-    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.985;g.globalAlpha=Math.max(0,1-k);g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,p.r,0,7);g.fill()});
-    if(k<1)requestAnimationFrame(f);else c.remove();
-  })(t0);
+  /* mesma física de antes (34 bolinhas, gravidade e atrito por quadro, somem em 0,9 s), calculada uma vez só;
+     o movimento roda no compositor. Antes era uma tela de desenho do tamanho da tela inteira, criada a cada toque
+     e redesenhada 54 vezes no processador. As cores do tema agora aparecem de verdade (o desenho não entendia var(--gold)) */
+  const cs=getComputedStyle(document.documentElement),cv=k=>(cs.getPropertyValue(k)||'').trim();
+  const cols=[cv('--gold2')||'#f5d38a',cv('--gold')||'#e8b24a','#34d399','#5ee9b5','#ffffff'];
+  const box=document.createElement('div');box.className='fxb';box.setAttribute('aria-hidden','true');
+  const N=34,Q=54,K=9,A=[];
+  for(let n=0;n<N;n++){
+    const a=Math.random()*Math.PI*2,v=2+Math.random()*5.5,r=2+Math.random()*3;
+    let px=0,py=0,vx=Math.cos(a)*v,vy=Math.sin(a)*v-2.5;
+    const kf=[];
+    for(let q=0;q<=Q;q++){
+      if(q%(Q/K|0)===0||q===Q)kf.push({transform:'translate('+px.toFixed(1)+'px,'+py.toFixed(1)+'px)',opacity:Math.max(0,1-q/Q)});
+      px+=vx;py+=vy;vy+=.22;vx*=.985;
+    }
+    const e=document.createElement('i');
+    e.style.cssText='width:'+(r*2).toFixed(1)+'px;height:'+(r*2).toFixed(1)+'px;margin:'+(-r).toFixed(1)+'px 0 0 '+(-r).toFixed(1)+'px;background:'+cols[Math.random()*cols.length|0];
+    box.appendChild(e);A.push([e,kf]);
+  }
+  box.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)';
+  document.body.appendChild(box);
+  let fim=false;const tira=()=>{if(!fim){fim=true;box.remove()}};
+  try{A.forEach(([e,kf])=>e.animate(kf,{duration:900,easing:'linear',fill:'forwards'}))}catch(_){tira();return}
+  setTimeout(tira,1000);
 }
 let tt;
 function toast(msg,undo){
@@ -1279,8 +1296,9 @@ function renderHome(){
   const L=$('#list'),oldSec=L.querySelector('.sec.cardsec'),oc=oldSec&&oldSec.querySelector('.cards'),osl=(oc&&hk===HKEY)?oc.scrollLeft:0;
   L.className=ANIM?'':'noanim';
   if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
-    /* carrossel igual ao anterior: mantém o mesmo (sem recarregar imagens nem recriar o 3D) e troca só as listas */
-    oldSec.remove();L.innerHTML=h;L.prepend(oldSec);if(osl)oc.scrollLeft=osl; /* tirar do lugar zera a rolagem: devolve */
+    /* carrossel igual ao anterior: fica no lugar e troca só as listas abaixo dele. Antes ele era tirado e devolvido à
+       tela, e o iPhone refazia o 3D e redesenhava os cartões a cada conta marcada como paga */
+    [].slice.call(L.children).forEach(x=>{if(x!==oldSec)L.removeChild(x)});oldSec.insertAdjacentHTML('afterend',h);
   }else{
     L.innerHTML=ch+h;
     if(osl){const nc=L.querySelector('.cards');if(nc)nc.scrollLeft=osl}
@@ -2487,7 +2505,8 @@ setTab('home');
       try{await idToken()}catch(e){}
       if(localStorage.getItem(DK))await push();else await pull();
       checkLic();
-      if(window.__app)window.__app.renderAll();
+      /* não redesenha a tela de novo aqui: se a nuvem trouxe dados diferentes, o pull() já redesenhou.
+         Antes a lista inteira era refeita ~1 s depois de abrir o app mesmo sem nada novo (dava um engasgo na abertura) */
     })();
   }
   /* o tema também sobe para a nuvem */
@@ -2499,7 +2518,7 @@ setTab('home');
    Desligado, não roda nada. */
 (function(){
   const K='sobrou.diag',KL='sobrou.diaglog';
-  let on=false,raf=0,last=0,ev=[],frames=[],lastAct={t:0,a:''},badge=null,sec={n:0,t0:0},fpsNow=0,startT=0,tot=0,totInt=0;
+  let on=false,raf=0,last=0,ev=[],frames=[],lastAct={t:0,a:'abrindo o app'},badge=null,sec={n:0,t0:0},fpsNow=0,startT=0,tot=0,totInt=0;
   try{on=localStorage.getItem(K)==='1';ev=JSON.parse(localStorage.getItem(KL)||'[]')||[]}catch(e){ev=[]}
   const $=s=>document.querySelector(s);
   function scr(){
@@ -2516,7 +2535,16 @@ setTab('home');
       if(el.closest('#cm'))return 'carrossel do seletor';
       if(el.closest('.cards'))return 'carrossel da tela inicial';
       if(el.closest('#pg'))return 'ícones de bancos';
+      if(el.closest('#fs'))return 'botão salvar';
+      if(el.closest('#fc'))return 'tipo de conta';
       if(el.closest('#panel'))return 'janela';
+      if(el.closest('#scrim'))return 'fora da janela';
+      if(el.closest('.chk'))return 'marcar paga';
+      if(el.closest('.row'))return 'conta da lista';
+      if(el.closest('#fab'))return 'botão +';
+      if(el.closest('.tabs'))return 'abas';
+      if(el.closest('[data-nav]'))return 'troca de mês';
+      if(el.closest('.hero'))return 'resumo do mês';
     }
     return 'página';
   }
