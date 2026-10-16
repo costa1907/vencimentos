@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.21';
+(function(){var V='13.22';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -218,7 +218,7 @@ svg{display:block}
 .sheet[hidden]{display:none}
 .sheet{position:fixed;inset:0;z-index:50}
 .scrim{position:absolute;inset:0;background:rgba(3,4,8,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .35s}
-.panel{position:absolute;left:50%;bottom:0;width:100%;max-width:560px;max-height:94dvh;overflow-y:auto;overscroll-behavior:contain;transform:translate(-50%,102%);transition:transform .45s var(--ease);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
+.panel{position:absolute;left:50%;bottom:0;width:100%;max-width:560px;max-height:min(94dvh,calc(100dvh - var(--st) - 8px));overflow-y:auto;overscroll-behavior:contain;transform:translate(-50%,102%);transition:transform .45s var(--ease);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
 .sheet.open .scrim{opacity:1} .sheet.open .panel{transform:translate(-50%,0)}
 .grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px}
 .stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
@@ -316,7 +316,9 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .pt span{max-width:100%;padding:0 3px;font:600 10.5px var(--fb);color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transform:translateY(-2px)}
 .pt.on span{color:var(--gold2)}
-.pt:active{transform:scale(.95)}
+/* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
+   rolagem feita com o dedo sobre os ícones. O ícone segue acendendo (.pre) quando o dedo fica parado, e marca ao tocar */
+.pt:active{transform:none}
 .pt .hz{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;clip-path:inset(0 round 16px);touch-action:pan-y;-webkit-tap-highlight-color:transparent}
 .fld.sm{height:42px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .imgrow{display:flex;gap:8px;align-items:center;margin-top:10px}
@@ -513,7 +515,9 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .pgrid.org .pt.pick{animation:none;outline:2px solid var(--gold);transform:scale(1.07);background:rgba(var(--ar),.16);z-index:1}
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
-.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
+.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important;touch-action:none}
+/* janela aberta: a tela de trás não rola (um arrasto que escapasse ia para ela e a janela parecia travada) */
+.sheet{overscroll-behavior:none}
 /* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .row,body.so .page .chk,body.so .page .cw,body.so .page .cc,body.so .page .bc .b,body.so .page .tr i,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
@@ -628,7 +632,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.21</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.22</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -738,7 +742,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.21';
+const VERSION='13.22';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1505,6 +1509,7 @@ function provBar(searching){
   ph.innerHTML=cu?'Segure um ícone e arraste para onde quiser. <button type="button" id="prst">Voltar para A–Z</button>':'Para arrumar os ícones do seu jeito, toque em <b>Minha ordem</b> e segure um ícone.';
 }
 function renderProv(){
+  window.__diagAct&&window.__diagAct('montando os ícones');
   {const pl=$('#pl');if(pl)pl.textContent=F.cat==='transferencia'?'Para qual banco?':'Quem é?'}
   const q=($('#ps').value||'').trim().toLowerCase();
   let ids;
@@ -1613,8 +1618,12 @@ function cpLabel(bi){
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
   if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
-/* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
-let CPACT=0;
+/* carrega as imagens do carrossel do centro para as pontas (o cartão escolhido aparece primeiro): no máximo 2 baixando
+   ao mesmo tempo, e cada cartão pronto aparece num quadro diferente. No iPhone, cada cartão que aparece é redesenhado
+   inteiro; antes até 4 apareciam no mesmo quadro e a janela engasgava logo depois de trocar de banco */
+let CPACT=0;const CPQ=[];let CPQR=0;
+function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
+function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
 function cpLoad(c){
   const its=$$('#cm .cpi');if(!its.length)return;
   if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
@@ -1622,11 +1631,11 @@ function cpLoad(c){
   pend.sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
   const list=pend.map(x=>x[2]);
   (function pump(){
-    while(CPACT<4&&list.length){
+    while(CPACT<2&&list.length){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
-      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cc.classList.add('rd');fin()};
+      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cpReveal(cc);fin()};
       im.addEventListener('error',fin,{once:true});
       im.addEventListener('load',()=>{(im.decode?im.decode():Promise.resolve()).then(ok,ok)},{once:true});
       im.src=u;
@@ -1674,9 +1683,10 @@ function syncForm(){
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
+         window.__diagAct&&window.__diagAct('montando o seletor de cartões');
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
          /* carrosséis já montados ficam guardados (com as imagens prontas): voltar a uma aba é instantâneo */
-         {const cm=$('#cm');if(CK&&cm.children.length){const fr=document.createDocumentFragment();while(cm.firstChild)fr.appendChild(cm.firstChild);CPC.set(CK,fr);if(CPC.size>8)CPC.delete(CPC.keys().next().value)}
+         {const cm=$('#cm');if(CK&&cm.children.length){const fr=document.createDocumentFragment();while(cm.firstChild)fr.appendChild(cm.firstChild);CPC.set(CK,fr);if(CPC.size>4)CPC.delete(CPC.keys().next().value)}
           const hit=CPC.get(key);if(hit){CPC.delete(key);cm.appendChild(hit)}else{
           cm.innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');}}
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
@@ -1870,18 +1880,18 @@ const HP=function(k){
   const preOn=e=>{const t=e.target.closest&&e.target.closest('.pt');if(!t)return;const p=pt(e);preX=p.clientX;preY=p.clientY;preOff();preEl=t;preT=setTimeout(()=>{if(preEl===t)t.classList.add('pre')},90)};
   grid.addEventListener('touchstart',preOn,{passive:true});
   grid.addEventListener('touchmove',e=>{if(!preEl)return;const p=pt(e);if(Math.abs(p.clientX-preX)>6||Math.abs(p.clientY-preY)>6)preOff()},{passive:true});
-  grid.addEventListener('touchend',()=>preOff(160));grid.addEventListener('touchcancel',()=>preOff());
+  grid.addEventListener('touchend',()=>preOff(160),{passive:true});grid.addEventListener('touchcancel',()=>preOff(),{passive:true});
   /* a janela rolou: cancela o "segurar para arrastar" que ainda ia começar (e apaga o ícone aceso) */
   $('#panel').addEventListener('scroll',()=>{if(st&&!st.on){clearTimeout(timer);st=null}if(preEl)preOff()},{passive:true});
-  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)});
-  document.addEventListener('mouseup',()=>preOff(160));
+  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)},{passive:true});
+  document.addEventListener('mouseup',()=>preOff(160),{passive:true});
   grid.addEventListener('touchstart',e=>{lastTouch=Date.now();start(e)},{passive:true});
   grid.addEventListener('touchmove',move,{passive:true});
   const block=e=>{if(st&&st.on&&e.cancelable)e.preventDefault()};
-  grid.addEventListener('touchend',end);grid.addEventListener('touchcancel',end);
-  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)});
-  document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)});
-  document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()});
+  grid.addEventListener('touchend',end,{passive:true});grid.addEventListener('touchcancel',end,{passive:true});
+  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)},{passive:true});
+  document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)},{passive:true});
+  document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()},{passive:true});
   /* segurança: se o app for para segundo plano no meio de um toque/arraste, solta tudo (evita tela travada) */
   function abort(){
     clearTimeout(timer);preOff();document.removeEventListener('touchmove',block);
@@ -1891,8 +1901,8 @@ const HP=function(k){
   }
   document.addEventListener('visibilitychange',()=>{if(document.hidden)abort()});
   window.addEventListener('pagehide',abort);window.addEventListener('blur',()=>{if(st&&st.on)abort()});
-  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},true);
-  document.addEventListener('touchcancel',()=>{if(st)end()},true);
+  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},{capture:true,passive:true});
+  document.addEventListener('touchcancel',()=>{if(st)end()},{capture:true,passive:true});
   grid.addEventListener('contextmenu',e=>e.preventDefault());
   grid.addEventListener('dragstart',e=>e.preventDefault());
   grid.addEventListener('selectstart',e=>e.preventDefault());
@@ -2127,7 +2137,7 @@ $('#extra').addEventListener('click',function(e){
     pn.style.transition='';
     if(c)closeSheet();else{pn.style.transform='';const sh=$('#sheet');clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480)}
   };
-  pn.addEventListener('touchend',solta);pn.addEventListener('touchcancel',solta);
+  pn.addEventListener('touchend',solta,{passive:true});pn.addEventListener('touchcancel',solta,{passive:true});
 })();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 /* ao voltar para o app, atualiza o "hoje" */
@@ -2548,8 +2558,35 @@ setTab('home');
     }
     return 'página';
   }
-  const onScroll=e=>act('rolando '+where(e.target));
-  const onTouch=e=>act('toque em '+where(e.target));
+  const onScroll=e=>{act('rolando '+where(e.target));gScroll(e)};
+  const onTouch=e=>{act('toque em '+where(e.target));gStart(e)};
+  /* trabalho interno do app (montar o seletor, os ícones, imagem aparecendo): entra no rótulo do engasgo,
+     junto com o toque que o causou (ex.: "toque em janela → montando o seletor de cartões") */
+  window.__diagAct=function(a){if(!on)return;const n=performance.now(),b=lastAct.a||'';
+    if(n-lastAct.t<1200&&b&&b!==a&&b.indexOf(a)<0&&!/^(abrindo o app|voltou)/.test(b))a=b.split(' → ')[0]+' → '+a;
+    lastAct={t:n,a:a}};
+  /* rolagem da janela que não acompanhou o dedo: o dedo arrastou na vertical e a janela não andou (ou demorou a começar) */
+  let G=null;
+  function gStart(e){
+    const sh=document.getElementById('sheet'),pn=document.getElementById('panel'),t=e.touches&&e.touches[0];
+    if(!t||(e.touches&&e.touches.length>1)){G=null;return}
+    const tg=e.target&&e.target.nodeType===1?e.target:(e.target&&e.target.parentElement);
+    const win=!!(tg&&sh&&!sh.hidden&&sh.classList.contains('open')&&pn&&pn.contains(tg));
+    if(!win||tg.closest('.grab,.stitle')||document.body.classList.contains('dragging')){G=null;return}
+    G={t0:performance.now(),x0:t.clientX,y0:t.clientY,ly:t.clientY,dx:0,dy:0,mv:0,first:0,pn:pn,st0:pn.scrollTop,sy0:window.scrollY,onde:where(e.target)};
+  }
+  const gMove=e=>{if(!G)return;const t=e.touches&&e.touches[0];if(!t)return;G.ly=t.clientY;G.dx=Math.max(G.dx,Math.abs(t.clientX-G.x0));G.dy=Math.max(G.dy,Math.abs(t.clientY-G.y0));if(!G.mv&&G.dy>12)G.mv=performance.now()};
+  function gScroll(e){if(G&&!G.first&&e.target===G.pn)G.first=performance.now()}
+  const gEnd=e=>{
+    if(!G||(e.touches&&e.touches.length))return;const g=G;G=null;
+    const trs=Math.abs(window.scrollY-g.sy0)>2?' · rolou a tela de trás':'';
+    if(g.first&&g.mv&&g.first-g.mv>150&&g.dy>g.dx){window.__diagNote('a janela demorou '+Math.round(g.first-g.mv)+' ms para começar a rolar (dedo em '+g.onde+')'+trs,'rolagem');return}
+    if(g.dy<40||g.dx>g.dy*0.8)return; /* não foi arrasto vertical */
+    const pn=g.pn,max=pn.scrollHeight-pn.clientHeight;if(max<4)return;
+    const desce=g.ly<g.y0,podia=desce?g.st0<max-2:g.st0>2;if(!podia)return; /* já estava no fim (ou no começo) */
+    if(Math.abs(pn.scrollTop-g.st0)<4&&!g.first)window.__diagNote('o dedo arrastou '+Math.round(g.dy)+' px e a janela não rolou (dedo em '+g.onde+')'+trs,'rolagem');
+  };
+  let vvH=0;const vvR=()=>{const h=window.visualViewport?visualViewport.height:0;if(vvH&&Math.abs(h-vvH)>120)act(h<vvH?'teclado abrindo':'teclado fechando');vvH=h}; /* só mudanças grandes (teclado) */
   let fora=0; /* quando o app saiu da frente (outro app, central de notificações, tela bloqueada) */
   const onVis=()=>{if(document.hidden)fora=performance.now();else{act('voltou do segundo plano');last=0}};
   const onBlur=()=>{fora=performance.now()};
@@ -2574,14 +2611,17 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.length-n;
-    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&x.k!=='rolagem').length,r=ev.filter(x=>!x.ms&&x.k==='rolagem').length;
+    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(r?' · <i>'+r+' rolage'+(r===1?'m':'ns')+' parada'+(r===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
   function start(){
     if(raf)return;startT=Date.now();
     document.addEventListener('scroll',onScroll,{capture:true,passive:true});
     document.addEventListener('touchstart',onTouch,{capture:true,passive:true});
+    document.addEventListener('touchmove',gMove,{capture:true,passive:true});
+    document.addEventListener('touchend',gEnd,{capture:true,passive:true});document.addEventListener('touchcancel',gEnd,{capture:true,passive:true});
+    if(window.visualViewport){vvH=visualViewport.height;visualViewport.addEventListener('resize',vvR)}
     document.addEventListener('visibilitychange',onVis);window.addEventListener('blur',onBlur);
     window.addEventListener('pagehide',save);
     badge=document.createElement('button');badge.type='button';badge.className='dgb';badge.onclick=show;document.body.appendChild(badge);
@@ -2591,17 +2631,20 @@ setTab('home');
     cancelAnimationFrame(raf);raf=0;
     document.removeEventListener('scroll',onScroll,{capture:true});
     document.removeEventListener('touchstart',onTouch,{capture:true});
+    document.removeEventListener('touchmove',gMove,{capture:true});
+    document.removeEventListener('touchend',gEnd,{capture:true});document.removeEventListener('touchcancel',gEnd,{capture:true});G=null;
+    if(window.visualViewport)visualViewport.removeEventListener('resize',vvR);
     document.removeEventListener('visibilitychange',onVis);window.removeEventListener('blur',onBlur);
     window.removeEventListener('pagehide',save);
     if(badge){badge.remove();badge=null}save();
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms);const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&x.k!=='rolagem'),RL=ev.filter(x=>!x.ms&&x.k==='rolagem');const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens da janela que não acompanharam o dedo: '+RL.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2621,7 +2664,7 @@ setTab('home');
     };
     document.body.appendChild(o);
   }
-  window.__diagNote=function(txt){if(!on)return;ev.push({h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt});if(ev.length>300)ev.shift();paint()};
+  window.__diagNote=function(txt,k){if(!on)return;const e={h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt};if(k)e.k=k;ev.push(e);if(ev.length>300)ev.shift();paint()};
   window.__diag={
     card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
     bind(){const b=$('#bdiag');if(b)b.onclick=()=>{on=!on;try{localStorage.setItem(K,on?'1':'0')}catch(e){}if(on)start();else stop();b.textContent=on?'Desligar diagnóstico':'Ligar diagnóstico';window.__app&&window.__app.toast(on?'Diagnóstico ligado: use o app normalmente':'Diagnóstico desligado')};
@@ -2635,7 +2678,7 @@ setTab('home');
   const HTML='<div class="spl-in"><div class="spl-mw"><img src="'+window.MARK+'" alt=""></div><div class="spl-n">Sobrou<span>!</span></div><div class="spl-t">Onde o seu controle<b>vira lucro.</b></div></div>';
   function run(el,ms){
     const done=()=>{if(el.dataset.d)return;el.dataset.d=1;el.classList.add('out');setTimeout(()=>el.remove(),650)};
-    el.addEventListener('pointerdown',done);setTimeout(done,ms||2500);
+    el.addEventListener('pointerdown',done,{passive:true});setTimeout(done,ms||2500);
   }
   window.showSplash=function(){
     const old=document.getElementById('spl');if(old)old.remove();
