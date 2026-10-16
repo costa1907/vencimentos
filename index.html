@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.23';
+(function(){var V='13.24';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -632,7 +632,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.23</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.24</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -742,7 +742,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.23';
+const VERSION='13.24';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1622,7 +1622,10 @@ function cpLabel(bi){
    ele ainda está deslizando ou encaixando, o carrossel "segura" o gesto inteiro: arrastar para cima ou para baixo não rola
    a janela (ou a tela) — parecia travado. Quando isso acontece (o dedo já andou 48 px na vertical, passou um instante e nada
    rolou), o app rola junto com o dedo e continua o embalo ao soltar. Se o iPhone rolar sozinho, o app não mexe em nada. */
-function socorroVertical(alvo,sel,rolador,nome){
+/* refaz a rolagem do iPhone num elemento (desliga e religa a rolagem): quando ela para de responder ao dedo, volta */
+function reviverRolagem(el){if(!el||el._rev)return;el._rev=1;el.style.overflowY='hidden';void el.offsetHeight;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.overflowY='';el._rev=0}))}
+function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   if(!alvo)return;
   let g=null,emb=0;
   const para=()=>{if(emb){cancelAnimationFrame(emb);emb=0}};
@@ -1633,25 +1636,30 @@ function socorroVertical(alvo,sel,rolador,nome){
   document.addEventListener('scroll',viu,{capture:true,passive:true});
   alvo.addEventListener('touchstart',e=>{
     g=null;if(e.touches.length!==1)return;
-    const c=sel?(e.target.closest&&e.target.closest(sel)):alvo;if(!c)return;
+    const tg=e.target&&e.target.nodeType===1?e.target:(e.target&&e.target.parentElement);if(!tg||!tg.closest)return;
+    const c=sel?tg.closest(sel):alvo;if(!c)return;
+    if(fora&&tg.closest(fora))return;                                    /* ex.: título da janela = arrastar para fechar */
     const sc=rolador();if(!sc)return;const t=e.touches[0];
-    g={sc:sc,x0:t.clientX,y0:t.clientY,st0:sc.scrollTop,t0:performance.now(),on:0,off:0,h:[[performance.now(),t.clientY]]};
+    g={sc:sc,x0:t.clientX,y0:t.clientY,st0:sc.scrollTop,t0:performance.now(),on:0,off:0,h:[[performance.now(),t.clientY]],onde:lugar?lugar(tg):''};
   },{passive:true});
   alvo.addEventListener('touchmove',e=>{
     if(!g||g.off||e.touches.length!==1)return;
+    if(document.body.classList.contains('dragging')){g.off=1;g.on=0;return} /* arrastando um ícone (Minha ordem): não é rolagem */
     const t=e.touches[0],dx=t.clientX-g.x0,dy=t.clientY-g.y0,sc=g.sc;
     g.h.push([performance.now(),t.clientY]);if(g.h.length>6)g.h.shift();
     if(!g.on){
       if(Math.abs(sc.scrollTop-g.st0)>2){g.off=1;return}             /* o iPhone está rolando normalmente: não mexe */
       if(Math.abs(dy)<48||Math.abs(dy)<Math.abs(dx)*1.3||performance.now()-g.t0<90)return; /* ainda não é um arrasto vertical claro */
+      {const mx=Math.max(0,sc.scrollHeight-sc.clientHeight);if(dy>0?sc.scrollTop<=1:sc.scrollTop>=mx-1){g.off=1;return}} /* já está no começo/fim: é o "elástico" do iPhone */
       g.on=1;g.base=sc.scrollTop;g.yb=t.clientY;g.exp=g.base;window.__resgT=performance.now();
-      window.__diagNote&&window.__diagNote('o carrossel segurou o arrasto e o app rolou '+nome+' junto com o dedo','resgate');
+      window.__diagNote&&window.__diagNote('o iPhone não rolou '+nome+' e o app rolou junto com o dedo'+(g.onde?' (dedo em '+g.onde+')':''),'resgate');
     }else if(Math.abs(sc.scrollTop-g.exp)>3){g.off=1;g.on=0;return}  /* o iPhone assumiu a rolagem: solta */
     const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
     g.exp=Math.round(Math.max(0,Math.min(max,g.base-(t.clientY-g.yb))));sc.scrollTop=g.exp;
   },{passive:true});
   alvo.addEventListener('touchend',()=>{
     if(!g)return;const gg=g;g=null;if(!gg.on||gg.off)return;
+    if(gg.sc!==document.scrollingElement&&gg.sc!==document.documentElement)reviverRolagem(gg.sc); /* próximo arrasto volta a ser do iPhone */
     const h=gg.h,a=h[0],b=h[h.length-1];let v=(a[1]-b[1])/Math.max(16,b[0]-a[0]); /* px/ms; >0 = rolar para baixo */
     if(Math.abs(v)<0.12)return;v=Math.max(-5,Math.min(5,v));
     const sc=gg.sc;let last=performance.now(),pos=sc.scrollTop;
@@ -1665,8 +1673,11 @@ function socorroVertical(alvo,sel,rolador,nome){
   },{passive:true});
   alvo.addEventListener('touchcancel',()=>{g=null},{passive:true});
 }
-socorroVertical($('#cm'),null,()=>$('#panel'),'a janela');
-socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.documentElement,'a tela');
+socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?'carrossel do seletor':t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':'janela');
+/* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))setTimeout(()=>reviverRolagem($('#panel')),60)});
+window.addEventListener('pageshow',()=>{const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))reviverRolagem($('#panel'))});
+socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.documentElement,'a tela',null,()=>'cartões da tela inicial');
 /* carrega as imagens do carrossel do centro para as pontas (o cartão escolhido aparece primeiro): no máximo 2 baixando
    ao mesmo tempo, e cada cartão pronto aparece num quadro diferente. No iPhone, cada cartão que aparece é redesenhado
    inteiro; antes até 4 apareciam no mesmo quadro e a janela engasgava logo depois de trocar de banco */
@@ -1861,7 +1872,7 @@ const HP=function(k){
     /* no iPhone o aviso de "o dedo mexeu" pode chegar atrasado quando a janela começa a rolar: se a janela rolou desde o toque,
        é rolagem, não "segurar para arrastar" (antes isso travava a janela até soltar o dedo) */
     if(Math.abs($('#panel').scrollTop-st.sc)>2){st=null;return}
-    st.on=true;
+    st.on=true;window.__dragT=performance.now();
     document.body.classList.add('dragging');$$('#pg .pt.pre').forEach(x=>x.classList.remove('pre'));
     const tiles=$$('#pg .pt');tiles.forEach(el=>{el.style.transition='none';el.style.transform='none'});
     const gr=grid.getBoundingClientRect();
@@ -2631,6 +2642,7 @@ setTab('home');
   const gEnd=e=>{
     if(!G||(e.touches&&e.touches.length))return;const g=G;G=null;
     if((window.__resgT||0)>g.t0)return; /* o app já socorreu este arrasto (anotado à parte) */
+    if((window.__dragT||0)>g.t0){window.__diagNote('o dedo ficou parado num ícone e ele virou "arrastar" (modo Minha ordem)','arrasto');return}
     const trs=!g.doc&&Math.abs(window.scrollY-g.sy0)>2?' · rolou a tela de trás':'';
     if(g.first&&g.mv&&g.first-g.mv>150&&g.dy>g.dx){window.__diagNote(g.qual+' demorou '+Math.round(g.first-g.mv)+' ms para começar a rolar (dedo em '+g.onde+')'+trs,'rolagem');return}
     if(g.dy<40||g.dx>g.dy*0.8)return; /* não foi arrasto vertical */
@@ -2640,7 +2652,8 @@ setTab('home');
   };
   let vvH=0;const vvR=()=>{const h=window.visualViewport?visualViewport.height:0;if(vvH&&Math.abs(h-vvH)>120)act(h<vvH?'teclado abrindo':'teclado fechando');vvH=h}; /* só mudanças grandes (teclado) */
   let fora=0; /* quando o app saiu da frente (outro app, central de notificações, tela bloqueada) */
-  const onVis=()=>{if(document.hidden)fora=performance.now();else{act('voltou do segundo plano');last=0}};
+  const onVis=()=>{if(document.hidden){fora=performance.now();window.__diagNote('saiu do app','info')}else{act('voltou do segundo plano');last=0;window.__diagNote('voltou ao app','info')}};
+  const onNet=e=>window.__diagNote(e.type==='online'?'internet voltou':'ficou sem internet','info');
   const onBlur=()=>{fora=performance.now()};
   function loop(t){
     raf=requestAnimationFrame(loop);
@@ -2663,8 +2676,8 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&!x.k).length,r=ev.filter(x=>!x.ms&&x.k==='rolagem').length,sc=ev.filter(x=>!x.ms&&x.k==='resgate').length;
-    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(r?' · <i>'+r+' rolage'+(r===1?'m':'ns')+' parada'+(r===1?'':'s')+'</i>':'')+(sc?' · '+sc+' socorr'+(sc===1?'o':'os'):'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&!x.k).length,r=ev.filter(x=>!x.ms&&x.k==='rolagem').length,sc=ev.filter(x=>!x.ms&&x.k==='resgate').length,ar=ev.filter(x=>!x.ms&&x.k==='arrasto').length;
+    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(r?' · <i>'+r+' rolage'+(r===1?'m':'ns')+' parada'+(r===1?'':'s')+'</i>':'')+(sc?' · '+sc+' socorr'+(sc===1?'o':'os'):'')+(ar?' · '+ar+' ícone'+(ar===1?'':'s')+' arrastado'+(ar===1?'':'s'):'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
   function start(){
@@ -2674,6 +2687,7 @@ setTab('home');
     document.addEventListener('touchmove',gMove,{capture:true,passive:true});
     document.addEventListener('touchend',gEnd,{capture:true,passive:true});document.addEventListener('touchcancel',gEnd,{capture:true,passive:true});
     if(window.visualViewport){vvH=visualViewport.height;visualViewport.addEventListener('resize',vvR)}
+    window.addEventListener('online',onNet);window.addEventListener('offline',onNet);
     document.addEventListener('visibilitychange',onVis);window.addEventListener('blur',onBlur);
     window.addEventListener('pagehide',save);
     badge=document.createElement('button');badge.type='button';badge.className='dgb';badge.onclick=show;document.body.appendChild(badge);
@@ -2686,17 +2700,18 @@ setTab('home');
     document.removeEventListener('touchmove',gMove,{capture:true});
     document.removeEventListener('touchend',gEnd,{capture:true});document.removeEventListener('touchcancel',gEnd,{capture:true});G=null;
     if(window.visualViewport)visualViewport.removeEventListener('resize',vvR);
+    window.removeEventListener('online',onNet);window.removeEventListener('offline',onNet);
     document.removeEventListener('visibilitychange',onVis);window.removeEventListener('blur',onBlur);
     window.removeEventListener('pagehide',save);
     if(badge){badge.remove();badge=null}save();
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&!x.k),RL=ev.filter(x=>!x.ms&&x.k==='rolagem'),SO=ev.filter(x=>!x.ms&&x.k==='resgate');const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&!x.k),RL=ev.filter(x=>!x.ms&&x.k==='rolagem'),SO=ev.filter(x=>!x.ms&&x.k==='resgate'),AR=ev.filter(x=>!x.ms&&x.k==='arrasto');const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos presos no carrossel que o app socorreu: '+SO.length+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
