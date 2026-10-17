@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.25';
+(function(){var V='13.26';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -355,6 +355,17 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 /* trocas do cartão do centro durante a rolagem não podem mudar o layout (o iPhone recalcula o encaixe e abandona o deslize) */
 .cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation-play-state:paused;visibility:hidden}
 .cpk .cpi:not(.ctr) .cc-num{visibility:hidden}
+/* v13.26: seletor em grade de 2 colunas — nada rola na horizontal dentro da janela; o cartão escolhido ganha um contorno dourado */
+.cgrid .cpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;overflow:visible;scroll-snap-type:none;margin:0 0 6px;padding:6px 2px 8px;contain:none;touch-action:auto}
+.cgrid .cpi{width:auto;min-width:0;scroll-snap-align:none;border-radius:16px;touch-action:manipulation;cursor:pointer;opacity:.6;transition:opacity .15s}
+.cgrid .cpi.on{opacity:1}
+.cgrid .cpi::after{display:none}
+.cgrid .cpa{transform:none!important;animation:none!important;will-change:auto;backface-visibility:visible}
+.cgrid .cpa .cc{border-radius:14px;padding:10px 12px 9px;box-shadow:0 6px 14px -8px rgba(0,0,0,.7)}
+.cgrid .cpi.on .cpa .cc{box-shadow:0 0 0 2px var(--gold2),0 8px 16px -8px rgba(0,0,0,.7)}
+.cgrid .cpk .cpi .cc-num{visibility:visible!important}
+.cgrid .cpg{display:none}
+.cgrid .cbf{flex-wrap:wrap;overflow:visible}
 /* nome e detalhes do cartão com altura fixa: o nome muda durante o deslize, mas a janela não muda de tamanho (mudar de tamanho no meio do deslize fazia o iPhone desistir do encaixe) */
 .cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center;contain:layout style}
 .cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance;height:2.4em;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -630,7 +641,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.25</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.26</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -740,7 +751,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.25';
+const VERSION='13.26';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1166,6 +1177,8 @@ function limHTML(g,t){
 }
 /* true = encaixe calculado pelo app (preciso); false = encaixe automático do iPhone */
 const JSNAP=false;
+/* v13.26: seletor de cartões em grade (sem rolagem horizontal dentro da janela). Para voltar ao carrossel, troque para false */
+const CGRID=true;
 /* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
 function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
@@ -1175,6 +1188,7 @@ const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
 if(JSNAP)document.documentElement.classList.add('jsnap');
+if(CGRID)document.documentElement.classList.add('cgrid');
 function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
@@ -1564,9 +1578,10 @@ function icoDecode(){
 let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
-function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
+function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
 function cpLayout(mark){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
+  if(CGRID){const o=tr.querySelector('.cpi.on');return o?[].indexOf.call(its,o):0}
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
@@ -1590,7 +1605,7 @@ function cpLabel(bi){
   let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1;
   const tr=document.getElementById('cm');
   function settle(){
-    if(tch)return;
+    if(tch||CGRID)return;
     /* confere a posição duas vezes: se ainda mudou, o iPhone ainda está encaixando (corrigir agora brigava com ele e dava o tranco) */
     const sl=tr.scrollLeft;if(Math.abs(sl-sl0)>0.5){sl0=sl;clearTimeout(idle);idle=setTimeout(settle,120);return}sl0=-1;
     tr._k='';const bi=cpLayout(true),it=tr.children[bi];if(!it)return;
@@ -1616,6 +1631,14 @@ function cpLabel(bi){
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
   if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
+/* seletor em grade: tocar no cartão escolhe o cartão (antes era o que parava no centro do carrossel) */
+function cpPick(it){
+  if(!it||it.dataset.m===F.model&&it.classList.contains('on'))return;
+  const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
+  $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el===it));
+  cpNums();cpLabel([].indexOf.call($('#cm').children,it));
+}
+if(CGRID)$('#cm').addEventListener('click',e=>{const it=e.target.closest&&e.target.closest('.cpi');if(it)cpPick(it)});
 /* Socorro para o arrasto vertical que o iPhone não rola. Às vezes (perto de um carrossel ainda deslizando, depois do
    segundo plano, ou sem motivo aparente) o dedo arrasta e a janela (ou a tela) não sai do lugar — parecia travado.
    Quando o dedo já andou 36 px na vertical e a janela andou menos de 1/4 disso, o app rola junto com o dedo e continua
@@ -1675,7 +1698,7 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   },{passive:true});
   alvo.addEventListener('touchcancel',()=>{g=null},{passive:true});
 }
-socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?'carrossel do seletor':t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
+socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?(CGRID?'grade de cartões':'carrossel do seletor'):t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
 /* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))setTimeout(()=>reviverRolagem($('#panel')),60)});
 window.addEventListener('pageshow',()=>{const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))reviverRolagem($('#panel'))});
@@ -2604,7 +2627,7 @@ setTab('home');
   function where(el){
     if(!el||el===document||el===window||el===document.documentElement||el===document.body)return 'página';
     if(el.closest){
-      if(el.closest('#cm'))return 'carrossel do seletor';
+      if(el.closest('#cm'))return document.documentElement.classList.contains('cgrid')?'grade de cartões':'carrossel do seletor';
       if(el.closest('.cards'))return 'carrossel da tela inicial';
       if(el.closest('#pg'))return 'ícones de bancos';
       if(el.closest('#fs'))return 'botão salvar';
