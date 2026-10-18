@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.32';
+(function(){var V='13.33';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -641,7 +641,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.32</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.33</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -751,7 +751,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.32';
+const VERSION='13.33';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1640,6 +1640,8 @@ function cpLabel(bi){
   if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
 /* v13.32: giro 3D dos cartões feito por JS, só nos que estão perto do centro; nenhuma animação nem camada fixa dentro da janela que rola */
+/* v13.33: false = cartões do seletor só com escala (2D, sem camada de composição). Para voltar ao giro 3D, troque para true */
+const C3D=false;
 let C3Q=0;
 function cp3d(){
   C3Q=0;if(CGRID)return;
@@ -1653,7 +1655,8 @@ function cp3d(){
     d=far?0:(d>1?1:d<-1?-1:d);
     const k=far?999:Math.round(d*50);  /* passos de 2%: não reescreve a cada pixel */
     if(a._k===k)continue;a._k=k;
-    a.style.transform=(far||k===0)?'':'perspective(900px) rotateY('+(-34*d).toFixed(1)+'deg) scale('+(1-.14*Math.abs(d)).toFixed(3)+')';
+    const ad=Math.abs(d);
+    a.style.transform=(far||k===0)?'':(C3D?'perspective(900px) rotateY('+(-34*d).toFixed(1)+'deg) scale('+(1-.14*ad).toFixed(3)+')':'scale('+(1-.14*ad).toFixed(3)+') scaleX('+(1-.17*ad).toFixed(3)+')');
   }
 }
 function cp3dQ(){if(!C3Q)C3Q=requestAnimationFrame(cp3d)}
