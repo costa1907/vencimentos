@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.71';
+(function(){var V='13.73';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -103,6 +103,8 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 input[type=checkbox]{-webkit-user-select:none;user-select:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
 input,textarea{font:inherit;color:inherit}
+/* v13.73: campos de texto com 16 px: com menos de 16 px o iPhone dá ZOOM na tela ao tocar no campo (e tira o zoom ao fechar o teclado) e isso redesenhava a janela inteira (engasgos de 54–122 ms medidos ao tocar em campo de texto e ao fechar o teclado) */
+input:not(#fa):not([type=checkbox]):not([type=radio]):not([type=range]),textarea,select{font-size:16px}
 svg{display:block}
 .num{font-variant-numeric:tabular-nums}
 .app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 200px}
@@ -342,10 +344,10 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0}
 .cpi.ctr::after{opacity:1}
-/* v13.71: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
+/* v13.73: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
 html:not(.c3d) .cpk .cpi .cpa{transform:scale(.88);transition:transform .34s cubic-bezier(.33,.1,.25,1)}
 html:not(.c3d) .cpk .cpi.ctr .cpa{transform:none}
-/* v13.71: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
+/* v13.73: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
 .cpk.cpnt{scroll-snap-type:none!important}
 .cpk.cpnt .cpa{transition:none!important}
 html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
@@ -655,7 +657,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.71</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.73</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -765,7 +767,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.71';
+const VERSION='13.73';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1211,9 +1213,9 @@ if(JSNAPW)document.documentElement.classList.add('jsnapw');
 if((()=>{try{return localStorage.getItem('sobrou.sh2')==='off'}catch(e){return false}})())document.documentElement.classList.add('nosh');
 function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
-  const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
-  if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
-  const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
+  const k=n+':'+window.innerWidth;
+  if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth;tr._cw=tr.clientWidth}
+  const c=tr.scrollLeft+tr._cw/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     if(SDA||NOFX())continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
     const el=its[i].querySelector('.cc');if(!el)continue;
@@ -1283,7 +1285,8 @@ function cfInit(){
     if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr,true);
   if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
-  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
+  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf&&!(SDA||NOFX()))raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)}); /* v13.73: com o giro 3D do navegador (ou sem efeitos) esta conta durante o deslize não fazia nada útil (nem marcava o centro): foi cortada */
+    clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
   if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
@@ -1563,7 +1566,7 @@ function renderProv(){
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
   const outro='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
   const nada=(q&&!ids.length)?'<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>':'';
-  /* v13.71: todos os ícones entram de uma vez (a v13.66 montava em partes e o resto aparecia atrasado; o cronômetro mostrou que montar tudo custa só ~5 ms) */
+  /* v13.73: todos os ícones entram de uma vez (a v13.66 montava em partes e o resto aparecia atrasado; o cronômetro mostrou que montar tudo custa só ~5 ms) */
   PGK=pk;$('#pg').innerHTML=nada+g.join('')+outro;icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
@@ -1610,7 +1613,7 @@ function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector(
 function cpLayout(mark){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
   if(CGRID){const o=tr.querySelector('.cpi.on');return o?[].indexOf.call(its,o):0}
-  /* v13.71: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
+  /* v13.73: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
   const k=n+':'+window.innerWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth;tr._cw=tr.clientWidth;tr._vb=-1}
   const c=tr.scrollLeft+tr._cw/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
@@ -2449,7 +2452,7 @@ window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
   put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
 setTab('home');
-/* v13.71: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
+/* v13.73: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
 window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',()=>renderBank,f=>{renderBank=f}],['syncForm',()=>syncForm,f=>{syncForm=f}],['cpLayout',()=>cpLayout,f=>{cpLayout=f}],['cpLabel',()=>cpLabel,f=>{cpLabel=f}],['cpLoad',()=>cpLoad,f=>{cpLoad=f}],['openSheet',()=>openSheet,f=>{openSheet=f}],['closeSheet',()=>closeSheet,f=>{closeSheet=f}],['ccPrev',()=>ccPrev,f=>{ccPrev=f}],['icoDecode',()=>icoDecode,f=>{icoDecode=f}],['cpRevealStep',()=>cpRevealStep,f=>{cpRevealStep=f}],['cfLayout',()=>cfLayout,f=>{cfLayout=f}],['renderHome',()=>renderHome,f=>{renderHome=f}],['renderPan',()=>renderPan,f=>{renderPan=f}],['renderSet',()=>renderSet,f=>{renderSet=f}],['renderAll',()=>renderAll,f=>{renderAll=f}],['cp3d',()=>cp3d,f=>{cp3d=f}]];
 })();
 
@@ -2755,7 +2758,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const t=document.querySelector('.tab.on');return t?t.textContent.trim():'?';
   }
   function act(a){lastAct={t:performance.now(),a:a}}
-  /* v13.71: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
+  /* v13.73: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
      o relatório mostra, em cada engasgo, quais etapas rodaram e quanto do tempo foi código medido (o resto é desenho/layout do iPhone) */
   const PHS=[],PST={};
   function rec(n,s,e){const d=e-s;const o=PST[n]||(PST[n]={n:0,max:0,sum:0});o.n++;o.sum+=d;if(d>o.max)o.max=d;if(d>=1.5){PHS.push({n:n,s:s,e:e});if(PHS.length>120)PHS.shift()}}
