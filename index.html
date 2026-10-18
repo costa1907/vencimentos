@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.33';
+(function(){var V='13.35';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -641,7 +641,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.33</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.35</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -751,7 +751,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.33';
+const VERSION='13.35';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1229,13 +1229,13 @@ function snapper(tr,done){
     const rec=sm.filter(p=>now-p.t<90);let v=0;
     if(rec.length>1){const a=rec[0],b=rec[rec.length-1];if(b.t>a.t)v=(b.x-a.x)/(b.t-a.t)}   /* px/ms do dedo; >0 = para a direita */
     const near=i=>{let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-i);if(d<bd){bd=d;k=n}});return k};
-    const s0=near(sl0+W/2);let tgt=near(c-v*240);
+    const s0=near(sl0+W/2);let tgt=near(c);
     const pitch=cx.length>1?cx[1]-cx[0]:W,moved=tr.scrollLeft-sl0;
-    if(tgt===s0){
-      if(Math.abs(v)>0.2)tgt=s0+(v<0?1:-1);
-      else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);
-    }
-    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-3,Math.min(s0+3,tgt))));
+    /* v13.34: um gesto anda no máximo 1 cartão, não importa a força (antes a velocidade do dedo projetava até 3 cartões) */
+    if(Math.abs(v)>0.2)tgt=s0+(v<0?1:-1);
+    else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);
+    else tgt=s0;
+    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-1,Math.min(s0+1,tgt))));
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
   function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
@@ -1731,8 +1731,23 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
 }
 socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?(CGRID?'grade de cartões':'carrossel do seletor'):t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
 /* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
-document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))setTimeout(()=>reviverRolagem($('#panel')),60)});
-window.addEventListener('pageshow',()=>{const sh=$('#sheet');if(sh&&!sh.hidden&&sh.classList.contains('open'))reviverRolagem($('#panel'))});
+/* v13.35: ao voltar do segundo plano o iPhone às vezes perde a camada de rolagem da janela (o relatório mostra o iPhone sem rolar durante ~20 s depois de "voltou ao app").
+   Reconstrói a camada do painel: tira e devolve da árvore de desenho guardando a posição, e repete 2 vezes enquanto o iOS reativa a tela. */
+let ACORDT=[];
+function acordarRolagem(){
+  try{
+    const sh=$('#sheet'),pn=$('#panel');
+    if(!sh||sh.hidden||!sh.classList.contains('open')||!pn)return;
+    const y=pn.scrollTop;
+    pn.style.display='none';void pn.offsetHeight;pn.style.display='';
+    pn.scrollTop=y;
+    reviverRolagem(pn);
+    window.__diagNote&&window.__diagNote('rolagem da janela refeita ao voltar do segundo plano (posição '+Math.round(y)+' px)','info');
+  }catch(e){}
+}
+function acordar(){ACORDT.forEach(clearTimeout);ACORDT=[150,700,1800].map(t=>setTimeout(acordarRolagem,t))}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)acordar()});
+window.addEventListener('pageshow',acordar);
 socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.documentElement,'a tela',null,()=>'cartões da tela inicial');
 /* carrega as imagens do carrossel do centro para as pontas (o cartão escolhido aparece primeiro): no máximo 2 baixando
    ao mesmo tempo, e cada cartão pronto aparece num quadro diferente. No iPhone, cada cartão que aparece é redesenhado
