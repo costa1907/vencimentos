@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.70';
+(function(){var V='13.71';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -342,9 +342,12 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0}
 .cpi.ctr::after{opacity:1}
-/* v13.70: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
+/* v13.71: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
 html:not(.c3d) .cpk .cpi .cpa{transform:scale(.88);transition:transform .34s cubic-bezier(.33,.1,.25,1)}
 html:not(.c3d) .cpk .cpi.ctr .cpa{transform:none}
+/* v13.71: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
+.cpk.cpnt{scroll-snap-type:none!important}
+.cpk.cpnt .cpa{transition:none!important}
 html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 /* bolinhas: a atual cresce com transform (antes mudava a largura e refazia o layout a cada quadro do deslize) */
 .cpg{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;height:8px;contain:layout style}
@@ -652,7 +655,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.70</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.71</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -762,7 +765,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.70';
+const VERSION='13.71';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1560,20 +1563,8 @@ function renderProv(){
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
   const outro='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
   const nada=(q&&!ids.length)?'<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>':'';
-  const job=++PGJ,pgEl=$('#pg');
-  /* v13.70: ao abrir (categoria nova) monta só os primeiros ícones de uma vez e o resto aos poucos, um pedaço por quadro (antes eram ~56 ms num quadro só = engasgo ao tocar no +) */
-  if(q||PGK===pk||g.length<=20){PGK=pk;pgEl.innerHTML=nada+g.join('')+outro;icoDecode();return}
-  PGK=pk;
-  pgEl.innerHTML=nada+g.slice(0,16).join('')+outro;
-  let i=16;
-  const more=()=>{
-    if(job!==PGJ)return;
-    const o=pgEl.lastElementChild;if(!o)return;
-    o.insertAdjacentHTML('beforebegin',g.slice(i,i+20).join(''));i+=20;
-    if(i<g.length)requestAnimationFrame(more);else icoDecode();
-  };
-  setTimeout(()=>requestAnimationFrame(more),420);
-  icoDecode();
+  /* v13.71: todos os ícones entram de uma vez (a v13.66 montava em partes e o resto aparecia atrasado; o cronômetro mostrou que montar tudo custa só ~5 ms) */
+  PGK=pk;$('#pg').innerHTML=nada+g.join('')+outro;icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
 let BKB=false,BKOPEN=false;
@@ -1619,7 +1610,7 @@ function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector(
 function cpLayout(mark){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
   if(CGRID){const o=tr.querySelector('.cpi.on');return o?[].indexOf.call(its,o):0}
-  /* v13.70: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
+  /* v13.71: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
   const k=n+':'+window.innerWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth;tr._cw=tr.clientWidth;tr._vb=-1}
   const c=tr.scrollLeft+tr._cw/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
@@ -1647,7 +1638,7 @@ function cpLabel(bi){
   if(document.documentElement.classList.contains('c3d'))for(let i=0;i<its.length;i++)its[i].classList.toggle('nr',Math.abs(i-bi)<=2);
 }
 (function(){
-  let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1;
+  let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1,lrun=0;
   const tr=document.getElementById('cm');
   function settle(){
     if(tch||CGRID)return;
@@ -1667,7 +1658,7 @@ function cpLabel(bi){
     }
   }
   tr.addEventListener('scroll',()=>{CPLS=Date.now();
-    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
+    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const n=performance.now();if(n-lrun<45)return;lrun=n;const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
     clearTimeout(idle);idle=setTimeout(settle,140);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
@@ -1884,6 +1875,7 @@ function syncForm(){
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
+         {const t=$('#cm');t.classList.add('cpnt');requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.remove('cpnt')))}
          window.__diagAct&&window.__diagAct('montando o seletor de cartões');
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
          /* carrosséis já montados ficam guardados (com as imagens prontas): voltar a uma aba é instantâneo */
@@ -2457,7 +2449,7 @@ window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
   put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
 setTab('home');
-/* v13.70: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
+/* v13.71: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
 window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',()=>renderBank,f=>{renderBank=f}],['syncForm',()=>syncForm,f=>{syncForm=f}],['cpLayout',()=>cpLayout,f=>{cpLayout=f}],['cpLabel',()=>cpLabel,f=>{cpLabel=f}],['cpLoad',()=>cpLoad,f=>{cpLoad=f}],['openSheet',()=>openSheet,f=>{openSheet=f}],['closeSheet',()=>closeSheet,f=>{closeSheet=f}],['ccPrev',()=>ccPrev,f=>{ccPrev=f}],['icoDecode',()=>icoDecode,f=>{icoDecode=f}],['cpRevealStep',()=>cpRevealStep,f=>{cpRevealStep=f}],['cfLayout',()=>cfLayout,f=>{cfLayout=f}],['renderHome',()=>renderHome,f=>{renderHome=f}],['renderPan',()=>renderPan,f=>{renderPan=f}],['renderSet',()=>renderSet,f=>{renderSet=f}],['renderAll',()=>renderAll,f=>{renderAll=f}],['cp3d',()=>cp3d,f=>{cp3d=f}]];
 })();
 
@@ -2763,7 +2755,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const t=document.querySelector('.tab.on');return t?t.textContent.trim():'?';
   }
   function act(a){lastAct={t:performance.now(),a:a}}
-  /* v13.70: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
+  /* v13.71: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
      o relatório mostra, em cada engasgo, quais etapas rodaram e quanto do tempo foi código medido (o resto é desenho/layout do iPhone) */
   const PHS=[],PST={};
   function rec(n,s,e){const d=e-s;const o=PST[n]||(PST[n]={n:0,max:0,sum:0});o.n++;o.sum+=d;if(d>o.max)o.max=d;if(d>=1.5){PHS.push({n:n,s:s,e:e});if(PHS.length>120)PHS.shift()}}
