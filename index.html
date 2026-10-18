@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.45';
+(function(){var V='13.46';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.45</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.46</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.45';
+const VERSION='13.46';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1547,12 +1547,12 @@ function renderProv(){
   provBar(!!q);
   const pk=q?'':F.cat+'|'+(F.prov||'')+'|'+S.pord;
   let g=!q&&PGC.get(pk);
-  if(!g){g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');}
+  if(!g){g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
+    if(!q){PGC.set(pk,g);if(PGC.size>8)PGC.delete(PGC.keys().next().value)}} /* v13.46: o cache guarda só os ícones; o "Outro" é somado depois (antes entrava no cache e aparecia duplicado) */
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
-  g+='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
-  if(!q&&!PGC.has(pk)){PGC.set(pk,g);if(PGC.size>8)PGC.delete(PGC.keys().next().value)}
-  if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
-  $('#pg').innerHTML=g;
+  const outro='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
+  const nada=(q&&!ids.length)?'<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>':'';
+  $('#pg').innerHTML=nada+g+outro;
   icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
