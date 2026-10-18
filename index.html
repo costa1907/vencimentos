@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.54';
+(function(){var V='13.55';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.54</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.55</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.54';
+const VERSION='13.55';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1775,21 +1775,21 @@ socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t
   tr.addEventListener('touchcancel',()=>{tocando=0;if(solto)agenda()},{passive:true});
   tr.addEventListener('scroll',()=>{if(solto)agenda()},{passive:true});
 })();
-/* v13.54: gravador do toque com o carrossel de cartões ainda andando (só anota no Diagnóstico). Guarda a posição a cada quadro por ~0,9 s e escreve os deslocamentos de cada quadro, para ver onde o cartão muda de velocidade/pula */
+/* v13.54/55: gravador do toque com o carrossel de cartões ainda andando (só anota no Diagnóstico). Guarda a posição a cada quadro por ~1,2 s e escreve os deslocamentos de cada quadro, com marcas: ↓ = dedo encostou, ↑ = dedo soltou. Assim dá para separar cada gesto */
 (function(){
-  const tr=document.getElementById('cm');if(!tr||CGRID)return;let rec=0,nrec=0;
+  const tr=document.getElementById('cm');if(!tr||CGRID)return;let rec=0,nrec=0,a=[],mk=[];
+  const marca=c=>{if(rec)mk.push([a.length,c])};
+  tr.addEventListener('touchend',()=>marca('↑'),{passive:true});tr.addEventListener('touchcancel',()=>marca('↑'),{passive:true});
   tr.addEventListener('touchstart',e=>{
-    if(rec||!window.__diagNote||Date.now()-CPLS>260)return;
-    rec=1;const a=[],t0=performance.now(),x0=e.touches[0].clientX,s0=tr.scrollLeft;let fim=-1,xf=x0;
-    const mv=ev=>{if(ev.touches[0])xf=ev.touches[0].clientX},en=()=>{if(fim<0)fim=performance.now()-t0};
-    tr.addEventListener('touchmove',mv,{passive:true});tr.addEventListener('touchend',en,{passive:true,once:true});tr.addEventListener('touchcancel',en,{passive:true,once:true});
+    if(rec){marca('↓');return}
+    if(!window.__diagNote||Date.now()-CPLS>260)return;
+    rec=1;a=[];mk=[[0,'↓']];const t0=performance.now(),s0=tr.scrollLeft;
     const f=()=>{const t=performance.now()-t0;a.push(tr.scrollLeft);
-      if(t<900){requestAnimationFrame(f);return}
-      tr.removeEventListener('touchmove',mv);rec=0;nrec++;
+      if(t<1200){requestAnimationFrame(f);return}
+      rec=0;nrec++;
       const d=[];for(let i=1;i<a.length;i++)d.push(Math.round((a[i]-a[i-1])*10)/10);
-      let mx=0,ix=0;for(let i=0;i<d.length;i++)if(Math.abs(d[i])>Math.abs(mx)){mx=d[i];ix=i}
-      let ult=0;for(let i=0;i<d.length;i++)if(Math.abs(d[i])>0.3)ult=i;
-      window.__diagNote('toque com o carrossel andando #'+nrec+' ('+(JSNAPW?'JS':'nativo')+') · de '+Math.round(s0)+' a '+Math.round(a[a.length-1])+' px · dedo '+(fim<0?'ainda apoiado':'soltou aos '+Math.round(fim)+' ms')+' · moveu '+Math.round(xf-x0)+' px · maior passo '+mx+' px no quadro '+ix+' · parou no quadro '+ult+' · passos por quadro: '+d.slice(0,54).join(' '),'info')};
+      let out=[],k=0;for(let i=0;i<d.length&&i<72;i++){while(k<mk.length&&mk[k][0]<=i+1){out.push(mk[k][1]);k++}out.push(d[i])}
+      window.__diagNote('toque com o carrossel andando #'+nrec+' ('+(JSNAPW?'JS':'nativo')+') · de '+Math.round(s0)+' a '+Math.round(a[a.length-1])+' px · px por quadro (↓ dedo encostou, ↑ dedo soltou): '+out.join(' '),'info')};
     f()},{passive:true});
 })();
 /* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
