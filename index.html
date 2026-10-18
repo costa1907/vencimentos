@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.51';
+(function(){var V='13.52';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.51</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.52</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.51';
+const VERSION='13.52';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1748,6 +1748,31 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
 }
 socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?(CGRID?'grade de cartões':'carrossel do seletor'):t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
 
+
+/* v13.52: segunda puxada com o carrossel ainda andando, perto do 1º/último cartão: o iPhone refazia o ponto de encaixe e levava o cartão até lá numa curva rápida
+   ("puxada para o lado"). Só nesse caso (toque que começa com o carrossel em movimento + arrasto para a ponta, já a menos de ~1 cartão dela) o encaixe fica solto até
+   o carrossel parar e depois é religado (na ponta o limite da rolagem já é o centro do cartão). Passivo; toques normais não mudam nada.
+   Desligar: Diagnóstico → "Pontas suaves". */
+(function(){
+  const tr=document.getElementById('cm');if(!tr||CGRID||JSNAP||JSNAPW)return;
+  const ligado=()=>{try{return localStorage.getItem('sobrou.pt')!=='off'}catch(e){return true}};
+  let x0=0,mov=0,solto=0,tmr=0,tocando=0;
+  const religa=()=>{clearTimeout(tmr);tmr=0;if(solto){solto=0;tr.style.scrollSnapType=''}};
+  const agenda=()=>{clearTimeout(tmr);tmr=setTimeout(()=>{if(tocando){agenda();return}religa()},240)};
+  tr.addEventListener('touchstart',e=>{tocando=1;if(solto)clearTimeout(tmr);const t=e.touches[0];x0=t.clientX;mov=(Date.now()-CPLS<250)?1:0},{passive:true});
+  tr.addEventListener('touchmove',e=>{
+    if(solto||!mov||e.touches.length!==1||!ligado())return;
+    const dx=e.touches[0].clientX-x0;if(Math.abs(dx)<10)return;
+    const it=tr.children[0];if(!it)return;const st=it.offsetWidth+14,mx=tr.scrollWidth-tr.clientWidth,sl=tr.scrollLeft;
+    if((dx<0&&sl>=mx-st*.9)||(dx>0&&sl<=st*.9)){
+      solto=1;tr.style.scrollSnapType='none';
+      window.__diagNote&&window.__diagNote('puxada com o carrossel andando perto da ponta ('+(dx<0?'último':'1º')+' cartão): encaixe solto até parar','info');
+    }
+  },{passive:true});
+  tr.addEventListener('touchend',()=>{tocando=0;if(solto)agenda()},{passive:true});
+  tr.addEventListener('touchcancel',()=>{tocando=0;if(solto)agenda()},{passive:true});
+  tr.addEventListener('scroll',()=>{if(solto)agenda()},{passive:true});
+})();
 /* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
 /* v13.36: ao voltar do segundo plano o iOS descarta as imagens já decodificadas. O app achava que os ícones continuavam prontos (ICDEC) e eles voltavam a ser
    decodificados no meio da rolagem, com o iPhone sem acompanhar o dedo (no relatório, todos os socorros vieram depois de "voltou ao app").
@@ -2852,11 +2877,12 @@ setTab('home');
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc2')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc2')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="pt">Pontas suaves: '+(localStorage.getItem('sobrou.pt')==='off'?'desligado → ligar':'ligado → desligar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
       if(a==='soc'){try{if(localStorage.getItem('sobrou.soc2')==='obs')localStorage.setItem('sobrou.soc2','on');else localStorage.setItem('sobrou.soc2','obs')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc2')==='obs'?'Socorro só observando':'Socorro ligado');return}
+      if(a==='pt'){try{localStorage.setItem('sobrou.pt',localStorage.getItem('sobrou.pt')==='off'?'on':'off')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.pt')==='off'?'Pontas suaves desligado':'Pontas suaves ligado');return}
       if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d',on?'off':'on')}catch(_){}save();location.reload();return}
       if(a==='car'){const js=document.documentElement.classList.contains('jsnapw');try{localStorage.setItem('sobrou.car',js?'nat':'js')}catch(_){}save();location.reload();return}
       if(a==='z'){ev=[];GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
