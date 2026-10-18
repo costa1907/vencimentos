@@ -8,14 +8,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<script>try{if(localStorage.getItem('sobrou.fx')==='0')document.documentElement.classList.add('nofx')}catch(e){}</script>
-<style>html{background:#0a0c13}
-/* fontes guardadas no próprio GitHub (nada de Google): f-figtree.woff2 e f-bricolage.woff2 */
-@font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;src:url(f-figtree.woff2) format('woff2')}
-@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.35';
+(function(){var V='13.6';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -36,8 +31,9 @@
 <link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width:402px) and (device-height:874px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width:440px) and (device-height:956px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
-<link rel="preload" as="font" type="font/woff2" href="f-figtree.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="f-bricolage.woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="i-sobrou-mark.webp">
 <script>window.MARK="i-sobrou-mark.webp";</script>
 <script>
@@ -84,7 +80,6 @@
   --gold:var(--gold); --gold2:var(--gold2); --ok:#34d399; --bad:#fb6f6f; --warn:#f5a524;
   --fd:'Bricolage Grotesque',ui-rounded,system-ui,sans-serif; --fb:'Figtree',system-ui,-apple-system,sans-serif;
   --ease:cubic-bezier(.22,1,.36,1);
-  --st:max(env(safe-area-inset-top,0px),6px);
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -93,7 +88,6 @@ html,body{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px;-webkit-text-size-adjust:100%}
 body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action:manipulation;-webkit-font-smoothing:antialiased;
   background:
-   linear-gradient(var(--bg) var(--st),transparent calc(var(--st) + 48px)) top/100% calc(var(--st) + 48px) no-repeat,
    radial-gradient(900px 420px at 80% -8%,rgba(var(--ar),.10),transparent 60%),
    radial-gradient(700px 500px at -10% 30%,rgba(95,130,255,.07),transparent 60%),
    var(--bg);
@@ -148,20 +142,18 @@ svg{display:block}
 
 /* lista */
 .sec{margin-top:24px}
-/* quadros do Panorama fora da tela só são desenhados quando chegam perto. A lista de contas é desenhada inteira de uma vez:
-   montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
-#pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
+/* listas e quadros fora da tela só são desenhados quando chegam perto (menos trabalho ao abrir e ao rolar) */
+#list>.sec:not(.cardsec),#pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .sec h3 em{font-style:normal;background:rgba(255,255,255,.08);color:var(--tx);border-radius:99px;padding:3px 8px;font-size:11px;letter-spacing:0}
 .sec h3 span{margin-left:auto;letter-spacing:0;text-transform:none;font:600 13px var(--fb)}
 .sec.late h3{color:var(--bad)} .sec.late h3 em{background:rgba(251,111,111,.16);color:var(--bad)}
 .sec.done h3{color:var(--ok)}
 .group{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
-.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
+.row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) both;animation-delay:calc(var(--i,0)*45ms)}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
 .noanim .row{animation:none}
-.row.na{animation:none}
 @keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .chk{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;color:transparent;transition:all .3s var(--ease);position:relative}
 .chk svg{width:16px;height:16px;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .4s .05s var(--ease)}
@@ -195,12 +187,8 @@ svg{display:block}
 .cta:active{transform:scale(.97)}
 .cheer{margin-top:18px;padding:14px 16px;border-radius:18px;background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.25);color:#9af0cc;font-weight:600;text-align:center}
 
-/* faixa sólida atrás do relógio/bateria: o conteúdo some por baixo dela ao rolar, em vez de aparecer desfocado ou com sombra.
-   No iOS 26 o próprio iPhone usa a cor de uma faixa fixa no topo para pintar a área do relógio.
-   O fundo da página (1ª camada do body) já sai liso logo abaixo dela, então não aparece emenda com o brilho do topo */
-.topbar{position:fixed;top:0;left:0;right:0;height:var(--st);background:var(--bg);z-index:40;pointer-events:none}
-/* barra e botão + (sem desfoque por trás: o desfoque era refeito a cada quadro enquanto a lista rolava por baixo) */
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:#141828;border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.7);z-index:20}
+/* barra e botão + */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:rgba(20,24,40,.78);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.7);z-index:20}
 .tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:rgba(255,255,255,.08);transition:transform .45s var(--ease)}
 .tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 8px;color:var(--mu2);font:600 10.5px var(--fb);letter-spacing:.03em;transition:color .25s}
 .tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -218,8 +206,8 @@ svg{display:block}
 .sheet[hidden]{display:none}
 .sheet{position:fixed;inset:0;z-index:50}
 .scrim{position:absolute;inset:0;background:rgba(3,4,8,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .35s}
-.panel{position:absolute;left:0;right:0;margin:0 auto;bottom:0;width:100%;max-width:560px;max-height:min(94dvh,calc(100dvh - var(--st) - 8px));overflow-y:auto;overscroll-behavior-y:none;transform:translateY(102%);transition:transform .45s var(--ease);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
-.sheet.open .scrim{opacity:1} .sheet.open .panel{transform:none}
+.panel{position:absolute;left:50%;bottom:0;width:100%;max-width:560px;max-height:94dvh;overflow-y:auto;overscroll-behavior:contain;transform:translate(-50%,102%);transition:transform .45s var(--ease);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
+.sheet.open .scrim{opacity:1} .sheet.open .panel{transform:translate(-50%,0)}
 .grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px}
 .stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .stitle h2{margin:0;font:800 20px var(--fd);letter-spacing:-.02em}
@@ -293,32 +281,23 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .pg-sub{margin:6px 4px 0;color:var(--mu);font-size:13.5px}
 
 /* aviso e confete */
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 168px);transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 18px;border-radius:18px;border:1px solid var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.5);font-weight:600;font-size:14px;white-space:nowrap;z-index:70;transition:all .4s var(--ease);background:#232941}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 168px);transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 18px;border-radius:18px;background:#23294187;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.5);font-weight:600;font-size:14px;white-space:nowrap;z-index:70;transition:all .4s var(--ease);background:rgba(35,41,65,.92)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{color:var(--gold2);font-weight:700}
-/* confete: cada bolinha é animada pelo compositor do iPhone (sem desenhar quadro a quadro no processador) */
-.fxb{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:80}
-.fxb i{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none}
+canvas.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:80}
 
 
 /* empresas, selos e cartões */
 .pv{flex:none;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;font:800 14px/1 var(--fd);letter-spacing:-.03em;color:var(--t);background:linear-gradient(145deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px -8px var(--c);overflow:hidden;white-space:nowrap}
 .pv.img{background:rgba(255,255,255,.06);border:1px solid var(--line2);box-shadow:none}
 .pv img{width:100%;height:100%;object-fit:cover;display:block}
-.bsel{width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px 8px 10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--tx);font:600 14.5px var(--fb);text-align:left}
-.bsel .bselv{display:flex;align-items:center;gap:10px;min-width:0}
-.bsel .bselv .pv{width:34px;height:34px;border-radius:11px;font-size:12px}
-.bsel .bselv .mu{color:var(--mu);font-weight:500;padding-left:6px}
-.bsel i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--gold2);flex:none}
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:2px}
 .pt{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0;transition:all .25s var(--ease)}
 .pt .pv{width:44px;height:44px;border-radius:15px;font-size:15px}
 .pt span{max-width:100%;padding:0 3px;font:600 10.5px var(--fb);color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transform:translateY(-2px)}
 .pt.on span{color:var(--gold2)}
-/* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
-   rolagem feita com o dedo sobre os ícones. O ícone segue acendendo (.pre) quando o dedo fica parado, e marca ao tocar */
-.pt:active{transform:none}
+.pt:active{transform:scale(.95)}
 .pt .hz{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;clip-path:inset(0 round 16px);touch-action:pan-y;-webkit-tap-highlight-color:transparent}
 .fld.sm{height:42px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .imgrow{display:flex;gap:8px;align-items:center;margin-top:10px}
@@ -332,21 +311,19 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpk::-webkit-scrollbar{display:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:normal;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
-.cpa{display:block;pointer-events:none;transform-origin:50% 60%}
+.cpa{display:block;pointer-events:none;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 /* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
+.sda .cpk .cpa{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
 .sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
 
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0;transition:opacity .25s}
 .cpi.ctr::after{opacity:1}
-/* bolinhas: a atual cresce com transform (antes mudava a largura e refazia o layout a cada quadro do deslize) */
-.cpg{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;height:8px;contain:layout style}
-.cpg i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:transform .25s var(--ease),background .25s}
-.cpg i.on{background:var(--gold2);transform:scaleX(2.4)}
+.cpg{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:10px;height:8px}
+.cpg i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:width .25s var(--ease),background .25s}
+.cpg i.on{width:20px;background:var(--gold2)}
 .cpk .cc-fx{display:none}
-/* seletor de cartões: sem rodinha de carregamento (nem animação escondida): o cartão mostra só o contorno até a imagem chegar */
-.cpk .cc-ld{visibility:hidden;animation:none}
 /* seletor de cartões: sem transição nem sombra pesada nas imagens */
 .cpk .cc.w.tpl .cc-bg{transition:none}
 /* sem animações contínuas nos cartões do seletor e nos cartões fora do centro da tela inicial (aliviam a GPU do iPhone) */
@@ -354,21 +331,9 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 /* trocas do cartão do centro durante a rolagem não podem mudar o layout (o iPhone recalcula o encaixe e abandona o deslize) */
 .cards.cf .cw:not(.ctr) .cc::after,.cards.cf .cw:not(.ctr) .cc-fx::after{animation-play-state:paused;visibility:hidden}
 .cpk .cpi:not(.ctr) .cc-num{visibility:hidden}
-/* v13.26: seletor em grade de 2 colunas — nada rola na horizontal dentro da janela; o cartão escolhido ganha um contorno dourado */
-.cgrid .cpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;overflow:visible;scroll-snap-type:none;margin:0 0 6px;padding:6px 2px 8px;contain:none;touch-action:auto}
-.cgrid .cpi{width:auto;min-width:0;scroll-snap-align:none;border-radius:16px;touch-action:manipulation;cursor:pointer;opacity:.6;transition:opacity .15s}
-.cgrid .cpi.on{opacity:1}
-.cgrid .cpi::after{display:none}
-.cgrid .cpa{transform:none!important;animation:none!important;will-change:auto;backface-visibility:visible}
-.cgrid .cpa .cc{border-radius:14px;padding:10px 12px 9px;box-shadow:0 6px 14px -8px rgba(0,0,0,.7)}
-.cgrid .cpi.on .cpa .cc{box-shadow:0 0 0 2px var(--gold2),0 8px 16px -8px rgba(0,0,0,.7)}
-.cgrid .cpk .cpi .cc-num{visibility:visible!important}
-.cgrid .cpg{display:none}
-.cgrid .cbf{flex-wrap:wrap;overflow:visible}
-/* nome e detalhes do cartão com altura fixa: o nome muda durante o deslize, mas a janela não muda de tamanho (mudar de tamanho no meio do deslize fazia o iPhone desistir do encaixe) */
-.cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center;contain:layout style}
-.cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance;height:2.4em;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.cps{font:500 13px/1.3 var(--fb);color:var(--mu);letter-spacing:.04em;height:1.3em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpt{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0 16px;text-align:center}
+.cpn{font:700 19px/1.2 var(--fd);color:var(--tx);text-wrap:balance}
+.cps{font:500 13px var(--fb);color:var(--mu);letter-spacing:.04em}
 .cpd{font:600 11px var(--fb);color:var(--mu);letter-spacing:.16em;text-transform:uppercase;opacity:.8}
 .cc{position:relative;aspect-ratio:1.586;border-radius:18px;padding:14px 16px 12px;display:flex;flex-direction:column;justify-content:space-between;color:var(--t);overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.26),transparent 55%),linear-gradient(135deg,color-mix(in srgb,var(--c) 92%,#fff),color-mix(in srgb,var(--c) 60%,#000));box-shadow:0 18px 32px -16px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.25)}
 .cc::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%);transform:translateX(-110%);animation:ccs 6s 1.2s ease-in-out infinite;pointer-events:none}
@@ -398,7 +363,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cc.mini::after{display:none}
 .cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cards::-webkit-scrollbar{display:none}
-.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
+.cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) both}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 .cw .meta,.cw .lim{transition:opacity .25s}
 .cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
@@ -512,8 +477,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cc.w.tpl:not(.rd) .cc-num{opacity:0}
 .cc.w.tpl:not(.rd){background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);animation:ccspin .8s linear infinite;pointer-events:none}
-/* sumir sem mexer no layout: display:none aqui refazia o layout dentro do carrossel quando a imagem terminava de carregar, no meio do deslize, e o iPhone abandonava o encaixe */
-.cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{visibility:hidden;animation:none}
+.cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{display:none}
 @keyframes ccspin{to{transform:rotate(360deg)}}
 .cw:active .cc{transform:none}
 .pbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0 8px;flex-wrap:wrap}
@@ -526,9 +490,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
 .scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
-/* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
-   qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
-body.so .page .cw,body.so .page .cc,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
+body.so .page *,body.so .fab::before,body.so .cc *{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
@@ -585,9 +547,8 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 /* desfoques só quando visíveis (o desfoque é refeito a cada quadro de rolagem) */
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
-body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
+body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 .jsnap .cpk,.jsnap .cards{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
-.jsnapw .cpk{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
 /* diagnóstico de fluidez */
 .dgb{position:fixed;z-index:200;left:10px;top:calc(env(safe-area-inset-top,0px) + 6px);font:600 11px/1 var(--fb);color:#d8ffe6;background:rgba(10,40,25,.82);border:1px solid rgba(80,220,140,.5);border-radius:99px;padding:6px 9px;pointer-events:auto;transition:background .2s}
 .dgb b{font-weight:800}.dgb i{font-style:normal;color:#ffb3b3}.dgb.bad{background:rgba(120,20,20,.9)}
@@ -599,25 +560,6 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 .toast:not(.show){backdrop-filter:none;-webkit-backdrop-filter:none}
 /* brilho de fundo do topo: 2 ciclos e para (não fica gastando GPU/bateria parado) */
 .hero::before{animation-iteration-count:2}
-/* ===== Efeitos especiais DESLIGADOS (Ajustes): tudo plano e parado, para rolar liso em qualquer aparelho ===== */
-.nofx .cards .cw .cc,.nofx .cpk .cpa{animation:none!important;transform:none!important;will-change:auto!important}
-.nofx .cc.w{will-change:auto;transition:none}
-.nofx .cw,.nofx .row,.nofx .page,.nofx .pm .tr i,.nofx .gl .tr i,.nofx .chk.pop,.nofx .pt.land,.nofx .pgrid.org .pt{animation:none!important}
-.nofx .cc-fx,.nofx .ccr,.nofx .cpi::after,.nofx .hero::before,.nofx .hero::after,.nofx .fab::before,.nofx .cc::after{display:none!important}
-.nofx .cards.cf .cw:not(.ctr) .cc-num,.nofx .cpk .cpi:not(.ctr) .cc-num{visibility:visible}
-.nofx .cw .meta,.nofx .cw .lim{transition:none}
-.nofx .tabs{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(20,24,40,.97)}
-.nofx .toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#232941f5}
-.nofx .ring .pr{filter:none}
-.nofx .pv.logo img{opacity:1;transition:none}
-.nofx .cc.w.tpl .cc-bg{transition:none}
-/* chave liga/desliga (Ajustes) */
-.fxrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
-.fxrow b{font:600 14.5px var(--fb)}
-.swt{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:rgba(255,255,255,.16);transition:background .2s}
-.swt::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s}
-.swt[aria-checked="true"]{background:var(--gold)}
-.swt[aria-checked="true"]::after{transform:translateX(20px)}
 @media (prefers-reduced-motion:reduce){
   .cc-fx::after,.cc.w *{animation:none!important}
 
@@ -626,7 +568,6 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-<div class="topbar" aria-hidden="true"></div>
 <div class="spl" id="spl" aria-hidden="true">
   <div class="spl-in">
     <div class="spl-mw"><img data-mk alt=""></div>
@@ -641,7 +582,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.35</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.6</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -696,12 +637,9 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
     <div id="bkx" hidden>
       <div class="lbl">Como você paga</div>
       <p class="phint" style="margin-bottom:8px">Opcional. Escolha a forma e o banco; o ícone do banco aparece na conta quando ela não tem um logo próprio.</p>
-      <div class="seg" id="fv" style="grid-template-columns:repeat(3,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button><button type="button" data-v="credito">Crédito</button><button type="button" data-v="dinheiro">Dinheiro</button></div>
-      <div id="bkb">
-        <div class="lbl" style="margin-top:2px">Banco</div>
-        <button type="button" class="bsel" id="bsel"><span class="bselv" id="bselv"></span><i id="bsela">Escolher</i></button>
-        <div class="pgrid" id="bkg" hidden style="margin-top:8px"></div>
-      </div>
+      <div class="seg" id="fv" style="grid-template-columns:repeat(4,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button></div>
+      <div class="lbl" style="margin-top:2px">Banco</div>
+      <div class="pgrid" id="bkg"></div>
     </div>
     <div id="ccx" hidden>
       <div class="ccprev" id="ccprev"></div>
@@ -751,7 +689,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.35';
+const VERSION='13.6';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -825,7 +763,7 @@ L('assinatura',[P('netflix','Netflix','#E50914','N'),P('prime','Prime Video','#0
 L('servicos',[P('sabesp','Sabesp','#0066B3','Sb'),P('copasa','Copasa','#0071BC','Cp'),P('sanepar','Sanepar','#00A3E0','Sn'),P('cedae','Cedae','#0057A8','Cd'),P('embasa','Embasa','#0078C8','Eb'),P('compesa','Compesa','#0A5BB5','Cm'),P('caesb','Caesb','#0077B6','Ce'),P('aegea','Aegea','#00A859','Ae'),
  P('enel','Enel','#1F4EB4','En'),P('cpfl','CPFL','#0072BC','CPFL'),P('light','Light','#F58220','Li'),P('cemig','Cemig','#00A859','Cg'),P('neoenergia','Neoenergia','#00A1DE','Ne'),P('copel','Copel','#0057B8','Co'),P('energisa','Energisa','#E4002B','Es'),P('equatorial','Equatorial','#F58220','Eq'),P('elektro','Elektro','#E1251B','El'),P('edp','EDP','#E4002B','EDP'),
  P('comgas','Comgás','#F58220','Cg'),P('naturgy','Naturgy','#F58220','Na'),P('ultragaz','Ultragaz','#E4002B','Ug'),P('liquigas','Liquigás','#00A859','Lq'),P('copagaz','Copagaz','#0057B8','Cz'),P('supergasbras','Supergasbras','#E4002B','Sg')]);
-L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('brisanet','Brisanet','#00A859','Br'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
+L('telecom',[P('vivo','Vivo','#660099','Vi'),P('claro','Claro','#E4002B','Cl'),P('tim','TIM','#003D8F','TIM'),P('oi','Oi','#FF6B00','Oi'),P('algar','Algar','#F58220','Al'),P('brisanet','Brisanet','#00A859','Br'),P('desktop','Desktop','#E4002B','De'),P('starlink','Starlink','#111111','St'),P('sky','Sky','#E4002B','Sky')]);
 L('saude',[P('unimed','Unimed','#00995D','Un'),P('amil','Amil','#0072CE','Am'),P('bradescosaude','Bradesco Saúde','#CC092F','BS'),P('sulamerica','SulAmérica','#F58220','Su'),P('hapvida','Hapvida','#00A3E0','Hv'),P('notredame','NotreDame','#0067B1','ND'),P('portosaude','Porto Saúde','#0A5BB5','PS'),P('smartfit','Smart Fit','#FFC20E','SF'),P('bluefit','Bluefit','#0072CE','Bf'),P('bodytech','Bodytech','#E4002B','Bt'),P('dentista','Dentista','#ff6b8a','De'),P('odonto','Odonto Empresas','#1B3A8C','Od'),P('wellhub','Wellhub','#E8556D','Wh')]);
 L('seguro',[P('portoseguro','Porto Seguro','#0A5BB5','PS'),P('azul','Azul Seguros','#0057B8','Az'),P('tokio','Tokio Marine','#E4002B','TM'),P('allianz','Allianz','#003781','Al'),P('hdi','HDI','#00A859','HDI'),P('mapfre','Mapfre','#E4002B','Mp'),P('liberty','Liberty','#0057B8','Lb'),P('segvida','Seguro de vida','#8fb8ff','SV'),P('segauto','Seguro do carro','#8fb8ff','SA'),P('segresid','Seguro residencial','#8fb8ff','SR')]);
 L('moradia',[P('aluguel','Aluguel','#ff9a5c','Al'),P('condominio','Condomínio','#ff9a5c','Co'),P('iptu','IPTU','#d4a373','IP'),P('imobiliaria','Imobiliária','#ff9a5c','Im'),P('garagem','Garagem','#ff9a5c','Ga')]);
@@ -833,10 +771,10 @@ L('educacao',[P('uninove','Uninove','#1B4F9C','Un'),P('faculdade','Faculdade','#
 L('transferencia',BK);
 L('tag',[P('veloe','Veloe','#5ebfd1','Ve'),P('semparar','Sem Parar','#692454','SP'),'portoseguro','bb','bradesco','santander','caixa',P('pedagio','Pedágio','#ffd166','Pd')]);
 Object.assign(PROV.kmv,{al:'kmv km de vantagens ipiranga'});
-L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('pirelli','Pirelli','#F6D200','Pi'),P('michelin','Michelin','#1F4E9E','Mi'),P('bridgestone','Bridgestone','#1c1c1e','Bs'),P('mecanico','Mecânico','#3b82c4','Me'),P('guincho','Guincho','#2f7bf0','Gu')]);
+L('transporte',[P('shellbox','Shell Box','#f5ce46','SB'),P('premmia','Premmia','#2E8B4A','Pr'),P('combustivel','Combustível','#ffd166','Cb')]);
 /* palavras extras para a busca (sem acento): o que a pessoa costuma digitar */
 Object.assign(PROV.semparar,{al:'semparar tag ipva'});Object.assign(PROV.veloe,{al:'tag pedagio'});Object.assign(PROV.shellbox,{al:'shell combustivel posto'});
-Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.pirelli,{al:'pneu pneus borracharia'});Object.assign(PROV.michelin,{al:'pneu pneus borracharia'});Object.assign(PROV.bridgestone,{al:'pneu pneus borracharia'});Object.assign(PROV.guincho,{al:'reboque socorro meuguincho plataforma'});Object.assign(PROV.mecanico,{al:'oficina carro moto revisao conserto troca de oleo funilaria'});
+Object.assign(PROV.premmia,{al:'petrobras br posto combustivel'});Object.assign(PROV.pedagio,{al:'pedagio cancela rodovia'});Object.assign(PROV.combustivel,{al:'gasolina etanol diesel posto abastecimento'});
 L('impostos',[P('ipva','IPVA','#d4a373','IPVA'),'iptu',P('licenciamento','Licenciamento','#d4a373','Lic'),P('das','DAS · MEI','#d4a373','DAS'),P('irpf','Imposto de Renda','#d4a373','IR'),P('multa','Multa','#d4a373','Mu'),P('detran','Detran','#d4a373','De')]);
 L('outros',[P('emprestimo','Empréstimo','#9aa3b8','Em'),P('pensao','Pensão','#9aa3b8','Pe'),P('pet','Pet','#9aa3b8','Pt'),P('doacao','Doação','#9aa3b8','Do')]);
 L('boleto',BK);
@@ -854,16 +792,13 @@ L('impostos',NEW([['cnh','CNH do Brasil','#1F7A3F','CNH']]));
 L('outros',NEW([['kiwify','Kiwify','#3FA06E','Ki']]).concat(['serasa','livelo']));
 
 /* ícones das empresas: arquivos i-<id>.webp na mesma pasta do index.html */
-const LOGOS={"guincho":"i-guincho.webp","mecanico":"i-mecanico.webp","pirelli":"i-pirelli.webp","michelin":"i-michelin.webp","bridgestone":"i-bridgestone.webp","veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
+const LOGOS={"veloe":"i-veloe.webp","semparar":"i-semparar.webp","shellbox":"i-shellbox.webp","premmia":"i-premmia.webp","uninove":"i-uninove.webp","cea":"i-cea.webp","abril":"i-abril.webp","agora":"i-agora.webp","airbnb":"i-airbnb.webp","aliexpress":"i-aliexpress.webp","amazon":"i-amazon.webp","amazonmusic":"i-amazonmusic.webp","amil":"i-amil.webp","amildental":"i-amildental.webp","assai":"i-assai.webp","azulaerea":"i-azulaerea.webp","bb":"i-bb.webp","bobs":"i-bobs.webp","booking":"i-booking.webp","bradesco":"i-bradesco.webp","bradescosaude":"i-bradescosaude.webp","bradescoseg":"i-bradescoseg.webp","btg":"i-btg.webp","burgerking":"i-burgerking.webp","buser":"i-buser.webp","bv":"i-bv.webp","c6":"i-c6.webp","cacaushow":"i-cacaushow.webp","caixa":"i-caixa.webp","centauro":"i-centauro.webp","claro":"i-claro.webp","claude":"i-claude.webp","cnh":"i-cnh.webp","cnn":"i-cnn.webp","cocobambu":"i-cocobambu.webp","comgas":"i-comgas.webp","cpfl":"i-cpfl.webp","decolar":"i-decolar.webp","disney":"i-disney.webp","dolcegusto":"i-dolcegusto.webp","dominos":"i-dominos.webp","enel":"i-enel.webp","estadao":"i-estadao.webp","folha":"i-folha.webp","futfanatics":"i-futfanatics.webp","genial":"i-genial.webp","giraffas":"i-giraffas.webp","github":"i-github.webp","globoplay":"i-globoplay.webp","gol":"i-gol.webp","google":"i-google.webp","habibs":"i-habibs.webp","hapvida":"i-hapvida.webp","hotelscom":"i-hotelscom.webp","ifood":"i-ifood.webp","infinitepay":"i-infinitepay.webp","inter":"i-inter.webp","ion":"i-ion.webp","itau":"i-itau.webp","keeta":"i-keeta.webp","kfc":"i-kfc.webp","kiwify":"i-kiwify.webp","latam":"i-latam.webp","latampass":"i-latampass.webp","livelo":"i-livelo.webp","localiza":"i-localiza.webp","max":"i-max.webp","mcdonalds":"i-mcdonalds.webp","mercadolivre":"i-mercadolivre.webp","mercadopago":"i-mercadopago.webp","movida":"i-movida.webp","n99":"i-n99.webp","neon":"i-neon.webp","netflix":"i-netflix.webp","netshoes":"i-netshoes.webp","next":"i-next.webp","nubank":"i-nubank.webp","odonto":"i-odonto.webp","outback":"i-outback.webp","pan":"i-pan.webp","paypal":"i-paypal.webp","picpay":"i-picpay.webp","pizzahut":"i-pizzahut.webp","pluxee":"i-pluxee.webp","popeyes":"i-popeyes.webp","portoseguro":"i-portoseguro.webp","portobank":"@portoseguro","prime":"i-prime.webp","ragazzo":"i-ragazzo.webp","rededor":"i-rededor.webp","rico":"i-rico.webp","santander":"i-santander.webp","serasa":"i-serasa.webp","shein":"i-shein.webp","shopee":"i-shopee.webp","sicoob":"i-sicoob.webp","sicredi":"i-sicredi.webp","smiles":"i-smiles.webp","spotify":"i-spotify.webp","starbucks":"i-starbucks.webp","subway":"i-subway.webp","sulamerica":"i-sulamerica.webp","sulamericaodonto":"i-sulamericaodonto.webp","tim":"i-tim.webp","uber":"i-uber.webp","veja":"i-veja.webp","vivo":"i-vivo.webp","wellhub":"i-wellhub.webp","x":"i-x.webp","xp":"i-xp.webp","yamaha":"i-yamaha.webp","youtube":"i-youtube.webp","youtubemusic":"i-youtubemusic.webp","zedelivery":"i-zedelivery.webp","bmg":"i-bmg.webp","safra":"i-safra.webp","fgc":"i-fgc.webp","gmail":"i-gmail.webp","paodeacucar":"i-paodeacucar.webp","carrefour":"i-carrefour.webp","magalu":"i-magalu.webp","casasbahia":"i-casasbahia.webp","samsclub":"i-samsclub.webp","atacadao":"i-atacadao.webp","rappi":"i-rappi.webp","tendaatacado":"i-tendaatacado.webp","americanas":"i-americanas.webp","swift":"i-swift.webp","marisa":"i-marisa.webp","renner":"i-renner.webp","riachuelo":"i-riachuelo.webp","pernambucanas":"i-pernambucanas.webp","havan":"i-havan.webp","whatsapp":"i-whatsapp.webp","telegram":"i-telegram.webp","facebook":"i-facebook.webp","instagram":"i-instagram.webp","kmv":"i-kmv.webp"};
 /* IV: só vira algo depois de "Limpar memória" (Ajustes): força baixar tudo de novo, como na 1ª vez */
 const IV=(()=>{try{return sessionStorage.getItem('imgv')||''}catch(e){return ''}})();
 const imgU=f=>IV?f+'?v='+IV:f;
 const IMGCACHE='cartoes-13';
 function logo(id){let v=LOGOS[id];if(v&&v.charAt(0)==='@')v=LOGOS[v.slice(1)];if(!/^i-[a-z0-9_-]+\.webp$/.test(v||'')||ICMISS[v])return '';return imgU(v)}
 const ICOK={},ICMISS={};
-/* ícones que já abriram antes aparecem direto, sem o "acender" (são dezenas de camadas a menos para o iPhone montar ao abrir a janela) */
-try{JSON.parse(localStorage.getItem('sobrou.icok')||'[]').forEach(u=>{ICOK[u]=1})}catch(e){}
-let ICOKT=0;function icokSave(){clearTimeout(ICOKT);ICOKT=setTimeout(()=>{try{localStorage.setItem('sobrou.icok',JSON.stringify(Object.keys(ICOK).slice(-400)))}catch(e){}},1500)}
 function badge(p){
   const g=logo(p.id);
   if(g) return '<div class="pv logo" style="--c:'+p.c+';--t:'+p.t+'"><img alt=""'+(ICOK[g]?' class="ok"':'')+' draggable="false" decoding="async" onload="this.className=\'ok\'" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.getAttribute(\'src\').split(\'?\')[0]+\'?r=\'+Date.now()}else{this.parentNode.classList.add(\'bad\');this.remove()}" src="'+g+'"><b class="fbk">'+esc(p.i)+'</b></div>';
@@ -1015,7 +950,7 @@ function tplFor(o,tier,br){
   return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')&&t.dataset.r){const m=(t.getAttribute('src')||'').split('?')[0].match(/(i-[a-z0-9_-]+\.webp)$/);if(m)ICMISS[m[1]]=1}},true);
-document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){const u=t.getAttribute('src');if(!ICOK[u]){ICOK[u]=1;icokSave()}t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
+document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){ICOK[t.getAttribute('src')]=1;t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode){if(!t.dataset.r&&t.getAttribute('src')){t.dataset.r=1;t.src=t.getAttribute('src').split('?')[0]+'?r='+Date.now();return}t.parentNode.classList.add('rd','er')}},true);
 function cardArt(o,mini){
   const p=PROV[o.prov], tier=TIERS[o.tier]?o.tier:'standard', br=BRANDS[o.brand]?o.brand:'visa';
@@ -1094,36 +1029,23 @@ function whenText(o){
 function tween(el,to,fmt,ms){
   if(!el) return;
   const from=Number(el.dataset.v||0); el.dataset.v=to;
-  if(from===to||RMq()){el.textContent=fmt(to);return}
+  if(from===to||matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=fmt(to);return}
   const t0=performance.now(); ms=ms||700;
   (function f(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else el.textContent=fmt(to)})(t0);
 }
 function burst(x,y){
-  if(RMq()) return;
-  /* mesma física de antes (34 bolinhas, gravidade e atrito por quadro, somem em 0,9 s), calculada uma vez só;
-     o movimento roda no compositor. Antes era uma tela de desenho do tamanho da tela inteira, criada a cada toque
-     e redesenhada 54 vezes no processador. As cores do tema agora aparecem de verdade (o desenho não entendia var(--gold)) */
-  const cs=getComputedStyle(document.documentElement),cv=k=>(cs.getPropertyValue(k)||'').trim();
-  const cols=[cv('--gold2')||'#f5d38a',cv('--gold')||'#e8b24a','#34d399','#5ee9b5','#ffffff'];
-  const box=document.createElement('div');box.className='fxb';box.setAttribute('aria-hidden','true');
-  const N=34,Q=54,K=9,A=[];
-  for(let n=0;n<N;n++){
-    const a=Math.random()*Math.PI*2,v=2+Math.random()*5.5,r=2+Math.random()*3;
-    let px=0,py=0,vx=Math.cos(a)*v,vy=Math.sin(a)*v-2.5;
-    const kf=[];
-    for(let q=0;q<=Q;q++){
-      if(q%(Q/K|0)===0||q===Q)kf.push({transform:'translate('+px.toFixed(1)+'px,'+py.toFixed(1)+'px)',opacity:Math.max(0,1-q/Q)});
-      px+=vx;py+=vy;vy+=.22;vx*=.985;
-    }
-    const e=document.createElement('i');
-    e.style.cssText='width:'+(r*2).toFixed(1)+'px;height:'+(r*2).toFixed(1)+'px;margin:'+(-r).toFixed(1)+'px 0 0 '+(-r).toFixed(1)+'px;background:'+cols[Math.random()*cols.length|0];
-    box.appendChild(e);A.push([e,kf]);
-  }
-  box.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)';
-  document.body.appendChild(box);
-  let fim=false;const tira=()=>{if(!fim){fim=true;box.remove()}};
-  try{A.forEach(([e,kf])=>e.animate(kf,{duration:900,easing:'linear',fill:'forwards'}))}catch(_){tira();return}
-  setTimeout(tira,1000);
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const c=document.createElement('canvas');c.className='fx';const dpr=Math.min(2,devicePixelRatio||1);
+  c.width=innerWidth*dpr;c.height=innerHeight*dpr;document.body.appendChild(c);
+  const g=c.getContext('2d');g.scale(dpr,dpr);
+  const cols=['var(--gold2)','var(--gold)','#34d399','#5ee9b5','#ffffff'];
+  const P=Array.from({length:34},()=>{const a=Math.random()*Math.PI*2,v=2+Math.random()*5.5;return{x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2.5,r:2+Math.random()*3,c:cols[Math.random()*cols.length|0],l:1}});
+  const t0=performance.now();
+  (function f(t){
+    const k=(t-t0)/900;g.clearRect(0,0,innerWidth,innerHeight);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.985;g.globalAlpha=Math.max(0,1-k);g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,p.r,0,7);g.fill()});
+    if(k<1)requestAnimationFrame(f);else c.remove();
+  })(t0);
 }
 let tt;
 function toast(msg,undo){
@@ -1139,7 +1061,7 @@ function row(o,i){
   if(o.b.repeat==='inst') meta+=' · '+o.n+'/'+o.b.total;
   else if(o.b.repeat==='monthly') meta+=' · mensal';
   let pay='';if(o.b.cat!=='cartao'){pay=[VIA[o.b.via],PROV[o.b.bank]&&PROV[o.b.bank].n].filter(Boolean).join(' · ')}
-  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+(i>=10?' na':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
+  return '<div class="row'+(o.paid?' paid':'')+(late?' late':'')+(tod?' today':'')+'" data-id="'+o.b.id+'" data-key="'+o.key+'" style="--i:'+i+'">'+
     '<button type="button" class="chk" aria-label="Marcar como paga">'+CHECK+'</button>'+
     lead(o.b)+
     '<div class="mid"><i class="k">'+esc(c.l)+'</i><b>'+esc(o.b.name)+'</b><span class="m">'+esc(meta)+'</span>'+(pay?'<span class="m p">'+esc(pay)+'</span>':'')+'</div>'+
@@ -1177,12 +1099,6 @@ function limHTML(g,t){
 }
 /* true = encaixe calculado pelo app (preciso); false = encaixe automático do iPhone */
 const JSNAP=false;
-/* v13.26: seletor de cartões em grade (sem rolagem horizontal dentro da janela). Para voltar ao carrossel, troque para false */
-const CGRID=false;
-/* v13.28: carrossel do seletor de cartões (na janela) com arraste próprio, sem rolagem nativa horizontal. Para voltar ao nativo, troque para false */
-const JSNAPW=true;
-/* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
-function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
 /* v11.9: giro 3D calculado pelo app (mais estável no iPhone). Para voltar ao 3D nativo, troque NATIVO3D para true */
@@ -1190,28 +1106,25 @@ const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
 if(JSNAP)document.documentElement.classList.add('jsnap');
-if(CGRID)document.documentElement.classList.add('cgrid');
-if(JSNAPW)document.documentElement.classList.add('jsnapw');
-function cfLayout(tr,mark){
+function cfLayout(tr){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
-    if(SDA||NOFX())continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
+    if(SDA)continue; /* o giro 3D é feito pelo próprio navegador, preso à rolagem (mais suave) */
     const el=its[i].querySelector('.cc');if(!el)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  /* a marcação do cartão do centro (texto, número, brilho) só muda com a rolagem parada: trocar no meio do deslize obrigava o iPhone a redesenhar dois cartões */
-  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 /* Carrosséis com arraste próprio (v12.3): o dedo move os cartões direto (sem a rolagem/inércia do iPhone),
    e ao soltar o cartão continua com a mesma velocidade do dedo até parar exatamente no centro.
    Sem inércia nativa não há encaixe errado nem correção depois. */
 function snapper(tr,done){
-  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false;
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='';
   const ease=k=>1-Math.pow(1-k,3);
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
@@ -1229,17 +1142,16 @@ function snapper(tr,done){
     const rec=sm.filter(p=>now-p.t<90);let v=0;
     if(rec.length>1){const a=rec[0],b=rec[rec.length-1];if(b.t>a.t)v=(b.x-a.x)/(b.t-a.t)}   /* px/ms do dedo; >0 = para a direita */
     const near=i=>{let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-i);if(d<bd){bd=d;k=n}});return k};
-    const s0=near(sl0+W/2);let tgt=near(c);
+    const s0=near(sl0+W/2);let tgt=near(c-v*240);
     const pitch=cx.length>1?cx[1]-cx[0]:W,moved=tr.scrollLeft-sl0;
-    /* v13.34: um gesto anda no máximo 1 cartão, não importa a força (antes a velocidade do dedo projetava até 3 cartões) */
-    if(Math.abs(v)>0.2)tgt=s0+(v<0?1:-1);
-    else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);
-    else tgt=s0;
-    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-1,Math.min(s0+1,tgt))));
+    if(tgt===s0){
+      if(Math.abs(v)>0.2)tgt=s0+(v<0?1:-1);
+      else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);
+    }
+    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-3,Math.min(s0+3,tgt))));
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
-  function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
-  tr.addEventListener('touchstart',e=>{intr=!!anim;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchstart',e=>{stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
     const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy))dir='h';else if(Math.abs(dy)>6)dir='v';else return}
@@ -1247,29 +1159,23 @@ function snapper(tr,done){
     sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();
     tr.scrollLeft=sl0-dx;
   },{passive:true});
-  tr.addEventListener('touchend',()=>{if(dir==='h')release();else if(intr){intr=false;nearest()}},{passive:true});
-  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else if(intr){intr=false;nearest()}},{passive:true});
+  tr.addEventListener('touchend',()=>{if(dir==='h')release()},{passive:true});
+  tr.addEventListener('touchcancel',()=>{if(dir==='h')release()},{passive:true});
   tr._snapTo=function(i){const cx=centers();if(cx[i]==null)return;const W=tr.clientWidth;animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),0)};
 }
 function cfInit(){
   const tr=document.querySelector('#list .cards');if(!tr)return;
   tr.classList.add('cf');
-  let raf=0,idle=0,tch=0,fixd=0,sl0=-1;
-  const settle=()=>{if(tch)return;
-    /* confere a posição duas vezes: se ainda mudou, o iPhone ainda está encaixando (corrigir agora brigava com ele e dava o tranco) */
-    const sl=tr.scrollLeft;if(Math.abs(sl-sl0)>0.5){sl0=sl;clearTimeout(idle);idle=setTimeout(settle,120);return}sl0=-1;
-    tr._k='';const bi=cfLayout(tr,true),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
+  let raf=0,idle=0,tch=0,fixd=0;
+  const settle=()=>{if(tch)return;tr._k='';const bi=cfLayout(tr),it=tr.children[bi];if(!it)return; /* recalcula as posições (o cache podia ficar velho e deixar o cartão do centro levemente girado) */
     if(tr._snap)return;const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
-  cfLayout(tr,true);
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
+  cfLayout(tr);
   if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
   tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf)raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)});clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
-  setTimeout(()=>{cfLayout(tr,true);settle()},60);
-  /* decodifica as imagens dos cartões logo após abrir (uma por vez), para o deslize nunca esperar por decodificação */
-  [...tr.querySelectorAll('img.cc-bg')].forEach((im,i)=>setTimeout(()=>{try{im.decode&&im.decode().catch(()=>{})}catch(e){}},250+i*150));
+  setTimeout(()=>{cfLayout(tr);settle()},60);
 }
 function cardsHTML(gs){
   if(!gs.length) return '';
@@ -1288,7 +1194,7 @@ function renderHome(){
   ODC=overdueAll();
   const od=isCur?ODC:mo.filter(o=>!o.paid&&o.date<t);
   const up=mo.filter(o=>!o.paid&&o.date>=t), pd=mo.filter(o=>o.paid);
-  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?(rest>0?Math.min(99,Math.round(paid/total*100)):Math.round(paid/total*100)):0; /* só mostra 100% quando não falta nada (antes arredondava 99,6% para 100%) */
+  const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?Math.round(paid/total*100):0;
   const R=47,C=2*Math.PI*R;
   const nxt=up[0], hk=V.y+'-'+V.m, same=!ANIM&&hk===HKEY&&HPREV; /* mesma tela: totais animam do valor anterior, não do zero */
   const r0=same?HPREV.rest:0,p0=same?HPREV.pct:0;
@@ -1316,9 +1222,8 @@ function renderHome(){
   const L=$('#list'),oldSec=L.querySelector('.sec.cardsec'),oc=oldSec&&oldSec.querySelector('.cards'),osl=(oc&&hk===HKEY)?oc.scrollLeft:0;
   L.className=ANIM?'':'noanim';
   if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
-    /* carrossel igual ao anterior: fica no lugar e troca só as listas abaixo dele. Antes ele era tirado e devolvido à
-       tela, e o iPhone refazia o 3D e redesenhava os cartões a cada conta marcada como paga */
-    [].slice.call(L.children).forEach(x=>{if(x!==oldSec)L.removeChild(x)});oldSec.insertAdjacentHTML('afterend',h);
+    /* carrossel igual ao anterior: mantém o mesmo (sem recarregar imagens nem recriar o 3D) e troca só as listas */
+    oldSec.remove();L.innerHTML=h;L.prepend(oldSec);if(osl)oc.scrollLeft=osl; /* tirar do lugar zera a rolagem: devolve */
   }else{
     L.innerHTML=ch+h;
     if(osl){const nc=L.querySelector('.cards');if(nc)nc.scrollLeft=osl}
@@ -1394,7 +1299,6 @@ function renderSet(){
    '<div class="lbl" style="margin-top:14px">Temas prontos</div><div class="thm" id="thm">'+TH.PR.map((p,i)=>'<button type="button" class="tp" data-pr="'+i+'"><span class="tpv" style="background:'+TH.hsl(TH.BG[p[1]][1],TH.BG[p[1]][2],i===9||p[1]===1?3:11)+'"><i style="background:'+TH.AC[p[2]][1]+'"></i><b style="background:'+TH.AC[p[2]][1]+'"></b></span><span>'+p[0]+'</span></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
-   '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
@@ -1407,7 +1311,6 @@ function renderSet(){
   if(window.__acc)window.__acc.bind();
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
-  $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
   $('#swa').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(TH.cur[0],+b.dataset.a);thSync()};
@@ -1493,10 +1396,8 @@ function togglePaid(id,key,x,y){
 /* ---------- cadastro ---------- */
 let F=null, EDIT=null;
 const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro','educacao','transferencia','tag'];
-const BANKPROV=['boleto','financ','consorcio'];   /* nesses tipos o "Quem é?" já é o banco: não repete a lista de bancos */
-const bankPick=cat=>bankOk(cat)&&BANKPROV.indexOf(cat)<0;
 const bankOk=cat=>cat!=='cartao'&&cat!=='transferencia';   /* todos os tipos aceitam "como você paga" (forma + banco), menos cartão e transferência (que já são o próprio banco) */
-const VIA={boleto:'Boleto',pix:'PIX',transf:'Transferência',debito:'Débito',credito:'Crédito',dinheiro:'Dinheiro'};
+const VIA={boleto:'Boleto',pix:'PIX',transf:'Transferência',debito:'Débito'};
 const AN=(p,cat)=>cat==='transferencia'?'Transferência '+p.n:p.n;
 const VARIAVEL=['cartao','servicos','telecom','tag'];
 const SPEND=['alimentacao','compras','viagem','transporte'];
@@ -1522,11 +1423,9 @@ function provBar(searching){
   const cu=S.pord==='custom';
   $$('#pm button').forEach(b=>b.classList.toggle('on',b.dataset.o===(cu?'custom':'az')));
   const ph=$('#phint');ph.hidden=!!searching;
-  ph.innerHTML=cu?'Segure um ícone e arraste para onde quiser. <button type="button" id="prst">Voltar para A–Z</button>':'Para arrumar os ícones do seu jeito, toque em <b>Minha ordem</b> e segure um ícone.';
+  ph.innerHTML='Segure um ícone e arraste para onde quiser.'+(cu?' <button type="button" id="prst">Voltar para A–Z</button>':'');
 }
-const PGC=new Map();
 function renderProv(){
-  window.__diagAct&&window.__diagAct('montando os ícones');
   {const pl=$('#pl');if(pl)pl.textContent=F.cat==='transferencia'?'Para qual banco?':'Quem é?'}
   const q=($('#ps').value||'').trim().toLowerCase();
   let ids;
@@ -1536,38 +1435,29 @@ function renderProv(){
   }
   if(q)ids.sort(AZ);
   provBar(!!q);
-  const pk=q?'':F.cat+'|'+(F.prov||'')+'|'+S.pord;
-  let g=!q&&PGC.get(pk);
-  if(!g){g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');}
+  let g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
   g+='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
-  if(!q&&!PGC.has(pk)){PGC.set(pk,g);if(PGC.size>8)PGC.delete(PGC.keys().next().value)}
   if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
   $('#pg').innerHTML=g;
   icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
-let BKB=false,BKOPEN=false;
+let BKB=false;
 function renderBank(){
   const show=bankOk(F.cat);
   $('#bkx').hidden=!show;
   if(!show)return;
-  const pk=bankPick(F.cat);
-  $('#bkb').hidden=!pk;
   if(!BKB){
     BKB=true;
     $('#bkg').innerHTML='<div role="button" class="pt" data-b=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Nenhum</span></div>'+
       BK.slice().sort(AZ).map(id=>{const p=PROV[id];return '<div role="button" class="pt" data-b="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span></div>'}).join('');
   }
   $$('#bkg .pt').forEach(x=>x.classList.toggle('on',x.dataset.b===(F.bank||'')));
-  const bp=F.bank&&PROV[F.bank];
-  $('#bselv').innerHTML=bp?badge(bp)+'<span>'+esc(bp.n)+'</span>':'<span class="mu">Nenhum</span>';
-  $('#bkg').hidden=!BKOPEN;$('#bsela').textContent=BKOPEN?'Fechar':(bp?'Trocar':'Escolher');
   $$('#fv button').forEach(x=>x.classList.toggle('on',x.dataset.v===(F.via||'')));
 }
 $('#fv').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;F.via=F.via===t.dataset.v?'':t.dataset.v;renderBank()});
-$('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';BKOPEN=false;renderBank()});
-$('#bsel').addEventListener('click',()=>{BKOPEN=!BKOPEN;renderBank()});
+$('#bkg').addEventListener('click',e=>{const t=e.target.closest('.pt');if(!t)return;F.bank=t.dataset.b||'';renderBank()});
 /* decodifica os ícones aos poucos logo que a janela abre (4 por quadro), para o iPhone não decodificar no meio da rolagem */
 const ICDEC=new Set();let ICJOB=0;
 function icoDecode(){
@@ -1586,21 +1476,20 @@ function icoDecode(){
 let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
-function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
-function cpLayout(mark){
+function cpCenter(id,beh){const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
+function cpLayout(){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
-  if(CGRID){const o=tr.querySelector('.cpi.on');return o?[].indexOf.call(its,o):0}
   const k=n+':'+tr.clientWidth+':'+its[0].offsetWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth}
   const c=tr.scrollLeft+tr.clientWidth/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
-    const far=d>3.2&&!NOFX();if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada. Com efeitos desligados os cartões nem usam a GPU: não precisa esconder */
-    if(SDA||NOFX())continue;
+    const far=d>3.2;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada */
+    if(SDA)continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
-  if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
   return bi;
 }
 function cpLabel(bi){
@@ -1610,18 +1499,16 @@ function cpLabel(bi){
   $('#cpn').textContent=it.dataset.n;$('#cps').textContent=it.dataset.s;{const g=$$('#cpg i');g.forEach((d,i)=>d.classList.toggle('on',i===bi))}
 }
 (function(){
-  let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1;
+  let raf=0,idle=0,lb=-2,tch=0,fixd=0;
   const tr=document.getElementById('cm');
   function settle(){
-    if(tch||CGRID)return;
-    /* confere a posição duas vezes: se ainda mudou, o iPhone ainda está encaixando (corrigir agora brigava com ele e dava o tranco) */
-    const sl=tr.scrollLeft;if(Math.abs(sl-sl0)>0.5){sl0=sl;clearTimeout(idle);idle=setTimeout(settle,120);return}sl0=-1;
-    tr._k='';const bi=cpLayout(true),it=tr.children[bi];if(!it)return;
-    if(!(JSNAP||JSNAPW)){
+    if(tch)return;
+    tr._k='';const bi=cpLayout(),it=tr.children[bi];if(!it)return;
+    if(!JSNAP){
     /* o iPhone às vezes não completa o encaixe e o cartão fica fora do centro: uma única correção suave por gesto
        (rolagem suave até o ponto de encaixe não briga com o iPhone; a correção instantânea antiga brigava e tremia) */
     const off=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2-tr.scrollLeft;
-    if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
+    if(Math.abs(off)>2&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel do seletor');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}return}}
     cpLabel(bi);cpLoad(bi);
     if(it.dataset.m!==F.model){
       const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
@@ -1634,127 +1521,12 @@ function cpLabel(bi){
     clearTimeout(idle);idle=setTimeout(settle,140);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
-  if(JSNAP||JSNAPW)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
+  if(JSNAP)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
-/* v13.32: giro 3D dos cartões feito por JS, só nos que estão perto do centro; nenhuma animação nem camada fixa dentro da janela que rola */
-/* v13.33: false = cartões do seletor só com escala (2D, sem camada de composição). Para voltar ao giro 3D, troque para true */
-const C3D=false;
-let C3Q=0;
-function cp3d(){
-  C3Q=0;if(CGRID)return;
-  const tr=$('#cm'),its=tr.children,n=its.length;if(!n||tr.hidden)return;
-  const W=tr.clientWidth;if(!W)return;
-  const c=tr.scrollLeft+W/2,step=its[0].offsetWidth+14,off=NOFX();
-  for(let i=0;i<n;i++){
-    const el=its[i],a=el.firstElementChild;if(!a)continue;
-    let d=(el.offsetLeft+el.offsetWidth/2-c)/step;
-    const far=off||d>1.6||d<-1.6;      /* fora da tela: reto e sem camada (transform 3D vira camada de composição) */
-    d=far?0:(d>1?1:d<-1?-1:d);
-    const k=far?999:Math.round(d*50);  /* passos de 2%: não reescreve a cada pixel */
-    if(a._k===k)continue;a._k=k;
-    const ad=Math.abs(d);
-    a.style.transform=(far||k===0)?'':(C3D?'perspective(900px) rotateY('+(-34*d).toFixed(1)+'deg) scale('+(1-.14*ad).toFixed(3)+')':'scale('+(1-.14*ad).toFixed(3)+') scaleX('+(1-.17*ad).toFixed(3)+')');
-  }
-}
-function cp3dQ(){if(!C3Q)C3Q=requestAnimationFrame(cp3d)}
-$('#cm').addEventListener('scroll',cp3dQ,{passive:true});
-window.addEventListener('resize',()=>{$$('#cm .cpa').forEach(a=>a._k=null);cp3dQ()});
-/* seletor em grade: tocar no cartão escolhe o cartão (antes era o que parava no centro do carrossel) */
-function cpPick(it){
-  if(!it||it.dataset.m===F.model&&it.classList.contains('on'))return;
-  const md=MF(F.prov).find(x=>x.id===it.dataset.m);F.model=it.dataset.m;CSEL=F.model;if(md){F.brand=md.br;F.tier=md.tr}
-  $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el===it));
-  cpNums();cpLabel([].indexOf.call($('#cm').children,it));
-}
-if(CGRID)$('#cm').addEventListener('click',e=>{const it=e.target.closest&&e.target.closest('.cpi');if(it)cpPick(it)});
-/* Socorro para o arrasto vertical que o iPhone não rola. Às vezes (perto de um carrossel ainda deslizando, depois do
-   segundo plano, ou sem motivo aparente) o dedo arrasta e a janela (ou a tela) não sai do lugar — parecia travado.
-   Quando o dedo já andou 36 px na vertical e a janela andou menos de 1/4 disso, o app rola junto com o dedo e continua
-   o embalo ao soltar. Depois do 1º socorro, por 2 minutos ele entra mais cedo (24 px). Se o iPhone rolar sozinho, o app
-   não mexe em nada; se o iPhone voltar a rolar no meio do gesto, o app solta na hora. */
-/* refaz a rolagem do iPhone num elemento (desliga e religa a rolagem): quando ela para de responder ao dedo, volta */
-function reviverRolagem(el){if(!el||el._rev)return;el._rev=1;el.style.overflowY='hidden';void el.offsetHeight;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.overflowY='';el._rev=0}))}
-function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
-  if(!alvo)return;
-  let g=null,emb=0;
-  const para=()=>{if(emb){cancelAnimationFrame(emb);emb=0}};
-  document.addEventListener('touchstart',para,{capture:true,passive:true});
-  /* por que não socorreu (vai para o diagnóstico) */
-  const motivo=(gg,m)=>{gg.motivo=m;window.__resgInfo={t0:gg.t0,motivo:m}};
-  alvo.addEventListener('touchstart',e=>{
-    g=null;if(e.touches.length!==1){window.__resgInfo={t0:performance.now(),motivo:'dois dedos na tela'};return}
-    const tg=e.target&&e.target.nodeType===1?e.target:(e.target&&e.target.parentElement);if(!tg||!tg.closest)return;
-    const c=sel?tg.closest(sel):alvo;if(!c)return;
-    if(fora&&tg.closest(fora))return;                                    /* ex.: título da janela = arrastar para fechar */
-    const sc=rolador();if(!sc)return;const t=e.touches[0];
-    g={sc:sc,x0:t.clientX,y0:t.clientY,st0:sc.scrollTop,t0:performance.now(),on:0,off:0,h:[[performance.now(),t.clientY]],onde:lugar?lugar(tg):''};
-    motivo(g,'não chegou a ser arrasto vertical');
-  },{passive:true});
-  alvo.addEventListener('touchmove',e=>{
-    if(!g||g.off)return;
-    if(e.touches.length!==1){g.off=1;g.on=0;motivo(g,'dois dedos na tela');return}
-    if(document.body.classList.contains('dragging')){g.off=1;g.on=0;motivo(g,'arrastando ícone');return} /* arrastando um ícone (Minha ordem): não é rolagem */
-    const t=e.touches[0],dx=t.clientX-g.x0,dy=t.clientY-g.y0,sc=g.sc;
-    g.h.push([performance.now(),t.clientY]);if(g.h.length>6)g.h.shift();
-    if(!g.on){
-      const andou=Math.abs(sc.scrollTop-g.st0),dedo=Math.abs(dy),ans=performance.now()-(sc._ans||-1e9)<120000;
-      if(andou>=Math.max(6,dedo*0.5)){g.off=1;motivo(g,'o iPhone rolou');return}   /* o iPhone está rolando normalmente: não mexe */
-      if(dedo<(ans?24:36)||performance.now()-g.t0<(ans?50:80))return;               /* ainda é cedo */
-      if(dedo<Math.abs(dx)*1.3){motivo(g,'arrasto na diagonal');return}
-      {const mx=Math.max(0,sc.scrollHeight-sc.clientHeight);if(dy>0?sc.scrollTop<=1:sc.scrollTop>=mx-1){g.off=1;motivo(g,'já estava no começo/fim');return}} /* "elástico" do iPhone */
-      if(andou>=dedo*0.25)return;                                                   /* andou um pouco: espera mais */
-      g.on=1;g.base=sc.scrollTop;g.yb=t.clientY;g.exp=g.base;sc._ans=window.__resgT=performance.now();motivo(g,'socorreu');
-      window.__diagNote&&window.__diagNote('o iPhone não rolou '+nome+' e o app rolou junto com o dedo'+(g.onde?' (dedo em '+g.onde+')':'')+' · posição '+Math.round(g.base)+' de '+Math.max(0,sc.scrollHeight-sc.clientHeight)+' px','resgate');
-    }else if(Math.abs(sc.scrollTop-g.exp)>3){g.off=1;g.on=0;motivo(g,'o iPhone voltou a rolar');return}  /* o iPhone assumiu a rolagem: solta */
-    const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
-    g.exp=Math.round(Math.max(0,Math.min(max,g.base-(t.clientY-g.yb))));sc.scrollTop=g.exp;
-  },{passive:true});
-  alvo.addEventListener('touchend',()=>{
-    if(!g)return;const gg=g;g=null;if(!gg.on||gg.off)return;
-    if(gg.sc!==document.scrollingElement&&gg.sc!==document.documentElement)reviverRolagem(gg.sc); /* próximo arrasto volta a ser do iPhone */
-    const h=gg.h,a=h[0],b=h[h.length-1];let v=(a[1]-b[1])/Math.max(16,b[0]-a[0]); /* px/ms; >0 = rolar para baixo */
-    if(Math.abs(v)<0.12)return;v=Math.max(-5,Math.min(5,v));
-    const sc=gg.sc;let last=performance.now(),pos=sc.scrollTop;
-    const passo=t=>{
-      const dt=Math.min(34,t-last);last=t;const max=Math.max(0,sc.scrollHeight-sc.clientHeight);
-      pos=Math.max(0,Math.min(max,pos+v*dt));sc.scrollTop=Math.round(pos);v*=Math.pow(0.998,dt); /* mesma desaceleração do iPhone */
-      if(Math.abs(v)<0.03||pos<=0||pos>=max){emb=0;return}
-      emb=requestAnimationFrame(passo);
-    };
-    emb=requestAnimationFrame(passo);
-  },{passive:true});
-  alvo.addEventListener('touchcancel',()=>{g=null},{passive:true});
-}
-socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?(CGRID?'grade de cartões':'carrossel do seletor'):t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
-/* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
-/* v13.35: ao voltar do segundo plano o iPhone às vezes perde a camada de rolagem da janela (o relatório mostra o iPhone sem rolar durante ~20 s depois de "voltou ao app").
-   Reconstrói a camada do painel: tira e devolve da árvore de desenho guardando a posição, e repete 2 vezes enquanto o iOS reativa a tela. */
-let ACORDT=[];
-function acordarRolagem(){
-  try{
-    const sh=$('#sheet'),pn=$('#panel');
-    if(!sh||sh.hidden||!sh.classList.contains('open')||!pn)return;
-    const y=pn.scrollTop;
-    pn.style.display='none';void pn.offsetHeight;pn.style.display='';
-    pn.scrollTop=y;
-    reviverRolagem(pn);
-    window.__diagNote&&window.__diagNote('rolagem da janela refeita ao voltar do segundo plano (posição '+Math.round(y)+' px)','info');
-  }catch(e){}
-}
-function acordar(){ACORDT.forEach(clearTimeout);ACORDT=[150,700,1800].map(t=>setTimeout(acordarRolagem,t))}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)acordar()});
-window.addEventListener('pageshow',acordar);
-socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.documentElement,'a tela',null,()=>'cartões da tela inicial');
-/* carrega as imagens do carrossel do centro para as pontas (o cartão escolhido aparece primeiro): no máximo 2 baixando
-   ao mesmo tempo, e cada cartão pronto aparece num quadro diferente. No iPhone, cada cartão que aparece é redesenhado
-   inteiro; antes até 4 apareciam no mesmo quadro e a janela engasgava logo depois de trocar de banco */
-let CPACT=0;const CPQ=[];let CPQR=0;
-function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
-function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
+/* carrega as imagens do carrossel do centro para as pontas, 3 por vez (o cartão escolhido aparece primeiro) */
+let CPACT=0;
 function cpLoad(c){
   const its=$$('#cm .cpi');if(!its.length)return;
   if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
@@ -1762,11 +1534,11 @@ function cpLoad(c){
   pend.sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
   const list=pend.map(x=>x[2]);
   (function pump(){
-    while(CPACT<2&&list.length){
+    while(CPACT<4&&list.length){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
-      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cpReveal(cc);fin()};
+      const ok=()=>{const cc=im.parentNode;if(cc&&cc.classList)cc.classList.add('rd');fin()};
       im.addEventListener('error',fin,{once:true});
       im.addEventListener('load',()=>{(im.decode?im.decode():Promise.resolve()).then(ok,ok)},{once:true});
       im.src=u;
@@ -1814,10 +1586,9 @@ function syncForm(){
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
-         window.__diagAct&&window.__diagAct('montando o seletor de cartões');
          $('#cbf').innerHTML=brs.length>1?brs.map(b=>'<button type="button" class="chip'+(CF===b?' on':'')+'" data-f="'+b+'">'+(GLAB[b]||b)+'</button>').join(''):'';
          /* carrosséis já montados ficam guardados (com as imagens prontas): voltar a uma aba é instantâneo */
-         {const cm=$('#cm');if(CK&&cm.children.length){const fr=document.createDocumentFragment();while(cm.firstChild)fr.appendChild(cm.firstChild);CPC.set(CK,fr);if(CPC.size>4)CPC.delete(CPC.keys().next().value)}
+         {const cm=$('#cm');if(CK&&cm.children.length){const fr=document.createDocumentFragment();while(cm.firstChild)fr.appendChild(cm.firstChild);CPC.set(CK,fr);if(CPC.size>8)CPC.delete(CPC.keys().next().value)}
           const hit=CPC.get(key);if(hit){CPC.delete(key);cm.appendChild(hit)}else{
           cm.innerHTML=lst.map((x,i)=>'<button type="button" class="cpi" data-m="'+x.id+'" data-n="'+esc(x.n)+'" data-s="'+BRANDS[x.br]+(x.tr!=='standard'?' · '+TIERS[x.tr]:'')+'" data-i="'+(i+1)+'" data-t="'+lst.length+'"><span class="cpa">'+cardArt({prov:F.prov,model:x.id,tier:x.tr,brand:x.br,name:'',last4:''},false).replace(' src="',' data-src="')+'</span></button>').join('');}}
          $('#cpg').innerHTML=lst.map(()=>'<i></i>').join('');setTimeout(()=>cpLoad(),0);
@@ -1828,12 +1599,12 @@ function syncForm(){
        const tr=$('#cm');
        $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el.dataset.m===F.model));
        cpNums();
-       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
-       cpLabel();cp3dQ();setTimeout(cp3dQ,120);
+       if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout();window.cpSettle&&window.cpSettle()}
+       cpLabel();
      }
      $('#ccprev').hidden=has&&!!F.model;
     }
-    ccPrev();
+    if(!$('#ccprev').hidden){const tq=tplFor({prov:F.prov,model:F.model},F.tier,F.brand);$('#ccprev').innerHTML=cardArt({prov:F.prov,model:F.model,tier:F.tier,brand:F.brand,last4:F.last4,name:$('#fn').value},false)+(F.last4&&tq&&!tq.n?'<div class="hint" style="text-align:center;margin-top:8px">••'+esc(F.last4)+'</div>':'')}
     $$('#cb .chip').forEach(c=>c.classList.toggle('on',c.dataset.b===F.brand));
     $$('#ct .chip').forEach(c=>c.classList.toggle('on',c.dataset.t===F.tier));
   }
@@ -1851,13 +1622,13 @@ function syncForm(){
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  BKOPEN=false;F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
-    BKOPEN=false;F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
     $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
@@ -1868,16 +1639,14 @@ function openSheet(id,key){
   } else {
     $('#st').textContent='Nova conta';$('#fs').textContent='Adicionar conta';
   }
-  /* monta tudo com a janela ainda fora da tela e só depois começa a subida: o trabalho pesado não cai no meio da animação */
-  sh.hidden=false;document.body.style.overflow='hidden';pn.scrollTop=0;
-  renderProv();syncForm();
-  void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
+  sh.hidden=false;void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}},380);
+  document.body.style.overflow='hidden';pn.scrollTop=0;
+  renderProv();syncForm();
+  if(!b)setTimeout(()=>{const a=$('#fa');a.focus();const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
-/* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
-function afterClose(fn){let r=false;try{r=matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){}setTimeout(fn,r?0:460)}
+function afterClose(fn){setTimeout(fn,RMq()?0:460)}
 function closeSheet(){
   CPC.clear();
   const sh=$('#sheet');clearTimeout(window.__sft);document.body.classList.remove('sfull');sh.classList.remove('open');document.body.classList.remove('so');document.body.style.overflow='';
@@ -1885,21 +1654,12 @@ function closeSheet(){
   $('#panel').style.transform='';
 }
 $('#scrim').onclick=closeSheet;$('#sx').onclick=closeSheet;
-/* o valor é uma máscara de centavos: cada dígito entra SEMPRE no fim (5 → R$ 0,05), onde quer que o cursor esteja. Antes o app lia o texto
-   inteiro depois de o iPhone inserir o dígito no cursor — com o cursor fora do fim (ou o app ocupado) o dígito caía no meio e o valor errava */
-$('#fa').addEventListener('beforeinput',e=>{
-  const t=e.inputType,el=e.target,tudo=el.selectionStart===0&&el.selectionEnd===el.value.length&&el.value.length>0;
-  const poe=n=>{F.cents=n;el.value=fmtAmt(n)};
-  if(t==='insertText'&&typeof e.data==='string'&&e.data.length===1){
-    e.preventDefault();if(!/\d/.test(e.data))return;
-    const n=(tudo&&F.cents>0?0:F.cents)*10+(+e.data);if(String(n).length>11)return;poe(n);return}
-  if(t==='deleteContentBackward'){e.preventDefault();poe(tudo?0:Math.floor(F.cents/10))}
-});
-/* colar, cortar, preencher: cai aqui e lê os dígitos do texto */
 $('#fa').addEventListener('input',e=>{
   const d=e.target.value.replace(/\D/g,'').slice(0,11);
   F.cents=d?parseInt(d,10):0;e.target.value=fmtAmt(F.cents);
+  const l=e.target.value.length;try{e.target.setSelectionRange(l,l)}catch(_){}
 });
+$('#fa').addEventListener('focus',e=>{const l=e.target.value.length;setTimeout(()=>{try{e.target.setSelectionRange(l,l)}catch(_){}},0)});
 $('#fc').addEventListener('click',e=>{
   const b=e.target.closest('.cat');if(!b)return;
   F.cat=b.dataset.c;
@@ -1908,23 +1668,16 @@ $('#fc').addEventListener('click',e=>{
     if($('#fn').value===F.auto)$('#fn').value='';
     F.auto='';F.prov='';
   }else if(F.prov&&PROV[F.prov]&&$('#fn').value===F.auto){const nn=AN(PROV[F.prov],F.cat);$('#fn').value=nn;F.auto=nn}
-  $$('#fc .cat').forEach(x=>x.classList.toggle('on',x===b));
-  $('#ps').value='';
-  const my=++FCT;
-  requestAnimationFrame(()=>setTimeout(()=>{if(my!==FCT)return;renderProv();syncForm()},0));
+  $('#ps').value='';renderProv();syncForm();
 });
-let FCT=0;
 $('#ps').addEventListener('input',renderProv);
 document.addEventListener('selectstart',e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest('input,textarea,[contenteditable],.dgp pre'))return;e.preventDefault()});
 document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.closest('input,textarea'))return;e.preventDefault()});
 (function(){
-  const vv=window.visualViewport;let toque=0;
-  /* com o dedo na tela, nunca mexe na posição da rolagem (só ajusta quando o dedo sai) */
-  addEventListener('touchstart',()=>{toque=1},{passive:true,capture:true});
-  ['touchend','touchcancel'].forEach(n=>addEventListener(n,e=>{if(!e.touches||!e.touches.length)toque=0},{passive:true,capture:true}));
+  const vv=window.visualViewport;
   function fix(){
     try{
-      if(document.body.classList.contains('so')||toque)return;
+      if(document.body.classList.contains('so'))return;
       const off=vv&&(vv.offsetTop>0.5||vv.pageTop<-0.5);
       if(window.scrollY<0||off||(window.scrollY>0&&window.scrollY<2)){window.scrollTo(0,0)}
       if(off){const e=document.documentElement;e.style.transform='translateZ(0)';requestAnimationFrame(()=>{e.style.transform=''})}
@@ -1933,7 +1686,7 @@ document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.
   window.fixTop=fix;
   ['pageshow','focus','resize','orientationchange'].forEach(n=>window.addEventListener(n,()=>{fix();setTimeout(fix,120);setTimeout(fix,450)}));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){fix();setTimeout(fix,120);setTimeout(fix,450)}});
-  if(vv){vv.addEventListener('resize',fix);vv.addEventListener('scroll',()=>{if(vv.offsetTop>0.5)fix()})}
+  if(vv){vv.addEventListener('resize',fix);vv.addEventListener('scroll',fix)}
   window.addEventListener('scroll',()=>{if(window.scrollY<0)fix()},{passive:true});
   [0,60,200,500,1000,2000].forEach(t=>setTimeout(()=>{if(window.scrollY<=2)fix()},t));
 })();
@@ -1947,16 +1700,12 @@ const HP=function(k){
   const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
   function start(e){
     const t=e.target.closest&&e.target.closest('.pt');
-    if(!t||!t.dataset.p||($('#ps').value||'').trim()||S.pord!=='custom')return; /* arrastar só no modo "Minha ordem" */
-    const p=pt(e);st={tile:t,x0:p.clientX,y0:p.clientY,x:p.clientX,y:p.clientY,on:false,sc:$('#panel').scrollTop};
-    clearTimeout(timer);timer=setTimeout(lift,450);
+    if(!t||!t.dataset.p||($('#ps').value||'').trim())return;
+    const p=pt(e);st={tile:t,x0:p.clientX,y0:p.clientY,x:p.clientX,y:p.clientY,on:false};
+    clearTimeout(timer);timer=setTimeout(lift,340);
   }
   function lift(){
-    if(!st)return;
-    /* no iPhone o aviso de "o dedo mexeu" pode chegar atrasado quando a janela começa a rolar: se a janela rolou desde o toque,
-       é rolagem, não "segurar para arrastar" (antes isso travava a janela até soltar o dedo) */
-    if(Math.abs($('#panel').scrollTop-st.sc)>2){st=null;return}
-    st.on=true;window.__dragT=performance.now();
+    if(!st)return;st.on=true;
     document.body.classList.add('dragging');$$('#pg .pt.pre').forEach(x=>x.classList.remove('pre'));
     const tiles=$$('#pg .pt');tiles.forEach(el=>{el.style.transition='none';el.style.transform='none'});
     const gr=grid.getBoundingClientRect();
@@ -2013,7 +1762,7 @@ const HP=function(k){
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
         S.order[F.cat]=arr.filter(Boolean);S.pord='custom';save();
       }
-      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);PGC.clear();renderProv();
+      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);renderProv();
       {const nt=$$('#pg .pt')[to];if(nt){nt.style.visibility='hidden';setTimeout(()=>{nt.style.visibility='';nt.classList.add('land');g.remove();setTimeout(()=>nt.classList.remove('land'),520)},230)}else setTimeout(()=>g.remove(),230)}
     }
     st=null;
@@ -2024,36 +1773,34 @@ const HP=function(k){
   const preOn=e=>{const t=e.target.closest&&e.target.closest('.pt');if(!t)return;const p=pt(e);preX=p.clientX;preY=p.clientY;preOff();preEl=t;preT=setTimeout(()=>{if(preEl===t)t.classList.add('pre')},90)};
   grid.addEventListener('touchstart',preOn,{passive:true});
   grid.addEventListener('touchmove',e=>{if(!preEl)return;const p=pt(e);if(Math.abs(p.clientX-preX)>6||Math.abs(p.clientY-preY)>6)preOff()},{passive:true});
-  grid.addEventListener('touchend',()=>preOff(160),{passive:true});grid.addEventListener('touchcancel',()=>preOff(),{passive:true});
-  /* a janela rolou: cancela o "segurar para arrastar" que ainda ia começar (e apaga o ícone aceso) */
-  $('#panel').addEventListener('scroll',()=>{if(st&&!st.on){clearTimeout(timer);st=null}if(preEl)preOff()},{passive:true});
-  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)},{passive:true});
-  document.addEventListener('mouseup',()=>preOff(160),{passive:true});
+  grid.addEventListener('touchend',()=>preOff(160));grid.addEventListener('touchcancel',()=>preOff());
+  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)});
+  document.addEventListener('mouseup',()=>preOff(160));
   grid.addEventListener('touchstart',e=>{lastTouch=Date.now();start(e)},{passive:true});
   grid.addEventListener('touchmove',move,{passive:true});
   const block=e=>{if(st&&st.on&&e.cancelable)e.preventDefault()};
-  grid.addEventListener('touchend',end,{passive:true});grid.addEventListener('touchcancel',end,{passive:true});
-  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)},{passive:true});
-  document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)},{passive:true});
-  document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()},{passive:true});
+  grid.addEventListener('touchend',end);grid.addEventListener('touchcancel',end);
+  grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)start(e)});
+  document.addEventListener('mousemove',e=>{if(st&&Date.now()-lastTouch>800)move(e)});
+  document.addEventListener('mouseup',()=>{if(st&&Date.now()-lastTouch>800)end()});
   /* segurança: se o app for para segundo plano no meio de um toque/arraste, solta tudo (evita tela travada) */
   function abort(){
     clearTimeout(timer);preOff();document.removeEventListener('touchmove',block);
-    if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');PGC.clear();renderProv()}
+    if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');renderProv()}
     else document.body.classList.remove('dragging');
     $$('.ghost').forEach(x=>x.remove());
   }
   document.addEventListener('visibilitychange',()=>{if(document.hidden)abort()});
   window.addEventListener('pagehide',abort);window.addEventListener('blur',()=>{if(st&&st.on)abort()});
-  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},{capture:true,passive:true});
-  document.addEventListener('touchcancel',()=>{if(st)end()},{capture:true,passive:true});
+  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},true);
+  document.addEventListener('touchcancel',()=>{if(st)end()},true);
   grid.addEventListener('contextmenu',e=>e.preventDefault());
   grid.addEventListener('dragstart',e=>e.preventDefault());
   grid.addEventListener('selectstart',e=>e.preventDefault());
 })();
-$('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.pord=b.dataset.o==='custom'?'custom':'az';save();PGC.clear();renderProv()});
+$('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.pord=b.dataset.o==='custom'?'custom':'az';save();renderProv()});
 $('#phint').addEventListener('click',e=>{
-  if(e.target.id==='prst'){delete S.order[F.cat];S.pord='az';save();PGC.clear();renderProv();toast('Ordem A–Z restaurada')}
+  if(e.target.id==='prst'){delete S.order[F.cat];S.pord='az';save();renderProv();toast('Ordem A–Z restaurada')}
 });
 $('#pg').addEventListener('click',e=>{
   const t=e.target.closest('.pt');if(!t)return;
@@ -2149,10 +1896,7 @@ $('#ccl').addEventListener('input',e=>{
   F.close=v?+v:0;e.target.value=v;
 });
 $('#cl').addEventListener('input',e=>{F.last4=e.target.value.replace(/\D/g,'').slice(0,4);e.target.value=F.last4;syncForm()});
-/* cartão de prévia (bancos sem modelos prontos): mostra o nome digitado */
-function ccPrev(){const cp=$('#ccprev');if(cp.hidden)return;const tq=tplFor({prov:F.prov,model:F.model},F.tier,F.brand);cp.innerHTML=cardArt({prov:F.prov,model:F.model,tier:F.tier,brand:F.brand,last4:F.last4,name:$('#fn').value},false)+(F.last4&&tq&&!tq.n?'<div class="hint" style="text-align:center;margin-top:8px">••'+esc(F.last4)+'</div>':'')}
-/* digitar o nome: no cartão só redesenha a prévia (antes refazia o formulário inteiro a cada letra, e cada letra dava um engasgo) */
-let FNT=0;$('#fn').addEventListener('input',()=>{if(F.cat!=='cartao')return;clearTimeout(FNT);FNT=setTimeout(ccPrev,120)});
+$('#fn').addEventListener('input',()=>{if(F.cat==='cartao')syncForm()});
 $('#pimg').onclick=()=>$('#pfile').click();
 $('#pdel').onclick=()=>{F.img='';syncForm()};
 $('#pfile').addEventListener('change',e=>{
@@ -2199,7 +1943,7 @@ $('#fcopy').onclick=async function(){
 };
 function putExtra(b){
   if(F.prov)b.prov=F.prov;else delete b.prov;
-  if(F.bank&&PROV[F.bank]&&bankPick(F.cat))b.bank=F.bank;else delete b.bank;
+  if(F.bank&&PROV[F.bank]&&bankOk(F.cat))b.bank=F.bank;else delete b.bank;
   if(F.via&&VIA[F.via]&&bankOk(F.cat))b.via=F.via;else delete b.via;
   if(okImg(F.img))b.img=F.img;else delete b.img;
   if(F.cat==='cartao'){b.brand=F.brand;b.tier=F.tier;b.last4=F.last4;b.model=F.model||'';if(F.limit)b.limit=F.limit;else delete b.limit;if(F.close)b.close=F.close;else delete b.close}
@@ -2207,14 +1951,7 @@ function putExtra(b){
 }
 $('#panel').addEventListener('submit',e=>{
   e.preventDefault();
-  if(!F.cents){
-    const a=$('#amtbox'),pn=$('#panel'),y=Math.round(pn.scrollTop);
-    window.__diagAct&&window.__diagAct('adicionar conta sem valor');
-    window.__diagNote&&window.__diagNote('Adicionar conta sem valor: a janela voltou ao topo de uma vez (estava em '+y+' px)','info');
-    /* volta ao topo sem animação (o iPhone animava a rolagem de milhares de px pela lista de ícones e travava) e só depois dá o foco */
-    try{pn.scrollTo({top:0,behavior:'instant'})}catch(e){pn.scrollTop=0}
-    requestAnimationFrame(()=>{a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');const f=$('#fa');try{f.focus({preventScroll:true})}catch(e){f.focus()}});
-    return}
+  if(!F.cents){const a=$('#amtbox');a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');$('#fa').focus();return}
   const pv=PROV[F.prov];
   const name=$('#fn').value.trim()||(pv?AN(pv,F.cat):CAT[F.cat].l), due=$('#fd').value||toISO(today0()), note=$('#fo').value.trim();
   if(EDIT){
@@ -2271,31 +2008,17 @@ $('#extra').addEventListener('click',function(e){
 });
 /* arrastar o painel para baixo para fechar */
 (function(){
-  /* só vira "arrastar para fechar" quando o dedo começa DESCENDO a partir do título; subindo é rolagem normal.
-     Antes, um toque cancelado pelo iPhone deixava o arrastar "armado" e o próximo gesto movia a janela em vez de rolar (parecia travada) */
-  const pn=$('#panel');let y0=null,dy=0,arr=false;
-  pn.addEventListener('touchstart',e=>{
-    if(e.touches.length===1&&e.target.closest('.grab,.stitle')&&pn.scrollTop<=0){y0=e.touches[0].clientY;dy=0;arr=false}
-    else{y0=null;arr=false}
-  },{passive:true});
-  pn.addEventListener('touchmove',e=>{
-    if(y0===null)return;const d=e.touches[0].clientY-y0;
-    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;pn.style.transition='none';document.body.classList.remove('sfull')}
-    dy=Math.max(0,d);pn.style.transform='translateY('+dy+'px)';
-  },{passive:true});
-  const solta=()=>{
-    const era=arr,c=arr&&dy>110;y0=null;arr=false;if(!era)return;
-    pn.style.transition='';
-    if(c)closeSheet();else{pn.style.transform='';const sh=$('#sheet');clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480)}
-  };
-  pn.addEventListener('touchend',solta,{passive:true});pn.addEventListener('touchcancel',solta,{passive:true});
+  const pn=$('#panel');let y0=null,dy=0;
+  pn.addEventListener('touchstart',e=>{if(e.target.closest('.grab,.stitle')&&pn.scrollTop<=0){y0=e.touches[0].clientY;dy=0;pn.style.transition='none'}},{passive:true});
+  pn.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);if(dy>4)document.body.classList.remove('sfull');pn.style.transform='translate(-50%,'+dy+'px)'},{passive:true});
+  pn.addEventListener('touchend',()=>{if(y0===null)return;pn.style.transition='';const c=dy>110;y0=null;if(c)closeSheet();else{pn.style.transform='';const sh=$('#sheet');clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480)}});
 })();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 /* ao voltar para o app, atualiza o "hoje" */
 let LASTDAY=new Date().toDateString();
 /* ao voltar do segundo plano: destrava os carrosséis (reinicia a rolagem presa) e recalcula o 3D */
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;
-  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout(true)}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc,true)}catch(e){}})});
+  requestAnimationFrame(()=>{try{if($('#cm')&&$('#cm').children.length){$('#cm')._k='';cpLayout()}}catch(e){}try{const cc=document.querySelector('#list .cards');if(cc)cfLayout(cc)}catch(e){}})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;const d=new Date().toDateString();if(d!==LASTDAY){LASTDAY=d;if(TAB==='home'){ANIM=false;renderHome()}}});
 
 /* ---------- atualização automática ---------- */
@@ -2361,7 +2084,7 @@ window.addEventListener('pageshow',e=>{if(e.persisted)chkSoon()});
 setTimeout(()=>checkUpdate(false),1200);
 
 /* ---------- efeitos de luxo nos cartões ---------- */
-function RMq(){if(NOFX())return true;try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
+function RMq(){try{return matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){return false}}
 function ccFx(card,cx,cy){
   if(!card||RMq())return;
   card._fx=Date.now();
@@ -2408,10 +2131,8 @@ setTab('home');
   let A=jget(AK),LIC=jget(LK)||{ate:0,created:0},tok='',tokExp=0,pulling=false,applying=false,pushT=0,pushing=false,online=true,LST=[];
 
   /* ----- rede ----- */
-  /* com sinal fraco o pedido podia ficar pendurado para sempre e travar a sincronização; agora desiste em 15 s e tenta de novo depois */
-  const tfetch=(url,opt,ms)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||15000);return fetch(url,Object.assign({signal:c.signal},opt)).finally(()=>clearTimeout(t))};
   async function post(url,body,form){
-    const r=await tfetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:form?body:JSON.stringify(body)});
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':form?'application/x-www-form-urlencoded':'application/json'},body:form?body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));
     if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.code=(j.error&&j.error.message)||'erro';e.http=r.status;throw e}
     return j;
@@ -2433,7 +2154,7 @@ setTab('home');
   }
   async function fs(method,path,body){
     const t=await idToken();
-    const r=await tfetch(FS+path,{method:method,headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    const r=await fetch(FS+path,{method:method,headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
     if(r.status===404)return null;
     const j=await r.json().catch(()=>({}));
     if(!r.ok){const e=new Error((j.error&&j.error.message)||'erro');e.http=r.status;throw e}
@@ -2666,8 +2387,7 @@ setTab('home');
       try{await idToken()}catch(e){}
       if(localStorage.getItem(DK))await push();else await pull();
       checkLic();
-      /* não redesenha a tela de novo aqui: se a nuvem trouxe dados diferentes, o pull() já redesenhou.
-         Antes a lista inteira era refeita ~1 s depois de abrir o app mesmo sem nada novo (dava um engasgo na abertura) */
+      if(window.__app)window.__app.renderAll();
     })();
   }
   /* o tema também sobe para a nuvem */
@@ -2679,7 +2399,7 @@ setTab('home');
    Desligado, não roda nada. */
 (function(){
   const K='sobrou.diag',KL='sobrou.diaglog';
-  let on=false,raf=0,last=0,ev=[],frames=[],lastAct={t:0,a:'abrindo o app'},badge=null,sec={n:0,t0:0},fpsNow=0,startT=0,tot=0,totInt=0;
+  let on=false,raf=0,last=0,ev=[],frames=[],lastAct={t:0,a:''},badge=null,sec={n:0,t0:0},fpsNow=0,startT=0,tot=0,totInt=0;
   try{on=localStorage.getItem(K)==='1';ev=JSON.parse(localStorage.getItem(KL)||'[]')||[]}catch(e){ev=[]}
   const $=s=>document.querySelector(s);
   function scr(){
@@ -2693,71 +2413,21 @@ setTab('home');
   function where(el){
     if(!el||el===document||el===window||el===document.documentElement||el===document.body)return 'página';
     if(el.closest){
-      if(el.closest('#cm'))return document.documentElement.classList.contains('cgrid')?'grade de cartões':'carrossel do seletor';
+      if(el.closest('#cm'))return 'carrossel do seletor';
       if(el.closest('.cards'))return 'carrossel da tela inicial';
       if(el.closest('#pg'))return 'ícones de bancos';
-      if(el.closest('#fs'))return 'botão salvar';
-      if(el.closest('#cbf'))return 'filtro de bandeiras';
-      if(el.closest('.grab,.stitle'))return 'título da janela';
-      if(el.closest('input,textarea,select'))return 'campo de texto';
-      if(el.closest('#pm'))return 'A–Z / Minha ordem';
-      if(el.closest('#fc'))return 'tipo de conta';
       if(el.closest('#panel'))return 'janela';
-      if(el.closest('#scrim'))return 'fora da janela';
-      if(el.closest('.chk'))return 'marcar paga';
-      if(el.closest('.row'))return 'conta da lista';
-      if(el.closest('#fab'))return 'botão +';
-      if(el.closest('.tabs'))return 'abas';
-      if(el.closest('[data-nav]'))return 'troca de mês';
-      if(el.closest('.hero'))return 'resumo do mês';
     }
     return 'página';
   }
-  const onScroll=e=>{act('rolando '+where(e.target));gScroll(e)};
-  const onTouch=e=>{act('toque em '+where(e.target));gStart(e)};
-  /* trabalho interno do app (montar o seletor, os ícones, imagem aparecendo): entra no rótulo do engasgo,
-     junto com o toque que o causou (ex.: "toque em janela → montando o seletor de cartões") */
-  window.__diagAct=function(a){if(!on)return;const n=performance.now(),b=lastAct.a||'';
-    if(n-lastAct.t<1200&&b&&b!==a&&b.indexOf(a)<0&&!/^(abrindo o app|voltou)/.test(b))a=b.split(' → ')[0]+' → '+a;
-    lastAct={t:n,a:a}};
-  /* rolagem da janela que não acompanhou o dedo: o dedo arrastou na vertical e a janela não andou (ou demorou a começar) */
-  let G=null;
-  function gStart(e){
-    const sh=document.getElementById('sheet'),pn=document.getElementById('panel'),t=e.touches&&e.touches[0];
-    if(!t||(e.touches&&e.touches.length>1)){G=null;return}
-    const tg=e.target&&e.target.nodeType===1?e.target:(e.target&&e.target.parentElement);
-    const aberta=!!(sh&&!sh.hidden&&sh.classList.contains('open'));
-    const win=!!(tg&&aberta&&pn&&pn.contains(tg)),tela=!!(tg&&!aberta&&tg.closest('#list .cards'));
-    if((!win&&!tela)||tg.closest('.grab,.stitle')||document.body.classList.contains('dragging')){G=null;return}
-    const sc=win?pn:(document.scrollingElement||document.documentElement);
-    G={t0:performance.now(),x0:t.clientX,y0:t.clientY,ly:t.clientY,dx:0,dy:0,mv:0,first:0,pn:sc,doc:!win,qual:win?'a janela':'a tela',st0:sc.scrollTop,sy0:window.scrollY,onde:where(e.target)};
-  }
-  const gMove=e=>{if(!G)return;const t=e.touches&&e.touches[0];if(!t)return;G.ly=t.clientY;G.dx=Math.max(G.dx,Math.abs(t.clientX-G.x0));G.dy=Math.max(G.dy,Math.abs(t.clientY-G.y0));if(!G.mv&&G.dy>12)G.mv=performance.now()};
-  function gScroll(e){if(G&&!G.first&&(G.doc?(e.target===document||e.target===document.documentElement):e.target===G.pn))G.first=performance.now()}
-  const gEnd=e=>{
-    if(!G||(e.touches&&e.touches.length))return;const g=G;G=null;
-    if((window.__resgT||0)>g.t0)return; /* o app já socorreu este arrasto (anotado à parte) */
-    if((window.__dragT||0)>g.t0){window.__diagNote('o dedo ficou parado num ícone e ele virou "arrastar" (modo Minha ordem)','arrasto');return}
-    const trs=!g.doc&&Math.abs(window.scrollY-g.sy0)>2?' · rolou a tela de trás':'';
-    if(g.first&&g.mv&&g.first-g.mv>150&&g.dy>g.dx){window.__diagNote(g.qual+' demorou '+Math.round(g.first-g.mv)+' ms para começar a rolar (dedo em '+g.onde+')'+trs,'rolagem');return}
-    if(g.dy<40||g.dx>g.dy*0.8)return; /* não foi arrasto vertical */
-    const pn=g.pn,max=pn.scrollHeight-pn.clientHeight;if(max<4)return;
-    const desce=g.ly<g.y0,podia=desce?g.st0<max-2:g.st0>2;if(!podia)return; /* já estava no fim (ou no começo) */
-    if(Math.abs(pn.scrollTop-g.st0)<4&&!g.first){const ri=window.__resgInfo,pq=ri&&Math.abs(ri.t0-g.t0)<400?' · socorro não entrou: '+ri.motivo:' · socorro não viu o toque';
-      window.__diagNote('o dedo arrastou '+Math.round(g.dy)+' px e '+g.qual+' não rolou (dedo em '+g.onde+')'+trs+pq,'rolagem')}
-  };
-  let vvH=0;const vvR=()=>{const h=window.visualViewport?visualViewport.height:0;if(vvH&&Math.abs(h-vvH)>120)act(h<vvH?'teclado abrindo':'teclado fechando');vvH=h}; /* só mudanças grandes (teclado) */
-  let fora=0; /* quando o app saiu da frente (outro app, central de notificações, tela bloqueada) */
-  const onVis=()=>{if(document.hidden){fora=performance.now();window.__diagNote('saiu do app','info')}else{act('voltou do segundo plano');last=0;window.__diagNote('voltou ao app','info')}};
-  const onNet=e=>window.__diagNote(e.type==='online'?'internet voltou':'ficou sem internet','info');
-  const onBlur=()=>{fora=performance.now()};
+  const onScroll=e=>act('rolando '+where(e.target));
+  const onTouch=e=>act('toque em '+where(e.target));
+  const onVis=()=>{if(!document.hidden){act('voltou do segundo plano');last=0}};
   function loop(t){
     raf=requestAnimationFrame(loop);
     if(document.hidden){last=0;return}
     if(last){
-      const d=t-last;
-      if(d>=10000||(d>=300&&fora>=last-50)){last=t;return} /* pausa porque o app saiu da frente: não é engasgo */
-      frames.push(d);if(frames.length>240)frames.shift();
+      const d=t-last;frames.push(d);if(frames.length>240)frames.shift();
       tot++;sec.n++;
       const busy=t-lastAct.t<1200;
       if(busy)totInt++;
@@ -2772,19 +2442,15 @@ setTab('home');
   }
   function paint(){
     if(!badge)return;
-    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.filter(x=>!x.ms&&!x.k).length,r=ev.filter(x=>!x.ms&&x.k==='rolagem').length,sc=ev.filter(x=>!x.ms&&x.k==='resgate').length,ar=ev.filter(x=>!x.ms&&x.k==='arrasto').length;
-    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(r?' · <i>'+r+' rolage'+(r===1?'m':'ns')+' parada'+(r===1?'':'s')+'</i>':'')+(sc?' · '+sc+' socorr'+(sc===1?'o':'os'):'')+(ar?' · '+ar+' ícone'+(ar===1?'':'s')+' arrastado'+(ar===1?'':'s'):'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
+    const E=ev.filter(x=>x.ms>0),n=E.length,b=E.filter(x=>x.ms>=100).length,c=ev.length-n;
+    badge.innerHTML='<b>'+fpsNow+'</b> fps · '+n+' engasgo'+(n===1?'':'s')+(b?' · <i>'+b+' travada'+(b===1?'':'s')+'</i>':'')+(c?' · '+c+' encaixe'+(c===1?'':'s'):'');
   }
   function save(){try{localStorage.setItem(KL,JSON.stringify(ev.slice(-300)))}catch(e){}}
   function start(){
     if(raf)return;startT=Date.now();
     document.addEventListener('scroll',onScroll,{capture:true,passive:true});
     document.addEventListener('touchstart',onTouch,{capture:true,passive:true});
-    document.addEventListener('touchmove',gMove,{capture:true,passive:true});
-    document.addEventListener('touchend',gEnd,{capture:true,passive:true});document.addEventListener('touchcancel',gEnd,{capture:true,passive:true});
-    if(window.visualViewport){vvH=visualViewport.height;visualViewport.addEventListener('resize',vvR)}
-    window.addEventListener('online',onNet);window.addEventListener('offline',onNet);
-    document.addEventListener('visibilitychange',onVis);window.addEventListener('blur',onBlur);
+    document.addEventListener('visibilitychange',onVis);
     window.addEventListener('pagehide',save);
     badge=document.createElement('button');badge.type='button';badge.className='dgb';badge.onclick=show;document.body.appendChild(badge);
     sec={n:0,t0:performance.now()};last=0;raf=requestAnimationFrame(loop);paint();
@@ -2793,21 +2459,17 @@ setTab('home');
     cancelAnimationFrame(raf);raf=0;
     document.removeEventListener('scroll',onScroll,{capture:true});
     document.removeEventListener('touchstart',onTouch,{capture:true});
-    document.removeEventListener('touchmove',gMove,{capture:true});
-    document.removeEventListener('touchend',gEnd,{capture:true});document.removeEventListener('touchcancel',gEnd,{capture:true});G=null;
-    if(window.visualViewport)visualViewport.removeEventListener('resize',vvR);
-    window.removeEventListener('online',onNet);window.removeEventListener('offline',onNet);
-    document.removeEventListener('visibilitychange',onVis);window.removeEventListener('blur',onBlur);
+    document.removeEventListener('visibilitychange',onVis);
     window.removeEventListener('pagehide',save);
     if(badge){badge.remove();badge=null}save();
   }
   function hz(){const f=frames.slice().sort((a,b)=>a-b);if(!f.length)return '?';const m=f[Math.floor(f.length/2)];return Math.round(1000/m)}
   function report(){
-    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms&&!x.k),RL=ev.filter(x=>!x.ms&&x.k==='rolagem'),SO=ev.filter(x=>!x.ms&&x.k==='resgate'),AR=ev.filter(x=>!x.ms&&x.k==='arrasto');const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
+    const EV=ev.filter(x=>x.ms>0),NT=ev.filter(x=>!x.ms);const by={};EV.forEach(e=>{const k=e.tela+' | '+e.acao;const o=by[k]||(by[k]={n:0,max:0,sum:0});o.n++;o.max=Math.max(o.max,e.ms);o.sum+=e.ms});
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\n\n';
+    t+='3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2827,7 +2489,7 @@ setTab('home');
     };
     document.body.appendChild(o);
   }
-  window.__diagNote=function(txt,k){if(!on)return;const e={h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt};if(k)e.k=k;ev.push(e);if(ev.length>300)ev.shift();paint()};
+  window.__diagNote=function(txt){if(!on)return;ev.push({h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt});if(ev.length>300)ev.shift();paint()};
   window.__diag={
     card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
     bind(){const b=$('#bdiag');if(b)b.onclick=()=>{on=!on;try{localStorage.setItem(K,on?'1':'0')}catch(e){}if(on)start();else stop();b.textContent=on?'Desligar diagnóstico':'Ligar diagnóstico';window.__app&&window.__app.toast(on?'Diagnóstico ligado: use o app normalmente':'Diagnóstico desligado')};
@@ -2841,7 +2503,7 @@ setTab('home');
   const HTML='<div class="spl-in"><div class="spl-mw"><img src="'+window.MARK+'" alt=""></div><div class="spl-n">Sobrou<span>!</span></div><div class="spl-t">Onde o seu controle<b>vira lucro.</b></div></div>';
   function run(el,ms){
     const done=()=>{if(el.dataset.d)return;el.dataset.d=1;el.classList.add('out');setTimeout(()=>el.remove(),650)};
-    el.addEventListener('pointerdown',done,{passive:true});setTimeout(done,ms||2500);
+    el.addEventListener('pointerdown',done);setTimeout(done,ms||2500);
   }
   window.showSplash=function(){
     const old=document.getElementById('spl');if(old)old.remove();
@@ -2849,7 +2511,6 @@ setTab('home');
     document.body.appendChild(el);run(el,3200);
   };
   const el=document.getElementById('spl');if(!el)return;
-  if(document.documentElement.classList.contains('nofx')){el.remove();return}
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
