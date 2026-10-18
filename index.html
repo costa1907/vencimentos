@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.52';
+(function(){var V='13.53';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.52</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.53</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.52';
+const VERSION='13.53';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1217,18 +1217,18 @@ function cfLayout(tr,mark){
    e ao soltar o cartão continua com a mesma velocidade do dedo até parar exatamente no centro.
    Sem inércia nativa não há encaixe errado nem correção depois. */
 function snapper(tr,done){
-  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false;
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,cur=null,prev=null;
   const ease=k=>1-Math.pow(1-k,3);
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
   function movOn(){}
   function movOff(){}
-  function animTo(to,vs){ /* vs = velocidade atual da rolagem (px/ms) para começar sem tranco */
+  function animTo(to,vs,Tfix){ /* vs = velocidade atual da rolagem (px/ms) para começar sem tranco */
     stop();const from=tr.scrollLeft,dist=to-from;if(Math.abs(dist)<0.5){tr.scrollLeft=to;movOff();done&&done();return}
     movOn();
     let T=320;if(vs&&Math.sign(vs)===Math.sign(dist))T=3*Math.abs(dist)/Math.abs(vs);
-    T=Math.max(200,Math.min(460,T));
-    const t0=performance.now();
+    T=Math.max(200,Math.min(460,T));if(Tfix)T=Math.max(40,Tfix); /* v13.53: segunda rolada rumo ao mesmo cartão = continua o deslize que já andava (tempo que faltava), sem acelerar */
+    const t0=performance.now();cur={to:to,t0:t0,T:T};
     const dpr=window.devicePixelRatio||1;const f=t=>{const k=Math.min(1,(t-t0)/T);tr.scrollLeft=k>=1?to:Math.round((from+dist*ease(k))*dpr)/dpr;if(k<1)anim=requestAnimationFrame(f);else{anim=0;movOff();done&&done()}};
     anim=requestAnimationFrame(f);
   }
@@ -1245,10 +1245,12 @@ function snapper(tr,done){
     else if(Math.abs(moved)>pitch*0.28)tgt=s0+(moved>0?1:-1);
     else tgt=s0;
     tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-1,Math.min(s0+1,tgt))));
-    animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
+    const dest=Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2));
+    if(intr&&prev&&Math.abs(dest-prev.to)<2){const R=prev.R;prev=null;animTo(dest,0,R);return}
+    animTo(dest,-v);
   }
-  function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
-  tr.addEventListener('touchstart',e=>{intr=!!anim;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  function nearest(){if(intr&&prev&&prev.R>0){const d=prev.to,R=prev.R;prev=null;animTo(d,0,R);return}const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
+  tr.addEventListener('touchstart',e=>{intr=!!anim;prev=(anim&&cur)?{to:cur.to,R:cur.T-(performance.now()-cur.t0)}:null;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
     const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){dir='h';movOn()}else if(Math.abs(dy)>6)dir='v';else return}
