@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.41';
+(function(){var V='13.43';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -644,7 +644,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.41</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.43</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -754,7 +754,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.41';
+const VERSION='13.43';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1690,7 +1690,7 @@ function reviverRolagem(el){if(!el||el._rev)return;el._rev=1;el.style.overflowY=
 function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   if(!alvo)return;
   let g=null,emb=0;
-  const obs=()=>{try{return localStorage.getItem('sobrou.soc')==='obs'}catch(e){return false}};
+  const obs=()=>{try{return localStorage.getItem('sobrou.soc')!=='on'}catch(e){return true}};
   const para=()=>{if(emb){cancelAnimationFrame(emb);emb=0}};
   document.addEventListener('touchstart',para,{capture:true,passive:true});
   /* por que não socorreu (vai para o diagnóstico) */
@@ -1713,12 +1713,12 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
     if(!g.on){
       const andou=Math.abs(sc.scrollTop-g.st0),dedo=Math.abs(dy),ans=performance.now()-(sc._ans||-1e9)<120000;
       if(andou>=Math.max(6,dedo*0.5)){g.off=1;motivo(g,'o iPhone rolou');return}   /* o iPhone está rolando normalmente: não mexe */
-      if(dedo<(ans?24:36)||performance.now()-g.t0<(ans?50:80))return;               /* ainda é cedo */
+      if(dedo<(ans?24:36)||performance.now()-g.t0<130)return;                        /* ainda é cedo (v13.42: 130 ms; antes 50/80 ms entrava com o scrollTop ainda sem atualizar) */
       if(dedo<Math.abs(dx)*1.3){motivo(g,'arrasto na diagonal');return}
       {const mx=Math.max(0,sc.scrollHeight-sc.clientHeight);if(dy>0?sc.scrollTop<=1:sc.scrollTop>=mx-1){g.off=1;motivo(g,'já estava no começo/fim');return}} /* "elástico" do iPhone */
       if(andou>=dedo*0.25)return;                                                   /* andou um pouco: espera mais */
       g.on=1;g.base=sc.scrollTop;g.yb=t.clientY;g.exp=g.base;sc._ans=window.__resgT=performance.now();motivo(g,'socorreu');
-      if(obs())g.obs=1;
+      if(obs()){g.obs=1;g.f0=null;const sc2=sc,gg2=g;const onS=()=>{if(gg2.f0==null)gg2.f0=performance.now()};sc2.addEventListener('scroll',onS,{passive:true});gg2.rm=()=>sc2.removeEventListener('scroll',onS)}
       window.__diagNote&&window.__diagNote((g.obs?'[só observando] o iPhone não tinha rolado '+nome:'o iPhone não rolou '+nome+' e o app rolou junto com o dedo')+(g.onde?' (dedo em '+g.onde+')':'')+' · posição '+Math.round(g.base)+' de '+Math.max(0,sc.scrollHeight-sc.clientHeight)+' px · aos '+Math.round(performance.now()-g.t0)+' ms, dedo '+Math.round(dedo)+' px, janela andou '+Math.round(andou)+' px','resgate');
     }else if(g.obs){return}
     else if(Math.abs(sc.scrollTop-g.exp)>3){g.off=1;g.on=0;motivo(g,'o iPhone voltou a rolar');return}  /* o iPhone assumiu a rolagem: solta */
@@ -1728,7 +1728,7 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   },{passive:true});
   alvo.addEventListener('touchend',()=>{
     if(!g)return;const gg=g;g=null;
-    if(gg.obs&&gg.on){const mv=Math.abs(gg.sc.scrollTop-gg.base);window.__diagNote&&window.__diagNote(mv>60?'→ falso alarme: no fim a janela andou '+Math.round(mv)+' px sozinha (o iPhone rolou, só atrasou)':'→ parou de verdade: no fim a janela andou só '+Math.round(mv)+' px','info');return}
+    if(gg.obs&&gg.on){gg.rm&&gg.rm();const mv=Math.abs(gg.sc.scrollTop-gg.base),lat=gg.f0!=null?' · começou a rolar aos '+Math.round(gg.f0-gg.t0)+' ms do toque':'';window.__diagNote&&window.__diagNote(mv>60?'→ falso alarme: no fim a janela andou '+Math.round(mv)+' px sozinha (o iPhone rolou, só atrasou)'+lat:'→ parou de verdade: no fim a janela andou só '+Math.round(mv)+' px'+lat,'info');return}
     if(!gg.on||gg.off)return;
     if(gg.sc!==document.scrollingElement&&gg.sc!==document.documentElement)reviverRolagem(gg.sc); /* próximo arrasto volta a ser do iPhone */
     const h=gg.h,a=h[0],b=h[h.length-1];let v=(a[1]-b[1])/Math.max(16,b[0]-a[0]); /* px/ms; >0 = rolar para baixo */
@@ -2837,7 +2837,7 @@ setTab('home');
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc')!=='on'?'SÓ OBSERVANDO (padrão: não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2848,11 +2848,11 @@ setTab('home');
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc')!=='on'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
-      if(a==='soc'){try{if(localStorage.getItem('sobrou.soc')==='obs')localStorage.removeItem('sobrou.soc');else localStorage.setItem('sobrou.soc','obs')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc')==='obs'?'Socorro só observando':'Socorro ligado');return}
+      if(a==='soc'){try{if(localStorage.getItem('sobrou.soc')==='on')localStorage.setItem('sobrou.soc','obs');else localStorage.setItem('sobrou.soc','on')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc')==='on'?'Socorro ligado':'Socorro só observando');return}
       if(a==='car'){const js=document.documentElement.classList.contains('jsnapw');try{localStorage.setItem('sobrou.car',js?'nat':'js')}catch(_){}save();location.reload();return}
       if(a==='z'){ev=[];GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
