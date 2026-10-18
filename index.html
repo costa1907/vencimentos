@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.30';
+(function(){var V='13.31';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -642,7 +642,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.30</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.31</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -752,7 +752,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.30';
+const VERSION='13.31';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1525,6 +1525,7 @@ function provBar(searching){
   const ph=$('#phint');ph.hidden=!!searching;
   ph.innerHTML=cu?'Segure um ícone e arraste para onde quiser. <button type="button" id="prst">Voltar para A–Z</button>':'Para arrumar os ícones do seu jeito, toque em <b>Minha ordem</b> e segure um ícone.';
 }
+const PGC=new Map();
 function renderProv(){
   window.__diagAct&&window.__diagAct('montando os ícones');
   {const pl=$('#pl');if(pl)pl.textContent=F.cat==='transferencia'?'Para qual banco?':'Quem é?'}
@@ -1536,9 +1537,12 @@ function renderProv(){
   }
   if(q)ids.sort(AZ);
   provBar(!!q);
-  let g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');
+  const pk=q?'':F.cat+'|'+(F.prov||'')+'|'+S.pord;
+  let g=!q&&PGC.get(pk);
+  if(!g){g=ids.map(id=>{const p=PROV[id];return '<div role="button" class="pt'+(F.prov===id?' on':'')+'" data-p="'+id+'">'+badge(p)+'<span>'+esc(p.n)+'</span>'+HZ+'</div>'}).join('');}
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
   g+='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
+  if(!q&&!PGC.has(pk)){PGC.set(pk,g);if(PGC.size>8)PGC.delete(PGC.keys().next().value)}
   if(q&&!ids.length) g='<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>'+g;
   $('#pg').innerHTML=g;
   icoDecode();
@@ -1867,8 +1871,12 @@ $('#fc').addEventListener('click',e=>{
     if($('#fn').value===F.auto)$('#fn').value='';
     F.auto='';F.prov='';
   }else if(F.prov&&PROV[F.prov]&&$('#fn').value===F.auto){const nn=AN(PROV[F.prov],F.cat);$('#fn').value=nn;F.auto=nn}
-  $('#ps').value='';renderProv();syncForm();
+  $$('#fc .cat').forEach(x=>x.classList.toggle('on',x===b));
+  $('#ps').value='';
+  const my=++FCT;
+  requestAnimationFrame(()=>setTimeout(()=>{if(my!==FCT)return;renderProv();syncForm()},0));
 });
+let FCT=0;
 $('#ps').addEventListener('input',renderProv);
 document.addEventListener('selectstart',e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest('input,textarea,[contenteditable],.dgp pre'))return;e.preventDefault()});
 document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.closest('input,textarea'))return;e.preventDefault()});
@@ -1968,7 +1976,7 @@ const HP=function(k){
         const arr=st.tiles.map(el=>el.dataset.p),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
         S.order[F.cat]=arr.filter(Boolean);S.pord='custom';save();
       }
-      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);renderProv();
+      HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);PGC.clear();renderProv();
       {const nt=$$('#pg .pt')[to];if(nt){nt.style.visibility='hidden';setTimeout(()=>{nt.style.visibility='';nt.classList.add('land');g.remove();setTimeout(()=>nt.classList.remove('land'),520)},230)}else setTimeout(()=>g.remove(),230)}
     }
     st=null;
@@ -1994,7 +2002,7 @@ const HP=function(k){
   /* segurança: se o app for para segundo plano no meio de um toque/arraste, solta tudo (evita tela travada) */
   function abort(){
     clearTimeout(timer);preOff();document.removeEventListener('touchmove',block);
-    if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');renderProv()}
+    if(st){cancelAnimationFrame(st.raf);if(st.ghost)st.ghost.remove();if(st.tile)st.tile.classList.remove('ph');st=null;document.body.classList.remove('dragging');PGC.clear();renderProv()}
     else document.body.classList.remove('dragging');
     $$('.ghost').forEach(x=>x.remove());
   }
@@ -2006,9 +2014,9 @@ const HP=function(k){
   grid.addEventListener('dragstart',e=>e.preventDefault());
   grid.addEventListener('selectstart',e=>e.preventDefault());
 })();
-$('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.pord=b.dataset.o==='custom'?'custom':'az';save();renderProv()});
+$('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.pord=b.dataset.o==='custom'?'custom':'az';save();PGC.clear();renderProv()});
 $('#phint').addEventListener('click',e=>{
-  if(e.target.id==='prst'){delete S.order[F.cat];S.pord='az';save();renderProv();toast('Ordem A–Z restaurada')}
+  if(e.target.id==='prst'){delete S.order[F.cat];S.pord='az';save();PGC.clear();renderProv();toast('Ordem A–Z restaurada')}
 });
 $('#pg').addEventListener('click',e=>{
   const t=e.target.closest('.pt');if(!t)return;
