@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.29';
+(function(){var V='13.30';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -529,7 +529,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
 /* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
-body.so .page .row,body.so .page .chk,body.so .page .cw,body.so .page .cc,body.so .page .bc .b,body.so .page .tr i,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
+body.so .page .cw,body.so .page .cc,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
 .pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
@@ -586,7 +586,7 @@ body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::af
 /* desfoques só quando visíveis (o desfoque é refeito a cada quadro de rolagem) */
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
-body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
+body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 .jsnap .cpk,.jsnap .cards{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
 .jsnapw .cpk{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
 /* diagnóstico de fluidez */
@@ -642,7 +642,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.29</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.30</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -752,7 +752,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{visibility:hidden}
 <script>
 (function(){
 'use strict';
-const VERSION='13.29';
+const VERSION='13.30';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1832,7 +1832,7 @@ function openSheet(id,key){
   renderProv();syncForm();
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}const l=a.value.length;try{a.setSelectionRange(l,l)}catch(e){}},380);
+  if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}},380);
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -1844,12 +1844,21 @@ function closeSheet(){
   $('#panel').style.transform='';
 }
 $('#scrim').onclick=closeSheet;$('#sx').onclick=closeSheet;
+/* o valor é uma máscara de centavos: cada dígito entra SEMPRE no fim (5 → R$ 0,05), onde quer que o cursor esteja. Antes o app lia o texto
+   inteiro depois de o iPhone inserir o dígito no cursor — com o cursor fora do fim (ou o app ocupado) o dígito caía no meio e o valor errava */
+$('#fa').addEventListener('beforeinput',e=>{
+  const t=e.inputType,el=e.target,tudo=el.selectionStart===0&&el.selectionEnd===el.value.length&&el.value.length>0;
+  const poe=n=>{F.cents=n;el.value=fmtAmt(n)};
+  if(t==='insertText'&&typeof e.data==='string'&&e.data.length===1){
+    e.preventDefault();if(!/\d/.test(e.data))return;
+    const n=(tudo&&F.cents>0?0:F.cents)*10+(+e.data);if(String(n).length>11)return;poe(n);return}
+  if(t==='deleteContentBackward'){e.preventDefault();poe(tudo?0:Math.floor(F.cents/10))}
+});
+/* colar, cortar, preencher: cai aqui e lê os dígitos do texto */
 $('#fa').addEventListener('input',e=>{
   const d=e.target.value.replace(/\D/g,'').slice(0,11);
   F.cents=d?parseInt(d,10):0;e.target.value=fmtAmt(F.cents);
-  const l=e.target.value.length;try{e.target.setSelectionRange(l,l)}catch(_){}
 });
-$('#fa').addEventListener('focus',e=>{const l=e.target.value.length;setTimeout(()=>{try{e.target.setSelectionRange(l,l)}catch(_){}},0)});
 $('#fc').addEventListener('click',e=>{
   const b=e.target.closest('.cat');if(!b)return;
   F.cat=b.dataset.c;
