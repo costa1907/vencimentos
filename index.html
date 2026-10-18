@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.48';
+(function(){var V='13.49';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -330,6 +330,8 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cbf .chip{height:34px;padding:0 15px;font-size:12.5px;border-radius:999px;flex:none}
 .cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cpk::-webkit-scrollbar{display:none}
+.cpk>.cpi{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.cpk.ovx>.cpi{transform:translateX(var(--ov,0px));transition:none}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:always;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
 .cpa{display:block;pointer-events:none;transform-origin:50% 60%}
@@ -645,7 +647,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.48</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.49</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +757,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.48';
+const VERSION='13.49';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1639,7 +1641,7 @@ function cpLabel(bi){
     }
   }
   tr.addEventListener('scroll',()=>{CPLS=Date.now();
-    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const bi=cpLayout();if(bi!==lb){lb=bi;cpLabel(bi)}});
+    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const bi=cpLayout();if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
     clearTimeout(idle);idle=setTimeout(settle,140);
   },{passive:true});
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
@@ -1747,6 +1749,29 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   alvo.addEventListener('touchcancel',()=>{g=null},{passive:true});
 }
 socorroVertical($('#panel'),null,()=>$('#panel'),'a janela','.grab,.stitle',t=>t.closest('#cm')?(CGRID?'grade de cartões':'carrossel do seletor'):t.closest('#pg')?'ícones':t.closest('#cbf')?'filtro de bandeiras':t.closest('input,textarea,select')?'campo de texto':'janela');
+
+/* v13.49: puxar o 1º cartão para a direita (ou o último para a esquerda) fazia o iPhone esticar o carrossel ~170 px e deixava o cartão cortado na borda da tela.
+   Só quando o toque COMEÇA numa ponta, um ouvinte vale para aquele toque: o puxão para fora é barrado e vira um leve esticão (até 26 px). Toques no meio da lista não têm ouvinte nenhum. */
+(function(){
+  const tr=document.getElementById('cm');if(!tr||CGRID)return;
+  let x0=0,y0=0,aL=0,aR=0,on=0,ov=0;
+  const mv=e=>{
+    const t=e.touches[0];if(!t)return;const dx=t.clientX-x0,dy=t.clientY-y0;
+    if(Math.abs(dx)<4&&Math.abs(dy)<4)return;
+    if(Math.abs(dx)>Math.abs(dy)*1.2&&((aL&&dx>0)||(aR&&dx<0))){
+      if(e.cancelable)e.preventDefault();
+      ov=Math.sign(dx)*Math.min(26,Math.abs(dx)*0.22);tr.style.setProperty('--ov',ov.toFixed(1)+'px');tr.classList.add('ovx');
+      if(!tr._ovn){tr._ovn=1;window.__diagNote&&window.__diagNote('puxão além da ponta do carrossel barrado ('+(aL?'1º':'último')+' cartão)','info')}
+    }else if(ov){ov=0;tr.classList.remove('ovx')}
+  };
+  const fim=()=>{if(on){tr.removeEventListener('touchmove',mv);on=0}tr._ovn=0;if(ov||tr.classList.contains('ovx')){ov=0;tr.classList.remove('ovx')}};
+  tr.addEventListener('touchstart',e=>{
+    fim();if(e.touches.length!==1)return;const t=e.touches[0];x0=t.clientX;y0=t.clientY;
+    const mx=tr.scrollWidth-tr.clientWidth;aL=tr.scrollLeft<=2?1:0;aR=tr.scrollLeft>=mx-2?1:0;
+    if(mx>4&&(aL||aR)){on=1;tr.addEventListener('touchmove',mv,{passive:false})}
+  },{passive:true});
+  tr.addEventListener('touchend',fim,{passive:true});tr.addEventListener('touchcancel',fim,{passive:true});
+})();
 /* voltando ao app com a janela aberta: refaz a rolagem dela (no iPhone ela às vezes volta "dura" depois do segundo plano) */
 /* v13.36: ao voltar do segundo plano o iOS descarta as imagens já decodificadas. O app achava que os ícones continuavam prontos (ICDEC) e eles voltavam a ser
    decodificados no meio da rolagem, com o iPhone sem acompanhar o dedo (no relatório, todos os socorros vieram depois de "voltou ao app").
@@ -1792,7 +1817,7 @@ function cpLoad(c){
   pend.sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
   const list=pend.map(x=>x[2]);
   (function pump(){
-    while(CPACT<2&&list.length){
+    while(CPACT<3&&list.length){
       const im=list.shift(),u=im.getAttribute('data-src');if(!u)continue;
       im.removeAttribute('data-src');CPACT++;
       let d=0;const fin=()=>{if(d)return;d=1;CPACT--;pump()};
