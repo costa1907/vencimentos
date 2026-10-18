@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.37';
+(function(){var V='13.38';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -340,7 +340,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
 
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
-.cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0;transition:opacity .25s}
+.cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0}
 .cpi.ctr::after{opacity:1}
 /* bolinhas: a atual cresce com transform (antes mudava a largura e refazia o layout a cada quadro do deslize) */
 .cpg{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;height:8px;contain:layout style}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.37</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.38</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.37';
+const VERSION='13.38';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1184,7 +1184,7 @@ const JSNAP=false;
 /* v13.26: seletor de cartões em grade (sem rolagem horizontal dentro da janela). Para voltar ao carrossel, troque para false */
 const CGRID=false;
 /* v13.28: carrossel do seletor de cartões (na janela) com arraste próprio, sem rolagem nativa horizontal. Para voltar ao nativo, troque para false */
-const JSNAPW=false; /* v13.37: false = encaixe nativo do iPhone no carrossel de cartões (com o 3D fora, a rolagem por JS da v13.28 deixou de ser necessária). Para voltar à rolagem por JS, troque para true */
+const JSNAPW=true; /* v13.38: rolagem do carrossel por JS (a nativa trouxe os socorros de volta na v13.37) */
 /* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
 function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
@@ -1220,14 +1220,14 @@ function snapper(tr,done){
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
   function movOn(){if(tr.classList.contains('cpk')){clearTimeout(tr._mt);tr.classList.add('mov')}}
-  function movOff(){if(tr.classList.contains('cpk')){clearTimeout(tr._mt);tr._mt=setTimeout(()=>tr.classList.remove('mov'),160)}}
+  function movOff(){}
   function animTo(to,vs){ /* vs = velocidade atual da rolagem (px/ms) para começar sem tranco */
     stop();const from=tr.scrollLeft,dist=to-from;if(Math.abs(dist)<0.5){tr.scrollLeft=to;movOff();done&&done();return}
     movOn();
     let T=320;if(vs&&Math.sign(vs)===Math.sign(dist))T=3*Math.abs(dist)/Math.abs(vs);
     T=Math.max(200,Math.min(460,T));
     const t0=performance.now();
-    const f=t=>{const k=Math.min(1,(t-t0)/T);tr.scrollLeft=from+dist*ease(k);if(k<1)anim=requestAnimationFrame(f);else{anim=0;movOff();done&&done()}};
+    const dpr=window.devicePixelRatio||1;const f=t=>{const k=Math.min(1,(t-t0)/T);tr.scrollLeft=k>=1?to:Math.round((from+dist*ease(k))*dpr)/dpr;if(k<1)anim=requestAnimationFrame(f);else{anim=0;movOff();done&&done()}};
     anim=requestAnimationFrame(f);
   }
   function release(){
@@ -1660,14 +1660,18 @@ function cp3d(){
     let d=(el.offsetLeft+el.offsetWidth/2-c)/step;
     const far=off||d>1.6||d<-1.6;      /* fora da tela: reto e sem camada (transform 3D vira camada de composição) */
     d=far?0:(d>1?1:d<-1?-1:d);
-    const k=far?999:Math.round(d*50);  /* passos de 2%: não reescreve a cada pixel */
+    const k=far?99999:Math.round(d*2000);  /* v13.38: passos de 0,05% (antes 2%: saltos de ~1 px no tamanho do cartão) */
     if(a._k===k)continue;a._k=k;
     const ad=Math.abs(d);
-    a.style.transform=(far||k===0)?'':(C3D?'perspective(900px) rotateY('+(-34*d).toFixed(1)+'deg) scale('+(1-.14*ad).toFixed(3)+')':'scale('+(1-.14*ad).toFixed(3)+') scaleX('+(1-.17*ad).toFixed(3)+')');
+    a.style.transform=(far||k===0)?'':(C3D?'perspective(900px) rotateY('+(-34*d).toFixed(1)+'deg) scale('+(1-.14*ad).toFixed(3)+')':'scale('+(1-.14*ad).toFixed(4)+') scaleX('+(1-.17*ad).toFixed(4)+')');
   }
 }
 function cp3dQ(){if(!C3Q)C3Q=requestAnimationFrame(cp3d)}
-$('#cm').addEventListener('scroll',()=>{cp3dQ();const t=$('#cm');t.classList.add('mov');clearTimeout(t._mt2);t._mt2=setTimeout(()=>t.classList.remove('mov'),220)},{passive:true});
+$('#cm').addEventListener('scroll',()=>{cp3dQ();$('#cm').classList.add('mov')},{passive:true});
+/* v13.38: as camadas ficam até o dedo começar a rolar a janela na vertical (aí saem, antes de o iPhone rolar): sem redesenho do cartão ao parar */
+{let tx=0,ty=0;const pn=$('#panel');
+ pn.addEventListener('touchstart',e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY},{passive:true,capture:true});
+ pn.addEventListener('touchmove',e=>{const cm=$('#cm');if(!cm.classList.contains('mov'))return;const t=e.touches[0],dx=Math.abs(t.clientX-tx),dy=Math.abs(t.clientY-ty);if(dy>8&&dy>dx)cm.classList.remove('mov')},{passive:true,capture:true})}
 window.addEventListener('resize',()=>{$$('#cm .cpa').forEach(a=>a._k=null);cp3dQ()});
 /* seletor em grade: tocar no cartão escolhe o cartão (antes era o que parava no centro do carrossel) */
 function cpPick(it){
