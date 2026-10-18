@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.61';
+(function(){var V='13.63';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -333,7 +333,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpk[hidden],.cbf[hidden],#cgen[hidden],.cpt[hidden],#ccprev[hidden]{display:none}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:always;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
 .cpa{display:block;pointer-events:none;transform-origin:50% 60%}
-.c3d.sda .cpk .cpa{will-change:transform;backface-visibility:hidden;animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
+.c3d.sda .cpk .cpi.nr .cpa{will-change:transform;backface-visibility:hidden;animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
 /* v13.36: os cartões só viram camada enquanto o carrossel anda de lado (a rolagem vertical da janela fica sem camadas) */
 /* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.61</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.63</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.61';
+const VERSION='13.63';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1194,7 +1194,7 @@ let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
-if(SDA&&(()=>{try{return localStorage.getItem('sobrou.c3d')!=='off'}catch(e){return true}})())document.documentElement.classList.add('c3d');
+if(SDA&&(()=>{try{return localStorage.getItem('sobrou.c3d2')==='on'}catch(e){return false}})())document.documentElement.classList.add('c3d');
 if(JSNAP)document.documentElement.classList.add('jsnap');
 if(CGRID)document.documentElement.classList.add('cgrid');
 if(JSNAPW)document.documentElement.classList.add('jsnapw');
@@ -1617,6 +1617,8 @@ function cpLabel(bi){
   if(bi==null||bi<0){const o=tr.querySelector('.cpi.on');bi=o?[].indexOf.call(its,o):0}
   const it=its[bi];if(!it)return;
   $('#cpn').textContent=it.dataset.n;$('#cps').textContent=it.dataset.s;{const g=$$('#cpg i');g.forEach((d,i)=>d.classList.toggle('on',i===bi))}
+  /* v13.63: 3D leve: só o cartão do centro e os 2 de cada lado (5) ganham o giro/camada; os outros ficam sem animação nem camada (estão fora da tela). Antes todos os ~13 cartões tinham camada e isso engasgava a rolagem da janela */
+  if(document.documentElement.classList.contains('c3d'))for(let i=0;i<its.length;i++)its[i].classList.toggle('nr',Math.abs(i-bi)<=2);
 }
 (function(){
   let raf=0,idle=0,lb=-2,tch=0,fixd=0,sl0=-1;
@@ -1648,7 +1650,7 @@ function cpLabel(bi){
   let trvN=0;
   if(!JSNAP&&!JSNAPW&&!CGRID)tr.addEventListener('touchstart',e=>{
     if(Date.now()-CPLS>320)return;
-    try{if(localStorage.getItem('sobrou.trv')==='off')return}catch(_){}
+    try{if(localStorage.getItem('sobrou.trv')!=='on')return}catch(_){}
     const it=tr.children[0];if(!it)return;const st=it.offsetWidth+14,mx=tr.scrollWidth-tr.clientWidth,sl=tr.scrollLeft;
     if(sl<=st*.95||sl>=mx-st*.95){
       e.preventDefault();trvN++;
@@ -1703,7 +1705,7 @@ function reviverRolagem(el){if(!el||el._rev)return;el._rev=1;el.style.overflowY=
 function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   if(!alvo)return;
   let g=null,emb=0;
-  const obs=()=>{try{return localStorage.getItem('sobrou.soc2')==='obs'}catch(e){return false}};
+  const obs=()=>{try{return localStorage.getItem('sobrou.soc3')==='obs'}catch(e){return false}};
   const para=()=>{if(emb){cancelAnimationFrame(emb);emb=0}};
   document.addEventListener('touchstart',para,{capture:true,passive:true});
   /* por que não socorreu (vai para o diagnóstico) */
@@ -2852,7 +2854,7 @@ setTab('home');
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc2')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     t+='\nÚLTIMOS 40\n';
@@ -2863,13 +2865,13 @@ setTab('home');
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc2')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="trv">Trava nas pontas: '+(localStorage.getItem('sobrou.trv')==='off'?'desligada → ligar':'ligada → desligar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc3')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="trv">Trava nas pontas: '+(localStorage.getItem('sobrou.trv')==='on'?'ligada → desligar':'desligada → ligar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
-      if(a==='soc'){try{if(localStorage.getItem('sobrou.soc2')==='obs')localStorage.setItem('sobrou.soc2','on');else localStorage.setItem('sobrou.soc2','obs')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc2')==='obs'?'Socorro só observando':'Socorro ligado');return}
-      if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d',on?'off':'on')}catch(_){}save();location.reload();return}
-      if(a==='trv'){try{localStorage.setItem('sobrou.trv',localStorage.getItem('sobrou.trv')==='off'?'on':'off')}catch(_){}save();location.reload();return}
+      if(a==='soc'){try{if(localStorage.getItem('sobrou.soc3')==='obs')localStorage.setItem('sobrou.soc3','on');else localStorage.setItem('sobrou.soc3','obs')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc3')==='obs'?'Socorro só observando':'Socorro ligado');return}
+      if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d2',on?'off':'on')}catch(_){}save();location.reload();return}
+      if(a==='trv'){try{localStorage.setItem('sobrou.trv',localStorage.getItem('sobrou.trv')==='on'?'off':'on')}catch(_){}save();location.reload();return}
       if(a==='car'){const js=document.documentElement.classList.contains('jsnapw');try{localStorage.setItem('sobrou.car2',js?'nat':'js')}catch(_){}save();location.reload();return}
       if(a==='z'){ev=[];GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
