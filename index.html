@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.55';
+(function(){var V='13.56';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -645,7 +645,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.55</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.56</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +755,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.55';
+const VERSION='13.56';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1217,7 +1217,7 @@ function cfLayout(tr,mark){
    e ao soltar o cartão continua com a mesma velocidade do dedo até parar exatamente no centro.
    Sem inércia nativa não há encaixe errado nem correção depois. */
 function snapper(tr,done){
-  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,cur=null,prev=null;
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,cur=null,prev=null,hold=false;
   const ease=k=>1-Math.pow(1-k,3);
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
@@ -1250,16 +1250,21 @@ function snapper(tr,done){
     animTo(dest,-v);
   }
   function nearest(){if(intr&&prev&&prev.R>0){const d=prev.to,R=prev.R;prev=null;animTo(d,0,R);return}const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
-  tr.addEventListener('touchstart',e=>{intr=!!anim;prev=(anim&&cur)?{to:cur.to,R:cur.T-(performance.now()-cur.t0)}:null;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchstart',e=>{intr=!!anim;prev=(anim&&cur)?{to:cur.to,R:cur.T-(performance.now()-cur.t0)}:null;
+    /* v13.56: se o deslize está indo para o 1º/último cartão, o toque NÃO o interrompe de cara: só assume se o dedo for no sentido contrário. Rolada no mesmo sentido (já não há para onde ir) deixa o deslize terminar sozinho, em vez de o cartão pular para a ponta seguindo o dedo */
+    hold=!!(anim&&cur&&(cur.to<=2||cur.to>=tr.scrollWidth-tr.clientWidth-2));if(!hold)stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
-    const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
-    if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){dir='h';movOn()}else if(Math.abs(dy)>6)dir='v';else return}
+    const p=e.touches[0];let dx=p.clientX-x0;const dy=p.clientY-y0;
+    if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){
+        if(hold&&anim&&cur&&Math.sign(-dx)===Math.sign(cur.to-tr.scrollLeft)){dir='i'}
+        else{if(hold){stop();hold=false;sl0=tr.scrollLeft;x0=p.clientX;dx=0;sm=[{x:p.clientX,t:performance.now()}]}dir='h';movOn()}}
+      else if(Math.abs(dy)>6)dir='v';else return}
     if(dir!=='h')return;
     sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();
     tr.scrollLeft=sl0-dx;
   },{passive:true});
-  tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}},{passive:true});
-  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}},{passive:true});
+  tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr&&!(hold&&anim)){intr=false;nearest()}}hold=false},{passive:true});
+  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr&&!(hold&&anim)){intr=false;nearest()}}hold=false},{passive:true});
   tr._snapTo=function(i){const cx=centers();if(cx[i]==null)return;const W=tr.clientWidth;animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),0)};
 }
 function cfInit(){
