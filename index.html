@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.38';
+(function(){var V='13.39';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -334,7 +334,6 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpi{flex:none;width:var(--w);scroll-snap-align:center;scroll-snap-stop:always;padding:0;background:none;border:0;position:relative;-webkit-tap-highlight-color:transparent}
 .cpa{display:block;pointer-events:none;transform-origin:50% 60%}
 /* v13.36: os cartões só viram camada enquanto o carrossel anda de lado (a rolagem vertical da janela fica sem camadas) */
-.cpk.mov .cpa{will-change:transform}
 /* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
 .sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
@@ -645,7 +644,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.38</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.39</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -755,7 +754,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.38';
+const VERSION='13.39';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1219,7 +1218,7 @@ function snapper(tr,done){
   const ease=k=>1-Math.pow(1-k,3);
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
-  function movOn(){if(tr.classList.contains('cpk')){clearTimeout(tr._mt);tr.classList.add('mov')}}
+  function movOn(){}
   function movOff(){}
   function animTo(to,vs){ /* vs = velocidade atual da rolagem (px/ms) para começar sem tranco */
     stop();const from=tr.scrollLeft,dist=to-from;if(Math.abs(dist)<0.5){tr.scrollLeft=to;movOff();done&&done();return}
@@ -1649,12 +1648,13 @@ function cpLabel(bi){
 /* v13.32: giro 3D dos cartões feito por JS, só nos que estão perto do centro; nenhuma animação nem camada fixa dentro da janela que rola */
 /* v13.33: false = cartões do seletor só com escala (2D, sem camada de composição). Para voltar ao giro 3D, troque para true */
 const C3D=false;
+const CSC=false; /* v13.39: false = cartões do seletor sem efeito de tamanho e sem camadas (qualquer camada nos cartões fazia o iPhone deixar de rolar a janela). Para testar o efeito de volta, troque para true */
 let C3Q=0;
 function cp3d(){
   C3Q=0;if(CGRID)return;
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n||tr.hidden)return;
   const W=tr.clientWidth;if(!W)return;
-  const c=tr.scrollLeft+W/2,step=its[0].offsetWidth+14,off=NOFX();
+  const c=tr.scrollLeft+W/2,step=its[0].offsetWidth+14,off=NOFX()||!CSC;
   for(let i=0;i<n;i++){
     const el=its[i],a=el.firstElementChild;if(!a)continue;
     let d=(el.offsetLeft+el.offsetWidth/2-c)/step;
@@ -1667,11 +1667,8 @@ function cp3d(){
   }
 }
 function cp3dQ(){if(!C3Q)C3Q=requestAnimationFrame(cp3d)}
-$('#cm').addEventListener('scroll',()=>{cp3dQ();$('#cm').classList.add('mov')},{passive:true});
-/* v13.38: as camadas ficam até o dedo começar a rolar a janela na vertical (aí saem, antes de o iPhone rolar): sem redesenho do cartão ao parar */
-{let tx=0,ty=0;const pn=$('#panel');
- pn.addEventListener('touchstart',e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY},{passive:true,capture:true});
- pn.addEventListener('touchmove',e=>{const cm=$('#cm');if(!cm.classList.contains('mov'))return;const t=e.touches[0],dx=Math.abs(t.clientX-tx),dy=Math.abs(t.clientY-ty);if(dy>8&&dy>dx)cm.classList.remove('mov')},{passive:true,capture:true})}
+$('#cm').addEventListener('scroll',()=>{if(CSC)cp3dQ()},{passive:true});
+
 window.addEventListener('resize',()=>{$$('#cm .cpa').forEach(a=>a._k=null);cp3dQ()});
 /* seletor em grade: tocar no cartão escolhe o cartão (antes era o que parava no centro do carrossel) */
 function cpPick(it){
@@ -1853,7 +1850,7 @@ function syncForm(){
        $$('#cm .cpi').forEach(el=>el.classList.toggle('on',el.dataset.m===F.model));
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
-       cpLabel();cp3dQ();setTimeout(cp3dQ,120);
+       cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
      }
      $('#ccprev').hidden=has&&!!F.model;
     }
