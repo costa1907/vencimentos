@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.105 · 19/10/2026 · Diagnóstico: o "Teste de rolagem" manual virou "Teste automático de rolagem" — a janela rola sozinha 10 vezes (normal, sem ícones, sem cartões, tudo escondido, painel simples, sem fundo escurecido…) e mede cada quadro NO iPhone, sem depender do dedo. (Com a tela de trás e os ícones escondidos a rolagem não melhorou: 31,8% lentos.)
   v13.104 · 19/10/2026 · "Teste de rolagem" do Diagnóstico agora tem 4 passos: normal → tela de trás escondida → + ícones → + cartões. (Com só os ícones escondidos a rolagem da janela NÃO melhorou: 36,9% de quadros lentos, então ícones não são a causa.)
   v13.103 · 19/10/2026 · NOVO no Diagnóstico: botão "Teste de rolagem" (esconde os ícones de banco e depois também os cartões, só até recarregar) para descobrir o que pesa ao rolar a janela; o relatório mostra qual teste estava ligado.
   v13.102 · 19/10/2026 · Desfeita a camada própria da grade de ícones da v13.101 (piorou a rolagem da janela no iPhone). Mantida a limpeza das opções inúteis do Diagnóstico.

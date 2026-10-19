@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.104';
+(function(){var V='13.105';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -361,9 +361,9 @@ html:not(.c3d) .cpk .cpi .cpa{transform:scale(.88);transition:transform .34s cub
 html:not(.c3d) .cpk .cpi.ctr .cpa{transform:none}
 /* v13.90: nos modos JS/híbrido o tamanho do cartão é calculado pelo app a cada quadro, ligado à POSIÇÃO do cartão (cresce suave enquanto se aproxima do centro, sem animação de tempo que disparava tarde) */
 html.jsnapw:not(.c3d) .cpk .cpi .cpa{transition:none}
-/* TESTE de rolagem (Diagnóstico, só até recarregar): esconde partes da janela para achar o que pesa ao rolar */
-html.tst1 main,html.tst2 main,html.tst3 main,html.tst1 .fab,html.tst2 .fab,html.tst3 .fab,html.tst1 .tabs,html.tst2 .tabs,html.tst3 .tabs{visibility:hidden}
-html.tst2 #pg,html.tst3 #pg{visibility:hidden}html.tst3 #cm,html.tst3 .cbf,html.tst3 .cpt{visibility:hidden}
+/* TESTE AUTOMÁTICO de rolagem (Diagnóstico, só durante o teste): cada classe tira uma parte para achar o que pesa */
+html.ta1 #pg{visibility:hidden}html.ta2 #cm,html.ta2 .cbf,html.ta2 .cpt{visibility:hidden}html.ta3 #panel>*{visibility:hidden}
+html.ta4 .panel{border-radius:0!important;box-shadow:none!important;background:#141824!important;border:0!important}html.ta5 .panel{overscroll-behavior-y:auto!important}html.ta7 .scrim{display:none!important}html.ta8 .panel{transition:none!important;transform:none!important}
 /* v13.92: os 7 cartões mais perto do centro viram camada própria: o app muda o tamanho deles a cada quadro e, sem camada, o iPhone redesenhava o cartão inteiro a cada quadro (tremida ao passar por vários cartões seguidos) */
 html.jsnapw:not(.c3d) .cpk .cpi.nr .cpa{will-change:transform}
 /* v13.77: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
@@ -687,7 +687,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.104</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.105</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -797,7 +797,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.104';
+const VERSION='13.105';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1244,7 +1244,7 @@ if(JSNAP)document.documentElement.classList.add('jsnap');
 if(CGRID)document.documentElement.classList.add('cgrid');
 if(JSNAPW)document.documentElement.classList.add('jsnapw');
 if(HYBW)document.documentElement.classList.add('hybw');
-document.documentElement.classList.add('nosh'); /* v13.104: sombras dos cartões sempre removidas (opção apagada) */
+document.documentElement.classList.add('nosh'); /* v13.105: sombras dos cartões sempre removidas (opção apagada) */
 function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+window.innerWidth;
@@ -1774,7 +1774,7 @@ function cpLabel(bi){
   if(JSNAP||JSNAPW)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  /* v13.104: tocar no carrossel ainda andando/encaixando e arrastar para CIMA/BAIXO: o iPhone gastava o 1º gesto só para parar o carrossel e a janela não rolava (era preciso tentar de novo). Agora o app rola a janela junto com o dedo nesse caso, na hora, e solta se o iPhone assumir. */
+  /* v13.105: tocar no carrossel ainda andando/encaixando e arrastar para CIMA/BAIXO: o iPhone gastava o 1º gesto só para parar o carrossel e a janela não rolava (era preciso tentar de novo). Agora o app rola a janela junto com o dedo nesse caso, na hora, e solta se o iPhone assumir. */
   {let vs=null,vraf=0;
    document.addEventListener('touchstart',()=>{if(vraf){cancelAnimationFrame(vraf);vraf=0}},{capture:true,passive:true});
    tr.addEventListener('touchstart',e=>{
@@ -1962,7 +1962,7 @@ socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.docu
 let CPACT=0;const CPQ=[];let CPQR=0;
 function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
 function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
-/* v13.104: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
+/* v13.105: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
 function cpGhostMake(){
   try{
     if(document.documentElement.classList.contains('nofx'))return null;
@@ -1973,7 +1973,7 @@ function cpGhostMake(){
     return {g:g,sl:old.scrollLeft,t:old.offsetTop,l:old.offsetLeft,w:old.offsetWidth,h:old.offsetHeight,par:par};
   }catch(e){return null}
 }
-/* v13.104: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
+/* v13.105: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
 let CSW=0;
 function cpSwap(o){
   const t=$('#cm');if(!t)return;
@@ -2004,7 +2004,7 @@ function cpSwap(o){
     setTimeout(()=>{if(!done)fin();if(my===CSW)t.style.opacity=''},700);
   }catch(e){try{t.style.opacity='';o&&o.g&&o.g.remove()}catch(_){}}
 }
-/* v13.104: fila ÚNICA de imagens de cartão. Cada foto é baixada e decodificada FORA da tela (new Image), no máximo 4 por vez, com
+/* v13.105: fila ÚNICA de imagens de cartão. Cada foto é baixada e decodificada FORA da tela (new Image), no máximo 4 por vez, com
    relógio de segurança (antes, se o iPhone cancelasse um download, a vaga ficava presa e as outras fotos NUNCA apareciam).
    Foto já pronta aparece junto com o cartão, sem passar pelo fundo de cor. */
 const IMGR={},WQ=[],WCB={},KEEP=new Map();let WACT=0;
@@ -3135,7 +3135,8 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · teste de rolagem: '+['normal','TELA DE TRÁS ESCONDIDA','TRÁS + ÍCONES ESCONDIDOS','TRÁS + ÍCONES + CARTÕES ESCONDIDOS'][['tst1','tst2','tst3'].reduce((a,c,k)=>document.documentElement.classList.contains(c)?k+1:a,0)]+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    if(AUTOR.length){t+='TESTE AUTOMÁTICO DE ROLAGEM (a janela rola sozinha, mesma distância; quanto MENOR o tempo por quadro e a % lenta, melhor)\n'+AUTOR.join('\n')+'\n\n'}
     {const ks=Object.keys(RS).sort((x,y)=>RS[y].f-RS[x].f);
      t+='RITMO DA ROLAGEM (quadros durante a rolagem · lentos ≥25 ms · lentos ≥33 ms · pior)\n';
      if(!ks.length)t+='- (ainda sem rolagem medida)\n';
@@ -3150,18 +3151,40 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     ev.slice(-40).reverse().forEach(e=>{t+=e.h+' · '+(e.ms?e.ms+' ms · ':'')+e.tela+' · '+e.acao+(e.det||'')+'\n'});
     return t;
   }
+  let AUTOR=[];
+  /* v13.105: a própria janela rola sozinha (rolagem feita pelo app, igual toda vez) com partes escondidas/simplificadas, medindo o tempo de cada quadro NO iPhone: sem dedo, sem variação. */
+  async function autoTest(){
+    const sh=document.getElementById('sheet'),pn=document.getElementById('panel'),cl=document.documentElement.classList;
+    const tt=m=>{try{window.__app&&window.__app.toast(m)}catch(e){}};
+    if(!(sh&&!sh.hidden&&sh.classList.contains('open'))||!pn){tt('Abra antes a janela "Nova conta" (tipo Cartão) e depois rode o teste');return}
+    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+    const ALL=['ta1','ta2','ta3','ta4','ta5','ta7','ta8'];
+    const V=[['normal',''],['sem os ícones de banco','ta1'],['sem o carrossel de cartões','ta2'],['TUDO da janela escondido (só a rolagem)','ta3'],['painel simples (sem cantos/sombra/fundo)','ta4'],['sem overscroll-behavior','ta5'],['sem o fundo escurecido','ta7'],['sem transform/transição no painel','ta8'],['só rolagem + painel simples + sem fundo escurecido','ta3 ta4 ta5 ta7 ta8'],['normal (de novo)','']];
+    const st0=pn.scrollTop;AUTOR=[];tt('Teste rodando (~40 s): não toque na tela');
+    try{
+      for(const [lab,c] of V){
+        ALL.forEach(x=>cl.remove(x));if(c)c.split(' ').forEach(x=>cl.add(x));
+        pn.scrollTop=0;await sleep(450);
+        const fr=[];let last=0,y=0,dir=1,passes=0;const mx=Math.max(0,pn.scrollHeight-pn.clientHeight);
+        await new Promise(res=>{const step=n=>{if(last)fr.push(n-last);last=n;y+=dir*22;if(y>=mx){y=mx;dir=-1}if(dir<0&&y<=0){y=0;passes++;dir=1;if(passes>=2){res();return}}pn.scrollTop=y;requestAnimationFrame(step)};requestAnimationFrame(step)});
+        fr.sort((a,b)=>a-b);const n=fr.length||1,avg=fr.reduce((a,b)=>a+b,0)/n,p95=fr[Math.floor(n*.95)]||0,s25=fr.filter(x=>x>=25).length,s33=fr.filter(x=>x>=33).length;
+        AUTOR.push('- '+lab+': '+n+' quadros · média '+avg.toFixed(1)+' ms · 95% abaixo de '+p95.toFixed(0)+' ms · lentos ≥25 ms: '+(s25*100/n).toFixed(1)+'% · ≥33 ms: '+(s33*100/n).toFixed(1)+'% · pior '+Math.round(fr[n-1]||0)+' ms');
+      }
+    }catch(e){AUTOR.push('erro no teste: '+e.message)}
+    ALL.forEach(x=>cl.remove(x));pn.scrollTop=st0;tt('Teste pronto');setTimeout(show,300);
+  }
   function show(){
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc3')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('hybw')?'híbrido → nativo':document.documentElement.classList.contains('jsnapw')?'por JS → híbrido':'nativo → por JS')+'</button><button type="button" data-a="tst">Teste de rolagem: '+['normal → esconder a tela de trás','tela de trás escondida → esconder também os ícones','trás + ícones escondidos → esconder também os cartões','trás + ícones + cartões escondidos → voltar ao normal'][['tst1','tst2','tst3'].reduce((a,c,k)=>document.documentElement.classList.contains(c)?k+1:a,0)]+'</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc3')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('hybw')?'híbrido → nativo':document.documentElement.classList.contains('jsnapw')?'por JS → híbrido':'nativo → por JS')+'</button><button type="button" data-a="auto">Teste automático de rolagem (40 s)</button><button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
       if(a==='soc'){try{if(localStorage.getItem('sobrou.soc3')==='obs')localStorage.setItem('sobrou.soc3','on');else localStorage.setItem('sobrou.soc3','obs')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc3')==='obs'?'Socorro só observando':'Socorro ligado');return}
       if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d3',on?'off':'on')}catch(_){}save();location.reload();return}
       if(a==='car'){const cl=document.documentElement.classList,nx=cl.contains('hybw')?'nat':cl.contains('jsnapw')?'hyb':'js';try{localStorage.setItem('sobrou.car2',nx)}catch(_){}save();location.reload();return}
-      if(a==='tst'){const cl=document.documentElement.classList,cur=['tst1','tst2','tst3'].reduce((a,c,k)=>cl.contains(c)?k+1:a,0),n=(cur+1)%4;cl.remove('tst1','tst2','tst3');if(n)cl.add('tst'+n);o.remove();window.__app&&window.__app.toast(['Teste desligado: tudo normal','Teste: tela de trás escondida — role a janela','Teste: trás + ícones escondidos — role a janela','Teste: trás + ícones + cartões escondidos — role a janela'][n]);return}
+      if(a==='auto'){o.remove();autoTest();return}
       if(a==='z'){for(const k in RS)delete RS[k];ev=[];for(const k in PST)delete PST[k];PHS.length=0;GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
     };
