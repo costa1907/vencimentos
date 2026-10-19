@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<title>Teste de rolagem</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#0b0e17;color:#e8ecf6;font:15px/1.4 -apple-system,system-ui,sans-serif}
+#bar{position:fixed;left:0;right:0;top:0;z-index:5;padding:calc(env(safe-area-inset-top,0px) + 8px) 12px 8px;background:#10142a;border-bottom:1px solid #2a3150}
+#bar button{font:600 13px system-ui;color:#e8ecf6;background:#1d2342;border:1px solid #39426b;border-radius:10px;padding:8px 10px;margin:0 6px 6px 0}
+#bar button.on{background:#2e7d4f;border-color:#58c47f}
+#st{font:12px/1.35 ui-monospace,monospace;color:#9fe3b6;white-space:pre-wrap;margin:2px 0 0}
+#panel{position:fixed;left:0;right:0;bottom:0;top:var(--top,190px);overflow-y:auto;overscroll-behavior-y:none;padding:12px 18px 40px}
+.m2 #panel{border-radius:30px 30px 0 0;background:linear-gradient(180deg,#171c34,#10142a);border:1px solid #2a3150;box-shadow:0 -30px 60px rgba(0,0,0,.5);margin:0 0 0}
+.blk{height:64px;margin:0 0 10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid #232a4a;display:flex;align-items:center;padding:0 14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{aspect-ratio:1/1.05;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid #232a4a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:10px}
+.tile i{display:block;width:44px;height:44px;border-radius:15px;background:linear-gradient(145deg,var(--c),#223)}
+.doc #panel{position:static;overflow:visible;margin-top:var(--top,190px);top:auto}
+.doc{--top:190px}
+</style></head><body class="m1">
+<div id="bar">
+ <div>
+  <button data-m="1" class="on">1 Painel simples</button><button data-m="2">2 Painel igual ao app</button><button data-m="3">3 Com 45 ícones</button><button data-m="4">4 Página inteira</button>
+ </div>
+ <div><button id="rs">Zerar</button><button id="cp">Copiar</button></div>
+ <div id="st"></div>
+</div>
+<div id="panel"></div>
+<script>
+const P=document.getElementById('panel'),ST=document.getElementById('st');
+const colors=['#e5484d','#3b82f6','#22c55e','#f59e0b','#a855f7','#14b8a6','#ec4899','#64748b'];
+let mode=1,R={1:{f:0,a:0,b:0,m:0},2:{f:0,a:0,b:0,m:0},3:{f:0,a:0,b:0,m:0},4:{f:0,a:0,b:0,m:0}},frames=[];
+function build(){
+  let h='';
+  for(let i=0;i<12;i++)h+='<div class="blk">Bloco '+(i+1)+'</div>';
+  if(mode===3){h+='<div class="grid">';for(let i=0;i<45;i++)h+='<div class="tile"><i style="--c:'+colors[i%8]+'"></i><span>Banco '+(i+1)+'</span></div>';h+='</div>'}
+  for(let i=12;i<40;i++)h+='<div class="blk">Bloco '+(i+1)+'</div>';
+  P.innerHTML=h;
+}
+function setMode(m){
+  mode=m;document.body.className=(m===2?'m2':m===3?'m2':'m1')+(m===4?' doc':'');document.documentElement.className=m===4?'doc':'';
+  document.querySelectorAll('#bar button[data-m]').forEach(b=>b.classList.toggle('on',+b.dataset.m===m));
+  build();window.scrollTo(0,0);P.scrollTop=0;
+  document.documentElement.style.setProperty('--top',document.getElementById('bar').offsetHeight+'px');
+  show();
+}
+document.querySelectorAll('#bar button[data-m]').forEach(b=>b.onclick=()=>setMode(+b.dataset.m));
+let lastS=0,touching=0;
+['scroll'].forEach(n=>document.addEventListener(n,()=>{lastS=performance.now()},{capture:true,passive:true}));
+document.addEventListener('touchstart',()=>{touching=1},{capture:true,passive:true});
+document.addEventListener('touchend',e=>{if(!e.touches.length){touching=0;lastS=performance.now()}},{capture:true,passive:true});
+document.addEventListener('touchcancel',()=>{touching=0},{capture:true,passive:true});
+let last=0;
+function loop(n){
+  if(last){const d=n-last;frames.push(d);if(frames.length>400)frames.shift();
+    if(touching||n-lastS<150){const o=R[mode];o.f++;if(d>=25)o.a++;if(d>=33)o.b++;if(d>o.m)o.m=d}}
+  last=n;requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+const names={1:'painel simples',2:'painel igual ao app (cantos+sombra+degradê)',3:'painel com 45 ícones',4:'página inteira'};
+function hz(){const f=frames.slice().sort((a,b)=>a-b);return f.length?Math.round(1000/f[f.length>>1]):'?'}
+function rep(){
+  let t='Teste de rolagem · '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz · '+(navigator.standalone?'app na tela inicial':'Safari')+'\n';
+  for(const k of [1,2,3,4]){const o=R[k];t+=k+') '+names[k]+': '+o.f+' quadros durante a rolagem · lentos ≥25 ms: '+o.a+' ('+(o.f?(o.a*100/o.f).toFixed(1):'0.0')+'%) · ≥33 ms: '+o.b+' · pior '+Math.round(o.m)+' ms\n'}
+  return t;
+}
+function show(){ST.textContent=rep()}
+setInterval(show,500);
+document.getElementById('rs').onclick=()=>{for(const k in R)R[k]={f:0,a:0,b:0,m:0};show()};
+document.getElementById('cp').onclick=async()=>{try{await navigator.clipboard.writeText(rep());document.getElementById('cp').textContent='Copiado!'}catch(e){const r=document.createRange();r.selectNodeContents(ST);getSelection().removeAllRanges();getSelection().addRange(r);document.getElementById('cp').textContent='Selecionado'}setTimeout(()=>document.getElementById('cp').textContent='Copiar',1500)};
+window.addEventListener('load',()=>setMode(1));
+</script></body></html>
