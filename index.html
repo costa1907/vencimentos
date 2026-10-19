@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.79';
+(function(){var V='13.80';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -677,7 +677,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.79</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.80</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -787,7 +787,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.79';
+const VERSION='13.80';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2656,7 +2656,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
 
   /* ----- telas ----- */
   const CSS='.lgv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px 20px;overflow:auto;overscroll-behavior:contain;background:radial-gradient(120% 80% at 50% 30%,var(--h1) 0%,var(--bg2) 55%,var(--bg) 100%)}'+
-  '.lgv[hidden]{display:none}.lgv{animation:lgin .45s ease both}@keyframes lgin{from{opacity:0}to{opacity:1}}.lgb .lgm>img{animation:lgm .9s .1s cubic-bezier(.22,1,.36,1) both}@keyframes lgm{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}.lgb{width:100%;max-width:380px;text-align:center}'+
+  '.lgv[hidden]{display:none}html.lgon,html.lgon body{overflow:hidden!important;overscroll-behavior:none}html.lgon body{position:fixed;inset:0;width:100%}html.lgon body>*:not(#lgv):not(.spl){visibility:hidden!important}.lgv{display:block;box-sizing:border-box;padding-top:var(--lgt,24px);-webkit-overflow-scrolling:auto}.lgv .lgb{margin:0 auto}.lgv{animation:lgin .45s ease both}@keyframes lgin{from{opacity:0}to{opacity:1}}.lgb .lgm>img{animation:lgm .9s .1s cubic-bezier(.22,1,.36,1) both}@keyframes lgm{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}.lgb{width:100%;max-width:380px;text-align:center}'+
   '.lgb .lgm{width:88px;height:78px;margin:0 auto 10px;display:grid;place-items:center}.lgb .lgm>img{width:100%;height:100%;object-fit:contain;filter:var(--mf)}'+
   '.lgb h1{font:800 34px var(--fd,var(--fb));letter-spacing:-.02em;margin:0}.lgb h1 span{color:var(--gold2)}'+
   '.lgb .lgs{margin:6px 0 22px;color:var(--mu);font-size:13.5px}'+
@@ -2669,7 +2669,9 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   '.lgb.adm .adl{display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px;text-align:left}';
   const st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
   const ov=document.createElement('div');ov.className='lgv';ov.id='lgv';ov.hidden=true;document.body.appendChild(ov);
-  const hideOv=()=>{ov.hidden=true;ov.innerHTML=''};
+  /* v13.80: com a tela de Entrar aberta a página de trás é congelada (sem rolar, sem desenhar) e o tamanho da tela de Entrar é travado: com o teclado / Face ID de "Preencher Senha" o iPhone mexe na área visível e rola a página; a tela de trás reagia e a de Entrar (centralizada) pulava e piscava */
+  const lockOv=(nolock)=>{const de=document.documentElement;if(!nolock)de.classList.add('lgon');const H=window.innerHeight;ov.style.height=H+'px';const b=ov.querySelector('.lgb');if(b){ov.style.setProperty('--lgt',Math.max(16,Math.round((H-b.offsetHeight)/2))+'px')}};
+  const hideOv=()=>{ov.hidden=true;ov.innerHTML='';ov.style.height='';document.documentElement.classList.remove('lgon')};
   const MK=()=>'<div class="lgm"><img src="'+(window.MARK||'')+'" alt=""></div><h1>Sobrou<span>!</span></h1>';
 
   function showLogin(mode){
@@ -2682,6 +2684,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       '<button class="cta" id="lgg" type="button">'+(mode==='in'?'Entrar':'Criar conta e começar')+'</button>'+
       '<div class="lgerr" id="lgx"></div>'+
       (mode==='in'?'<a class="lgl" id="lgf">Esqueci minha senha</a>':'<p class="hint" style="margin-top:8px">'+TRIAL_DIAS+' dias grátis para testar tudo.</p>')+'</div>';
+    lockOv();
     ov.querySelectorAll('.lgtab button').forEach(b=>b.onclick=()=>showLogin(b.dataset.m));
     const x=(t,ok)=>{const e=$('#lgx');e.textContent=t;e.className='lgerr'+(ok?' ok':'')};
     const go=async()=>{
@@ -2714,6 +2717,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       (PIX?'<button class="act" id="lgc" type="button">Copiar chave PIX</button>':'')+
       (SUPORTE?'<a class="cta" style="width:100%;justify-content:center;margin-top:10px;text-decoration:none" href="'+esc(SUPORTE)+'" target="_blank" rel="noopener">Enviar comprovante</a>':'')+
       '<button class="act" id="lgr" type="button">Já paguei, atualizar</button><button class="act" id="lgo" type="button">Sair da conta</button><div class="lgerr" id="lgx"></div></div>';
+    lockOv(1);
     const c=$('#lgc');if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(PIX);toast('Chave PIX copiada')}catch(e){toast('Copie a chave acima')}};
     $('#lgr').onclick=async()=>{$('#lgx').textContent='Conferindo…';$('#lgx').className='lgerr ok';await checkLic();if(!ov.hidden){$('#lgx').textContent='Ainda não consta pagamento.';$('#lgx').className='lgerr'}};
     $('#lgo').onclick=logout;
