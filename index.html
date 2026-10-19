@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.89';
+(function(){var V='13.90';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -359,6 +359,8 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 /* v13.77: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
 html:not(.c3d) .cpk .cpi .cpa{transform:scale(.88);transition:transform .34s cubic-bezier(.33,.1,.25,1)}
 html:not(.c3d) .cpk .cpi.ctr .cpa{transform:none}
+/* v13.90: nos modos JS/híbrido o tamanho do cartão é calculado pelo app a cada quadro, ligado à POSIÇÃO do cartão (cresce suave enquanto se aproxima do centro, sem animação de tempo que disparava tarde) */
+html.jsnapw:not(.c3d) .cpk .cpi .cpa{transition:none}
 /* v13.77: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
 .cpk.cpnt{scroll-snap-type:none!important}
 .cpk.cpnt .cpa{transition:none!important}
@@ -680,7 +682,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.89</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.90</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -790,7 +792,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.89';
+const VERSION='13.90';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1297,11 +1299,11 @@ function snapper(tr,done){
         const ez='cubic-bezier(0.3333,'+(m0/3).toFixed(4)+',0.6667,1)';
         const me={as:[],ref:its[Math.max(lo,Math.min(hi,i1))]};anim=me;
         const mk=(d,dur,e)=>{const as=[];for(let i=lo;i<=hi;i++)as.push(its[i].animate([{transform:'translate3d('+d+'px,0,0)'},{transform:'translate3d(0,0,0)'}],{duration:dur,easing:e,fill:'both'}));me.as=as;
-          as[0].onfinish=()=>{if(anim!==me)return;anim=0;cancelAnimationFrame(me.tk);tr._seff=null;as.forEach(x=>{x.onfinish=null;x.cancel()});try{tr._vis&&tr._vis()}catch(e){}movOff();done&&done();hUnl()}};
+          as[0].onfinish=()=>{if(anim!==me)return;anim=0;cancelAnimationFrame(me.tk);tr._seff=null;as.forEach(x=>{x.onfinish=null;x.cancel()});try{tr._sc&&tr._sc();tr._vis&&tr._vis()}catch(e){}movOff();done&&done();hUnl()}};
         mk(dx,T,ez);
         /* a cada quadro acha o cartão mais perto do centro pela posição visual; só quando ele muda recalcula o resto (marca do centro, nome/preço) */
         tr._seff=from;me.bi=-1;
-        const tick=()=>{if(anim!==me)return;try{const m=getComputedStyle(me.ref).transform,tau=m&&m!=='none'?new DOMMatrix(m).m41:0;tr._seff=tr.scrollLeft-tau;
+        const tick=()=>{if(anim!==me)return;try{const m=getComputedStyle(me.ref).transform,tau=m&&m!=='none'?new DOMMatrix(m).m41:0;tr._seff=tr.scrollLeft-tau;tr._sc&&tr._sc();
           const cx=tr._cx,c=tr._seff+(tr._cw||tr.clientWidth)/2;if(cx&&cx.length){let k=0,bd=1e9;for(let i=0;i<cx.length;i++){const d=Math.abs(cx[i]-c);if(d<bd){bd=d;k=i}}if(k!==me.bi){me.bi=k;tr._vis&&tr._vis()}}}catch(e){}
           me.tk=requestAnimationFrame(tick)};me.tk=requestAnimationFrame(tick);
         /* híbrido: a inércia nativa do navegador pode empurrar a rolagem depois do app pôr o ponto final (corrida entre o app e o iPhone): nos primeiros quadros confere e, se fugiu, devolve ao ponto final e refaz a animação a partir da posição visual atual (sem salto) */
@@ -1708,6 +1710,7 @@ function cpLayout(mark){
     its[i]._f=0;const q=d>1?1:d;
     el.style.transform='perspective(900px) rotateY('+(-Math.max(-1,Math.min(1,t))*34).toFixed(1)+'deg) scale('+(1-q*.14).toFixed(3)+')'}
   if(mark&&tr._c!==bi){tr._c=bi;for(let i=0;i<n;i++)its[i].classList.toggle('ctr',i===bi)}
+  if(JSNAPW&&tr._sc)tr._sc();
   return bi;
 }
 function cpLabel(bi){
@@ -1739,10 +1742,25 @@ function cpLabel(bi){
     }
   }
   tr.addEventListener('scroll',()=>{CPLS=Date.now();
-    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const n=performance.now();if(n-lrun<45)return;lrun=n;const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
+    if(JSNAPW&&!r2)r2=requestAnimationFrame(()=>{r2=0;tr._sc&&tr._sc()});
+    if(!raf)raf=requestAnimationFrame(()=>{raf=0;const n=performance.now();let chg=false;{const cx=tr._cx;if(cx&&cx.length&&tr._cw){const c=(tr._seff!=null?tr._seff:tr.scrollLeft)+tr._cw/2;let k=0,bd=1e9;for(let i=0;i<cx.length;i++){const d=Math.abs(cx[i]-c);if(d<bd){bd=d;k=i}}chg=k!==tr._c}} /* v13.90: se o cartão do centro mudou, atualiza SEMPRE (antes o limite de 45 ms podia descartar justo o último evento e a marca ficava errada com o dedo parado) */
+      if(!chg&&n-lrun<45)return;lrun=n;const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
     clearTimeout(idle);idle=setTimeout(settle,140);
   },{passive:true});
   tr._vis=function(){const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}};
+  /* v13.90: tamanho contínuo do cartão pela posição (modos JS/híbrido, sem 3D): 1 no centro → .88 a uma distância de um cartão; suavizado (plateau no centro) */
+  let r2=0;
+  tr._sc=function(){
+    if(!JSNAPW||document.documentElement.classList.contains('c3d'))return;
+    const cx=tr._cx,its=tr.children;if(!cx||!cx.length||cx.length!==its.length)return;
+    const p=(tr._w||its[0].offsetWidth)+14,c=(tr._seff!=null?tr._seff:tr.scrollLeft)+(tr._cw||tr.clientWidth)/2;
+    for(let i=0;i<cx.length;i++){
+      const t=Math.abs(cx[i]-c)/p,el=its[i].firstElementChild;if(!el)continue;
+      if(t>=1.4){if(its[i]._sv){its[i]._sv=0;el.style.transform=''}continue}
+      const q=t>1?1:t,s=1-.12*(q*q*(3-2*q)),v=s>.9995?'none':'scale('+s.toFixed(3)+')';
+      if(its[i]._sv!==v){its[i]._sv=v;el.style.transform=v}
+    }
+  };
   window.cpSettle=function(){clearTimeout(idle);idle=setTimeout(settle,350)};
   if(JSNAP||JSNAPW)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   /* v13.61: TRAVA NAS PONTAS. Enquanto o carrossel ainda está terminando de andar/encaixar perto do 1º ou do último cartão, um novo toque nele é ignorado (preventDefault no touchstart). Quando o carrossel para, o toque volta a valer. Evita a segunda puxada que fazia o iPhone dar o salto do encaixe. Botão no Diagnóstico para desligar (sobrou.trv='off') */
