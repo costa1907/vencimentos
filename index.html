@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.87';
+(function(){var V='13.88';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -623,6 +623,7 @@ body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 .jsnap .cpk,.jsnap .cards{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
 .jsnapw .cpk{scroll-snap-type:none;overflow-x:hidden;touch-action:pan-y}
+.hybw .cpk{overflow-x:auto;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 /* diagnóstico de fluidez */
 .dgb{position:fixed;z-index:200;left:10px;top:calc(env(safe-area-inset-top,0px) + 6px);font:600 11px/1 var(--fb);color:#d8ffe6;background:rgba(10,40,25,.82);border:1px solid rgba(80,220,140,.5);border-radius:99px;padding:6px 9px;pointer-events:auto;transition:background .2s}
 .dgb b{font-weight:800}.dgb i{font-style:normal;color:#ffb3b3}.dgb.bad{background:rgba(120,20,20,.9)}
@@ -679,7 +680,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.87</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.88</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -789,7 +790,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.87';
+const VERSION='13.88';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1219,7 +1220,10 @@ const JSNAP=false;
 const CGRID=false;
 /* v13.28: carrossel do seletor de cartões (na janela) com arraste próprio, sem rolagem nativa horizontal. Para voltar ao nativo, troque para false */
 /* v13.40: modo do carrossel de cartões: nativo do iPhone (padrão) ou rolagem por JS. Troca pelo botão do Diagnóstico (guarda em sobrou.car e recarrega) */
-const JSNAPW=(()=>{try{return localStorage.getItem('sobrou.car2')==='js'}catch(e){return false}})();
+/* v13.88: terceiro modo "híbrido" (sobrou.car2='hyb'): o iPhone acompanha o dedo sozinho, como no nativo (rolagem nativa, sem trava de encaixe), e o app assume só ao SOLTAR: escolhe o cartão (no máx. 1 por gesto) e faz o encaixe pela animação do navegador (v13.84) */
+const CAR2=(()=>{try{return localStorage.getItem('sobrou.car2')||''}catch(e){return ''}})();
+const HYBW=CAR2==='hyb';
+const JSNAPW=CAR2==='js'||HYBW;
 /* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
 function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
@@ -1232,6 +1236,7 @@ if(SDA&&(()=>{try{return localStorage.getItem('sobrou.c3d3')==='on'}catch(e){ret
 if(JSNAP)document.documentElement.classList.add('jsnap');
 if(CGRID)document.documentElement.classList.add('cgrid');
 if(JSNAPW)document.documentElement.classList.add('jsnapw');
+if(HYBW)document.documentElement.classList.add('hybw');
 if((()=>{try{return localStorage.getItem('sobrou.sh2')==='off'}catch(e){return false}})())document.documentElement.classList.add('nosh');
 function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
@@ -1252,7 +1257,10 @@ function cfLayout(tr,mark){
    e ao soltar o cartão continua com a mesma velocidade do dedo até parar exatamente no centro.
    Sem inércia nativa não há encaixe errado nem correção depois. */
 function snapper(tr,done){
-  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false;
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,jsd=false,hlt=0,holdUntil=0;
+  /* híbrido: durante o encaixe a rolagem nativa fica travada (overflow-x:hidden) para a inércia do iPhone não empurrar o cartão para fora do centro; um toque durante o encaixe vira arrasto por JS (como no modo JS) */
+  function hLock(ms){if(!HYBW)return;holdUntil=performance.now()+ms;tr.style.overflowX='hidden';clearTimeout(hlt);hlt=setTimeout(hUnl,ms+5)}
+  function hUnl(){if(!HYBW)return;if(anim||jsd||performance.now()<holdUntil)return;tr.style.overflowX=''}
   const ease=k=>1-Math.pow(1-k,3);
   function centers(){const its=tr.children,c=[];for(let i=0;i<its.length;i++)c.push(its[i].offsetLeft+its[i].offsetWidth/2);return c}
   /* v13.84: o encaixe depois de soltar o dedo roda NO NAVEGADOR (animação de transform, fora do código do app): o app põe a rolagem direto no ponto final e os cartões deslizam do ponto onde estavam até lá. Assim um atraso do código (ex.: trocar o preço/nome no meio do deslize) não faz o movimento engasgar. Se o dedo tocar no meio, a posição visual atual é preservada */
@@ -1271,30 +1279,37 @@ function snapper(tr,done){
   function movOn(){}
   function movOff(){}
   function animTo(to,vs){ /* vs = velocidade atual da rolagem (px/ms) para começar sem tranco */
-    stop();const from=tr.scrollLeft,dist=to-from;if(Math.abs(dist)<0.5){tr.scrollLeft=to;movOff();done&&done();return}
+    stop();const from=tr.scrollLeft,dist=to-from;if(Math.abs(dist)<0.5){hLock(160);tr.scrollLeft=to;movOff();done&&done();return}
     movOn();
     /* v13.83: encaixe com a MESMA velocidade do dedo ao soltar (curva de Hermite: começa na velocidade do dedo e termina parando). Antes a curva fixa começava mais rápida ou bem mais lenta que o dedo (tranco/parada no soltar), e o relógio da animação era medido fora do quadro (primeiro quadro podia andar para trás) */
     const ad=Math.abs(dist),v0=(vs&&Math.sign(vs)===Math.sign(dist))?Math.abs(vs):0;
     let T=v0>0.05?3*ad/v0:340;T=Math.max(220,Math.min(520,T));
     const m0=v0>0.05?Math.min(4,v0*T/ad):0;
+    hLock(T+80);
     const its=tr.children;
     if(its.length&&its[0].animate&&!tr._noWA){
       try{
         const cx=centers(),W=tr.clientWidth,nr=x=>{let k=0,bd=1e9;cx.forEach((c,n)=>{const d=Math.abs(c-x);if(d<bd){bd=d;k=n}});return k};
         const i0=nr(from+W/2),i1=nr(to+W/2),lo=Math.max(0,Math.min(i0,i1)-2),hi=Math.min(its.length-1,Math.max(i0,i1)+2);
-        tr.scrollLeft=to;const dx=tr.scrollLeft-from;
+        tr.scrollLeft=to;const real=tr.scrollLeft,dx=real-from;
         if(Math.abs(dx)<0.5){movOff();done&&done();return}
-        const ez='cubic-bezier(0.3333,'+(m0/3).toFixed(4)+',0.6667,1)',as=[];
-        for(let i=lo;i<=hi;i++)as.push(its[i].animate([{transform:'translate3d('+dx+'px,0,0)'},{transform:'translate3d(0,0,0)'}],{duration:T,easing:ez,fill:'both'}));
-        const me={as,ref:its[Math.max(lo,Math.min(hi,i1))]};anim=me;
-        as[0].onfinish=()=>{if(anim!==me)return;anim=0;as.forEach(x=>{x.onfinish=null;x.cancel()});movOff();done&&done()};
+        const ez='cubic-bezier(0.3333,'+(m0/3).toFixed(4)+',0.6667,1)';
+        const me={as:[],ref:its[Math.max(lo,Math.min(hi,i1))]};anim=me;
+        const mk=(d,dur,e)=>{const as=[];for(let i=lo;i<=hi;i++)as.push(its[i].animate([{transform:'translate3d('+d+'px,0,0)'},{transform:'translate3d(0,0,0)'}],{duration:dur,easing:e,fill:'both'}));me.as=as;
+          as[0].onfinish=()=>{if(anim!==me)return;anim=0;as.forEach(x=>{x.onfinish=null;x.cancel()});movOff();done&&done();hUnl()}};
+        mk(dx,T,ez);
+        /* híbrido: a inércia nativa do navegador pode empurrar a rolagem depois do app pôr o ponto final (corrida entre o app e o iPhone): nos primeiros quadros confere e, se fugiu, devolve ao ponto final e refaz a animação a partir da posição visual atual (sem salto) */
+        if(HYBW){let n=0;const w=()=>{if(anim!==me||++n>12)return;const cur=tr.scrollLeft;
+          if(Math.abs(cur-real)>0.5){try{const m=getComputedStyle(me.ref).transform,tau=m&&m!=='none'?new DOMMatrix(m).m41:0,t=me.as[0].currentTime||0;
+            me.as.forEach(x=>{x.onfinish=null;x.cancel()});tr.scrollLeft=real;mk(tau+(real-cur),Math.max(140,T-t),'cubic-bezier(0.2,0.7,0.3,1)')}catch(e){}}
+          requestAnimationFrame(w)};requestAnimationFrame(w)}
         return;
       }catch(e){tr._noWA=1;anim=0;tr.scrollLeft=from}
     }
     let t0=0;
     const dpr=window.devicePixelRatio||1;
     const f=t=>{if(!t0)t0=t;const k=Math.max(0,Math.min(1,(t-t0)/T)),k2=k*k,k3=k2*k,h=(k3-2*k2+k)*m0+(3*k2-2*k3);
-      tr.scrollLeft=k>=1?to:Math.round((from+dist*h)*dpr)/dpr;if(k<1)anim=requestAnimationFrame(f);else{anim=0;movOff();done&&done()}};
+      tr.scrollLeft=k>=1?to:Math.round((from+dist*h)*dpr)/dpr;if(k<1)anim=requestAnimationFrame(f);else{anim=0;movOff();done&&done();hUnl()}};
     anim=requestAnimationFrame(f);
   }
   function release(){
@@ -1313,16 +1328,21 @@ function snapper(tr,done){
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
   function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
-  tr.addEventListener('touchstart',e=>{intr=!!anim;stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchstart',e=>{intr=!!anim;jsd=HYBW&&(!!anim||tr.style.overflowX==='hidden');stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:(HYBW&&!jsd)?-tr.scrollLeft:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
     const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){dir='h';movOn()}else if(Math.abs(dy)>6)dir='v';else return}
     if(dir!=='h')return;
-    sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();
-    tr.scrollLeft=sl0-dx;
+    if(!HYBW||jsd){sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();tr.scrollLeft=sl0-dx}
   },{passive:true});
-  tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}},{passive:true});
-  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}},{passive:true});
+  tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
+  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
+  if(HYBW){ /* híbrido: se o carrossel parar fora do centro (gesto cancelado), o app completa o encaixe */
+    let hid=0,tc=0;
+    tr.addEventListener('touchstart',()=>{tc=1;clearTimeout(hid)},{passive:true});
+    ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tc=0},{passive:true}));
+    tr.addEventListener('scroll',()=>{if(tc&&!jsd){sm.push({x:-tr.scrollLeft,t:performance.now()});if(sm.length>12)sm.shift()}clearTimeout(hid);hid=setTimeout(()=>{if(!anim&&!tc)nearest()},260)},{passive:true});
+  }
   tr._snapTo=function(i){const cx=centers();if(cx[i]==null)return;const W=tr.clientWidth;animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[i]-W/2)),0)};
 }
 function cfInit(){
@@ -2980,7 +3000,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · sombras dos cartões: '+(document.documentElement.classList.contains('nosh')?'removidas':'ligadas')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · sombras dos cartões: '+(document.documentElement.classList.contains('nosh')?'removidas':'ligadas')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     {const ks=Object.keys(PST).sort((a,b)=>PST[b].max-PST[a].max).slice(0,22);
@@ -2994,7 +3014,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc3')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="trv">Trava nas pontas: '+(localStorage.getItem('sobrou.trv')==='on'?'ligada → desligar':'desligada → ligar')+'</button><button type="button" data-a="sh">Sombras dos cartões: '+(document.documentElement.classList.contains('nosh')?'removidas → voltar':'ligadas → remover')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('jsnapw')?'por JS → nativo':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc3')==='obs'?'só observa → ligar':'ligado → só observar')+'</button><button type="button" data-a="trv">Trava nas pontas: '+(localStorage.getItem('sobrou.trv')==='on'?'ligada → desligar':'desligada → ligar')+'</button><button type="button" data-a="sh">Sombras dos cartões: '+(document.documentElement.classList.contains('nosh')?'removidas → voltar':'ligadas → remover')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('hybw')?'híbrido → nativo':document.documentElement.classList.contains('jsnapw')?'por JS → híbrido':'nativo → por JS')+'</button><button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
@@ -3002,7 +3022,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       if(a==='sh'){try{localStorage.setItem('sobrou.sh2',document.documentElement.classList.contains('nosh')?'on':'off')}catch(_){}save();location.reload();return}
       if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d3',on?'off':'on')}catch(_){}save();location.reload();return}
       if(a==='trv'){try{localStorage.setItem('sobrou.trv',localStorage.getItem('sobrou.trv')==='on'?'off':'on')}catch(_){}save();location.reload();return}
-      if(a==='car'){const js=document.documentElement.classList.contains('jsnapw');try{localStorage.setItem('sobrou.car2',js?'nat':'js')}catch(_){}save();location.reload();return}
+      if(a==='car'){const cl=document.documentElement.classList,nx=cl.contains('hybw')?'nat':cl.contains('jsnapw')?'hyb':'js';try{localStorage.setItem('sobrou.car2',nx)}catch(_){}save();location.reload();return}
       if(a==='z'){ev=[];for(const k in PST)delete PST[k];PHS.length=0;GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
     };
