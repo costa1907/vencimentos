@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.94';
+(function(){var V='13.95';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -327,7 +327,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .pt span{max-width:100%;padding:0 2px;font:600 10.5px/1.15 var(--fb);color:var(--mu);text-align:center;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere;hyphens:auto}
 @media(max-width:380px){.pgrid{gap:6px}.pt span{font-size:9.5px;letter-spacing:-.1px}.pt .pv{width:40px;height:40px}}
 /* v13.86: ícones fora da tela não são desenhados até aparecerem (continuam carregados); a altura reservada vira a medida real depois do primeiro desenho */
-.pgrid:not(.org) .pt{content-visibility:auto;contain-intrinsic-size:auto 82px}
+/* v13.95: removido o content-visibility dos ícones (v13.86): o tempo de montar os ícones não melhorou e o iPhone passava a desenhar cada fileira só quando ela entrava na tela, durante a rolagem */
 .pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transform:translateY(-2px)}
 .pt.on span{color:var(--gold2)}
 /* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
@@ -684,7 +684,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.94</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.95</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -794,7 +794,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.94';
+const VERSION='13.95';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2888,6 +2888,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   /* v13.77: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
      o relatório mostra, em cada engasgo, quais etapas rodaram e quanto do tempo foi código medido (o resto é desenho/layout do iPhone) */
   const PHS=[],PST={};
+  const RS={}; /* v13.95: ritmo da rolagem: por tipo de rolagem, quadros contados, quadros lentos (>=25 ms = 1+ quadro perdido, >=33 ms = 2+) e o pior */
   function rec(n,s,e){const d=e-s;const o=PST[n]||(PST[n]={n:0,max:0,sum:0});o.n++;o.sum+=d;if(d>o.max)o.max=d;if(d>=1.5){PHS.push({n:n,s:s,e:e});if(PHS.length>120)PHS.shift()}}
   /* o app inteiro vive dentro de uma função: as funções são trocadas pelo nome, de dentro do mesmo escopo */
   /* o app inteiro vive dentro de uma função: o app entrega (window.__diagFn) um par de leitura/troca para cada função */
@@ -2985,6 +2986,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       tot++;sec.n++;
       const busy=t-lastAct.t<1200;
       if(busy)totInt++;
+      if(busy&&/^rolando /.test(lastAct.a)){const k=lastAct.a.replace(/^rolando /,''),o=RS[k]||(RS[k]={f:0,a:0,b:0,m:0});o.f++;if(d>=25)o.a++;if(d>=33)o.b++;if(d>o.m)o.m=d}
       if(d>=50){
         const e={h:new Date().toLocaleTimeString('pt-BR'),ms:Math.round(d),tela:scr(),acao:busy?lastAct.a:'parado',det:detalhe(last,t,d)};
         ev.push(e);if(ev.length>300)ev.shift();
@@ -3034,6 +3036,11 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
     t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · sombras dos cartões: '+(document.documentElement.classList.contains('nosh')?'removidas':'ligadas')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc3')==='obs'?'SÓ OBSERVANDO (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length:'ligado')+'\n\n';
+    {const ks=Object.keys(RS).sort((x,y)=>RS[y].f-RS[x].f);
+     t+='RITMO DA ROLAGEM (quadros durante a rolagem · lentos ≥25 ms · lentos ≥33 ms · pior)\n';
+     if(!ks.length)t+='- (ainda sem rolagem medida)\n';
+     ks.forEach(k=>{const o=RS[k];t+='- '+k+': '+o.f+' quadros · '+o.a+' ('+(o.f?(o.a*100/o.f).toFixed(1):0)+'%) · '+o.b+' · '+Math.round(o.m)+' ms\n'});
+     t+='\n'}
     t+='POR TELA E AÇÃO (vezes · pior · média)\n';
     keys.forEach(k=>{const o=by[k];t+='- '+k+': '+o.n+'× · '+o.max+' ms · '+Math.round(o.sum/o.n)+' ms\n'});
     {const ks=Object.keys(PST).sort((a,b)=>PST[b].max-PST[a].max).slice(0,22);
@@ -3058,7 +3065,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       if(a==='hyt'){try{localStorage.setItem('sobrou.hyt',document.documentElement.classList.contains('hnat')?'js':'nat')}catch(_){}save();location.reload();return}
       if(a==='csz'){const on=document.documentElement.classList.contains('cszt');try{localStorage.setItem('sobrou.csz',on?'cont':'tmp')}catch(_){}save();location.reload();return}
       if(a==='car'){const cl=document.documentElement.classList,nx=cl.contains('hybw')?'nat':cl.contains('jsnapw')?'hyb':'js';try{localStorage.setItem('sobrou.car2',nx)}catch(_){}save();location.reload();return}
-      if(a==='z'){ev=[];for(const k in PST)delete PST[k];PHS.length=0;GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
+      if(a==='z'){for(const k in RS)delete RS[k];ev=[];for(const k in PST)delete PST[k];PHS.length=0;GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
     };
     document.body.appendChild(o);
