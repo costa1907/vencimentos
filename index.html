@@ -12,10 +12,10 @@
 <style>html{background:#0a0c13}
 /* fontes guardadas no próprio GitHub (nada de Google): f-figtree.woff2 e f-bricolage.woff2 */
 @font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;src:url(f-figtree.woff2) format('woff2')}
-@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(f-bricolage.woff2) format('woff2')}</style>
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.75';
+(function(){var V='13.78';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -32,10 +32,17 @@
 <meta name="apple-mobile-web-app-title" content="Sobrou!">
 <link rel="apple-touch-icon" id="touchicon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-startup-image" href="splash-1179x2556.png" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
-<link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
-<link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width:402px) and (device-height:874px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width:440px) and (device-height:956px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width:402px) and (device-height:874px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1179x2556.png" media="(device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1284x2778.png" media="(device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1170x2532.png" media="(device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1125x2436.png" media="(device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1242x2688.png" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-828x1792.png" media="(device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-1242x2208.png" media="(device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)">
+<link rel="apple-touch-startup-image" href="splash-750x1334.png" media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
 <link rel="preload" as="font" type="font/woff2" href="f-figtree.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="f-bricolage.woff2" crossorigin>
 <link rel="preload" as="image" href="i-sobrou-mark.webp">
@@ -103,7 +110,7 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 input[type=checkbox]{-webkit-user-select:none;user-select:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
 input,textarea{font:inherit;color:inherit}
-/* v13.75: campos de texto com 16 px: com menos de 16 px o iPhone dá ZOOM na tela ao tocar no campo (e tira o zoom ao fechar o teclado) e isso redesenhava a janela inteira (engasgos de 54–122 ms medidos ao tocar em campo de texto e ao fechar o teclado) */
+/* v13.77: campos de texto com 16 px: com menos de 16 px o iPhone dá ZOOM na tela ao tocar no campo (e tira o zoom ao fechar o teclado) e isso redesenhava a janela inteira (engasgos de 54–122 ms medidos ao tocar em campo de texto e ao fechar o teclado) */
 input:not(#fa):not([type=checkbox]):not([type=radio]):not([type=range]),textarea,select{font-size:16px}
 svg{display:block}
 .num{font-variant-numeric:tabular-nums}
@@ -239,7 +246,8 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .cat{display:flex;flex-direction:column;align-items:center;gap:6px;padding:11px 2px 9px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--mu);font:600 10.5px var(--fb);transition:all .25s var(--ease);min-width:0}
 .cat svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cat span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat span{max-width:100%;text-align:center;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere}
+@media(max-width:380px){.cat span{font-size:9.5px;letter-spacing:-.1px}}
 .cat.on{color:var(--gold2);background:rgba(var(--ar),.15);border-color:rgba(var(--ar),.55);transform:translateY(-2px)}
 .dates{display:flex;gap:8px;flex-wrap:wrap}
 .chip{height:44px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);font:600 13px var(--fb);color:var(--mu);transition:all .25s var(--ease)}
@@ -315,7 +323,9 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:2px}
 .pt{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0;transition:all .25s var(--ease)}
 .pt .pv{width:44px;height:44px;border-radius:15px;font-size:15px}
-.pt span{max-width:100%;padding:0 3px;font:600 10.5px var(--fb);color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* v13.78: nomes sob os ícones quebram em até 2 linhas (antes eram cortados com "…") e em telas estreitas a fonte e o ícone diminuem um pouco */
+.pt span{max-width:100%;padding:0 2px;font:600 10.5px/1.15 var(--fb);color:var(--mu);text-align:center;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere;hyphens:auto}
+@media(max-width:380px){.pgrid{gap:6px}.pt span{font-size:9.5px;letter-spacing:-.1px}.pt .pv{width:40px;height:40px}}
 .pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transform:translateY(-2px)}
 .pt.on span{color:var(--gold2)}
 /* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
@@ -344,10 +354,10 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cpa .cc,.cpa .cc.w{transition:none;box-shadow:0 14px 26px -12px rgba(0,0,0,.75);will-change:auto!important;backface-visibility:visible!important}
 .cpi::after{content:"";position:absolute;left:10%;right:10%;bottom:-22px;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));opacity:0}
 .cpi.ctr::after{opacity:1}
-/* v13.75: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
+/* v13.77: sem o 3D os vizinhos ficam menores (só escala, sem camada) e o espaço entre os cartões aumenta */
 html:not(.c3d) .cpk .cpi .cpa{transform:scale(.88);transition:transform .34s cubic-bezier(.33,.1,.25,1)}
 html:not(.c3d) .cpk .cpi.ctr .cpa{transform:none}
-/* v13.75: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
+/* v13.77: ao montar/trocar de bandeira o carrossel aparece já no lugar, sem crescer nem encaixar à vista */
 .cpk.cpnt{scroll-snap-type:none!important}
 .cpk.cpnt .cpa{transition:none!important}
 .cards.cpnt{scroll-snap-type:none!important}
@@ -586,6 +596,14 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 @keyframes splg{to{opacity:1}}
 @keyframes spln{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.spl *,.spl::after{animation-duration:.01s!important;animation-delay:0s!important}}
+/* v13.77: abertura do app = continuação da imagem de início do iPhone: já nasce no último quadro (logo, nome e frase visíveis, igual à imagem), segura um instante e sai com um zoom suave */
+.spl.boot::after{animation:none;opacity:1}
+.spl.boot .spl-mw>img{animation:none;clip-path:inset(-60% -60% -60% -60%);transform:none;filter:var(--mf) drop-shadow(0 12px 22px rgba(0,0,0,.45))}
+.spl.boot .spl-n{animation:none;opacity:1;transform:none}
+.spl.boot .spl-t{animation:none;opacity:1}
+.spl.boot .spl-in{transition:transform .6s cubic-bezier(.22,1,.36,1),opacity .45s ease}
+.spl.boot.out{transition:opacity .5s ease .05s,visibility .55s}
+.spl.boot.out .spl-in{transform:scale(1.07);opacity:.0}
 
 .pt.land{animation:pland .5s var(--ease)}
 @keyframes pland{0%{scale:.93;box-shadow:0 0 0 0 rgba(var(--ar),.5)}50%{scale:1.05}100%{scale:1;box-shadow:0 0 0 12px rgba(var(--ar),0)}}
@@ -659,7 +677,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.75</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.78</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -769,7 +787,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.75';
+const VERSION='13.78';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1287,7 +1305,7 @@ function cfInit(){
     if(Math.abs(off)>4&&!fixd){fixd=1;window.__diagNote&&window.__diagNote('encaixe completado pelo app ('+Math.round(off)+' px) · carrossel da tela inicial');try{tr.scrollTo({left:Math.max(0,tr.scrollLeft+off),behavior:'smooth'})}catch(e){tr.scrollLeft=Math.max(0,tr.scrollLeft+off)}}};
   cfLayout(tr,true);
   if(JSNAP){tr._snap=1;snapper(tr,()=>{tch=0;clearTimeout(idle);settle()})}
-  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf&&!(SDA||NOFX()))raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)}); /* v13.75: com o giro 3D do navegador (ou sem efeitos) esta conta durante o deslize não fazia nada útil (nem marcava o centro): foi cortada */
+  tr.addEventListener('scroll',()=>{HCLS=Date.now();if(!raf&&!(SDA||NOFX()))raf=requestAnimationFrame(()=>{raf=0;cfLayout(tr)}); /* v13.77: com o giro 3D do navegador (ou sem efeitos) esta conta durante o deslize não fazia nada útil (nem marcava o centro): foi cortada */
     clearTimeout(idle);idle=setTimeout(settle,140)},{passive:true});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);HIG=Date.now()-HCLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
@@ -1568,7 +1586,7 @@ function renderProv(){
   /* "Outro" fica sempre no final de todos os ícones (e não pode ser arrastado) */
   const outro='<div role="button" class="pt'+(!F.prov?' on':'')+'" data-p=""><div class="pv" style="--c:#2a3050;--t:#9aa3b8">···</div><span>Outro</span>'+HZ+'</div>';
   const nada=(q&&!ids.length)?'<p class="hint" style="grid-column:1/-1">Nada encontrado. Use o campo de nome acima ou escolha Outro.</p>':'';
-  /* v13.75: todos os ícones entram de uma vez (a v13.66 montava em partes e o resto aparecia atrasado; o cronômetro mostrou que montar tudo custa só ~5 ms) */
+  /* v13.77: todos os ícones entram de uma vez (a v13.66 montava em partes e o resto aparecia atrasado; o cronômetro mostrou que montar tudo custa só ~5 ms) */
   PGK=pk;$('#pg').innerHTML=nada+g.join('')+outro;icoDecode();
 }
 /* "pago por transferência para": grade de bancos (monta uma vez; depois só marca o escolhido) */
@@ -1615,18 +1633,18 @@ function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector(
 function cpLayout(mark){
   const tr=$('#cm'),its=tr.children,n=its.length;if(!n)return -1;
   if(CGRID){const o=tr.querySelector('.cpi.on');return o?[].indexOf.call(its,o):0}
-  /* v13.75: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
+  /* v13.77: as medidas (largura da área e dos cartões) só são lidas de novo quando mudam (troca de cartões, giro/redimensionar, encaixe); antes eram lidas a cada quadro da rolagem */
   const k=n+':'+window.innerWidth;
   if(tr._k!==k){tr._k=k;tr._cx=[];for(let i=0;i<n;i++)tr._cx.push(its[i].offsetLeft+its[i].offsetWidth/2);tr._w=its[0].offsetWidth;tr._cw=tr.clientWidth;tr._vb=-1}
   const c=tr.scrollLeft+tr._cw/2,cx=tr._cx,w=tr._w;let bi=0,bd=1e9;
   if(SDA||NOFX()){
     for(let i=0;i<n;i++){const d=Math.abs(cx[i]-c);if(d<bd){bd=d;bi=i}}
     /* cartões longe do centro saem da GPU: só confere quando o cartão do centro muda (antes varria todos a cada quadro) */
-    if(tr._vb!==bi){tr._vb=bi;const nf=NOFX();for(let i=0;i<n;i++){const el=its[i].firstElementChild;if(!el)continue;const far=!nf&&Math.abs(i-bi)>3;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''}}}
+    if(tr._vb!==bi){tr._vb=bi;const nf=NOFX();for(let i=0;i<n;i++){const el=its[i].firstElementChild;if(!el)continue;const far=!nf&&Math.abs(i-bi)>6;if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''}}}
   }else
   for(let i=0;i<n;i++){const t=(cx[i]-c)/w,d=Math.abs(t);if(d<bd){bd=d;bi=i}
     const el=its[i].firstElementChild;if(!el)continue;
-    const far=d>3.2&&!NOFX();if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada. Com efeitos desligados os cartões nem usam a GPU: não precisa esconder */
+    const far=d>6.2&&!NOFX();if(its[i]._h!==far){its[i]._h=far;el.style.visibility=far?'hidden':''} /* cartões longe do centro saem da GPU (liberam memória); a imagem continua carregada. Com efeitos desligados os cartões nem usam a GPU: não precisa esconder */
     if(SDA||NOFX())continue;
     if(d>1.6){if(its[i]._f!==1){its[i]._f=1;el.style.transform='perspective(900px) rotateY('+(t<0?34:-34)+'deg) scale(.86)'}continue}
     its[i]._f=0;const q=d>1?1:d;
@@ -1750,7 +1768,7 @@ function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
     if(!g.on){
       const andou=Math.abs(sc.scrollTop-g.st0),dedo=Math.abs(dy),ans=performance.now()-(sc._ans||-1e9)<120000;
       if(andou>=Math.max(6,dedo*0.5)){g.off=1;motivo(g,'o iPhone rolou');return}   /* o iPhone está rolando normalmente: não mexe */
-      if(dedo<(ans?24:36)||performance.now()-g.t0<(dedo>=150?140:250))return; /* v13.75: arrasto rápido (150 px ou mais) com a janela parada: socorre aos 140 ms em vez de 250 ms */                        /* ainda é cedo (v13.47: 250 ms; os falsos alarmes medidos entraram até ~165 ms) */
+      if(dedo<(ans?24:36)||performance.now()-g.t0<(dedo>=150?140:250))return; /* v13.77: arrasto rápido (150 px ou mais) com a janela parada: socorre aos 140 ms em vez de 250 ms */                        /* ainda é cedo (v13.47: 250 ms; os falsos alarmes medidos entraram até ~165 ms) */
       if(dedo<Math.abs(dx)*1.3){motivo(g,'arrasto na diagonal');return}
       {const mx=Math.max(0,sc.scrollHeight-sc.clientHeight);if(dy>0?sc.scrollTop<=1:sc.scrollTop>=mx-1){g.off=1;motivo(g,'já estava no começo/fim');return}} /* "elástico" do iPhone */
       if(andou>=dedo*0.25)return;                                                   /* andou um pouco: espera mais */
@@ -1806,7 +1824,7 @@ function redecodificar(){
 function acordarRolagem(){
   try{const sh=$('#sheet'),pn=$('#panel');if(sh&&!sh.hidden&&sh.classList.contains('open')&&pn)reviverRolagem(pn)}catch(e){}
 }
-/* v13.75: depois de ficar em segundo plano o iPhone descarta as camadas/telas desenhadas dos cartões: apareciam pretos, pequenos sem crescer e com o 1º cartão preso grande. Ao voltar, o carrossel que está na tela é "refeito" (sai e volta do layout no mesmo quadro, mantendo a posição) e o cartão do centro é remarcado */
+/* v13.77: depois de ficar em segundo plano o iPhone descarta as camadas/telas desenhadas dos cartões: apareciam pretos, pequenos sem crescer e com o 1º cartão preso grande. Ao voltar, o carrossel que está na tela é "refeito" (sai e volta do layout no mesmo quadro, mantendo a posição) e o cartão do centro é remarcado */
 function reviverCarrosseis(){
   try{
     const sh=$('#sheet'),aberta=sh&&!sh.hidden&&sh.classList.contains('open');
@@ -2468,7 +2486,7 @@ window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
   put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
 $('#ver').textContent='v'+VERSION;
 setTab('home');
-/* v13.75: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
+/* v13.77: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
 window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',()=>renderBank,f=>{renderBank=f}],['syncForm',()=>syncForm,f=>{syncForm=f}],['cpLayout',()=>cpLayout,f=>{cpLayout=f}],['cpLabel',()=>cpLabel,f=>{cpLabel=f}],['cpLoad',()=>cpLoad,f=>{cpLoad=f}],['openSheet',()=>openSheet,f=>{openSheet=f}],['closeSheet',()=>closeSheet,f=>{closeSheet=f}],['ccPrev',()=>ccPrev,f=>{ccPrev=f}],['icoDecode',()=>icoDecode,f=>{icoDecode=f}],['cpRevealStep',()=>cpRevealStep,f=>{cpRevealStep=f}],['cfLayout',()=>cfLayout,f=>{cfLayout=f}],['renderHome',()=>renderHome,f=>{renderHome=f}],['renderPan',()=>renderPan,f=>{renderPan=f}],['renderSet',()=>renderSet,f=>{renderSet=f}],['renderAll',()=>renderAll,f=>{renderAll=f}],['cp3d',()=>cp3d,f=>{cp3d=f}]];
 })();
 
@@ -2635,7 +2653,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
 
   /* ----- telas ----- */
   const CSS='.lgv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:24px 20px;overflow:auto;background:radial-gradient(120% 80% at 50% 30%,var(--h1) 0%,var(--bg2) 55%,var(--bg) 100%)}'+
-  '.lgv[hidden]{display:none}.lgb{width:100%;max-width:380px;text-align:center}'+
+  '.lgv[hidden]{display:none}.lgv{animation:lgin .45s ease both}@keyframes lgin{from{opacity:0}to{opacity:1}}.lgb .lgm>img{animation:lgm .9s .1s cubic-bezier(.22,1,.36,1) both}@keyframes lgm{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}.lgb{width:100%;max-width:380px;text-align:center}'+
   '.lgb .lgm{width:88px;height:78px;margin:0 auto 10px;display:grid;place-items:center}.lgb .lgm>img{width:100%;height:100%;object-fit:contain;filter:var(--mf)}'+
   '.lgb h1{font:800 34px var(--fd,var(--fb));letter-spacing:-.02em;margin:0}.lgb h1 span{color:var(--gold2)}'+
   '.lgb .lgs{margin:6px 0 22px;color:var(--mu);font-size:13.5px}'+
@@ -2774,7 +2792,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const t=document.querySelector('.tab.on');return t?t.textContent.trim():'?';
   }
   function act(a){lastAct={t:performance.now(),a:a}}
-  /* v13.75: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
+  /* v13.77: cronômetro por etapa do código. Cada função importante é embrulhada e anota quando começou e terminou;
      o relatório mostra, em cada engasgo, quais etapas rodaram e quanto do tempo foi código medido (o resto é desenho/layout do iPhone) */
   const PHS=[],PST={};
   function rec(n,s,e){const d=e-s;const o=PST[n]||(PST[n]={n:0,max:0,sum:0});o.n++;o.sum+=d;if(d>o.max)o.max=d;if(d>=1.5){PHS.push({n:n,s:s,e:e});if(PHS.length>120)PHS.shift()}}
@@ -2973,10 +2991,14 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   };
   const el=document.getElementById('spl');if(!el)return;
   if(document.documentElement.classList.contains('nofx')){el.remove();return}
+  /* v13.77: quem ainda não entrou (primeiro acesso ou saiu da conta) vai direto para a tela de login/cadastro, sem a abertura */
+  let logado=false;try{logado=!!localStorage.getItem('sobrou.auth')}catch(_){}
+  if(!logado){el.remove();return}
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
-  run(el,2500);
+  el.classList.add('boot');
+  run(el,1200);
 })();
 
 document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))i.src=window.MARK});
