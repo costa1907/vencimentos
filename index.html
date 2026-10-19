@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.84';
+(function(){var V='13.85';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -677,7 +677,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.84</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.85</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -717,13 +717,13 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
     <div class="grab"></div>
     <div class="stitle"><h2 id="st">Nova conta</h2><button type="button" class="x" id="sx" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="seg" id="fm" style="grid-template-columns:1fr 1fr;margin:4px 0 2px"><button type="button" data-m="bill" class="on">Conta a pagar</button><button type="button" data-m="spent">Gasto já feito</button></div>
-    <label class="amtbox" id="amtbox"><span>Valor</span><input id="fa" type="text" inputmode="numeric" value="R$ 0,00" aria-label="Valor"></label>
+    <label class="amtbox" id="amtbox"><span>Valor</span><input id="fa" autocorrect="off" spellcheck="false" autocomplete="off" type="text" inputmode="numeric" value="R$ 0,00" aria-label="Valor"></label>
     <div id="scopebox" hidden><div class="lbl">Aplicar o valor a</div><div class="seg" id="fs2" style="grid-template-columns:1fr 1fr"><button type="button" data-sc="one">Só este mês</button><button type="button" data-sc="all">Todos os meses</button></div></div>
-    <input class="fld" id="fn" type="text" placeholder="Nome (opcional)" maxlength="60" style="margin-top:6px">
+    <input class="fld" id="fn" autocorrect="off" spellcheck="false" autocomplete="off" autocapitalize="words" type="text" placeholder="Nome (opcional)" maxlength="60" style="margin-top:6px">
     <div class="lbl">Tipo</div>
     <div class="cats" id="fc"></div>
     <div class="lbl" id="pl">Quem é?</div>
-    <input class="fld sm" id="ps" type="search" placeholder="Buscar banco, streaming, empresa..." autocomplete="off">
+    <input class="fld sm" id="ps" autocorrect="off" spellcheck="false" type="search" placeholder="Buscar banco, streaming, empresa..." autocomplete="off">
     <div class="pbar"><div class="segP" id="pm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
     <div class="phint" id="phint" hidden></div>
     <div class="pgrid" id="pg"></div>
@@ -747,13 +747,13 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="cpt" id="cpt" hidden><div class="cpn" id="cpn"></div><div class="cps" id="cps"></div><div class="cpg" id="cpg"></div></div>
       <div id="cgen"><div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
       <div class="lbl">Nível do cartão</div><div class="dates" id="ct"></div></div>
-      <div class="lbl">Final do cartão</div><input class="fld" id="cl" type="text" inputmode="numeric" maxlength="4" placeholder="Últimos 4 números (opcional)" autocomplete="off">
-      <div class="lbl">Limite do cartão</div><input class="fld" id="cli" type="text" inputmode="numeric" placeholder="R$ 0,00 (opcional)" autocomplete="off">
-      <div class="lbl">Dia do fechamento da fatura</div><input class="fld" id="ccl" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 25 (opcional)" autocomplete="off">
+      <div class="lbl">Final do cartão</div><input class="fld" id="cl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" maxlength="4" placeholder="Últimos 4 números (opcional)" autocomplete="off">
+      <div class="lbl">Limite do cartão</div><input class="fld" id="cli" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" placeholder="R$ 0,00 (opcional)" autocomplete="off">
+      <div class="lbl">Dia do fechamento da fatura</div><input class="fld" id="ccl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 25 (opcional)" autocomplete="off">
     </div>
     <div id="bolx" hidden>
       <div class="lbl">Linha digitável do boleto</div>
-      <div style="display:flex;gap:8px"><input class="fld" id="bl" type="text" inputmode="numeric" placeholder="Cole o código do boleto" autocomplete="off"><button type="button" class="act" id="blp" style="flex:none;width:auto;padding:0 16px;margin:0">Colar</button></div>
+      <div style="display:flex;gap:8px"><input class="fld" id="bl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" placeholder="Cole o código do boleto" autocomplete="off"><button type="button" class="act" id="blp" style="flex:none;width:auto;padding:0 16px;margin:0">Colar</button></div>
       <div class="bolm" id="blm" hidden></div>
     </div>
     <div class="lbl" id="fdl">Vencimento</div>
@@ -777,7 +777,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
     </div>
     <p class="hint" id="hint"></p>
     <div class="lbl">Observação (opcional)</div>
-    <textarea class="fld" id="fo" placeholder="Código de barras, número do contrato, lembrete..."></textarea>
+    <textarea class="fld" id="fo" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Código de barras, número do contrato, lembrete..."></textarea>
     <button type="button" class="act" id="fcopy" hidden>Copiar observação</button>
     <button type="submit" class="save" id="fs">Adicionar conta</button>
     <div id="extra"></div>
@@ -787,7 +787,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.84';
+const VERSION='13.85';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1420,7 +1420,7 @@ function renderPan(){
     return '<div class="gl '+st+'" style="--c:'+c.c+'"><div class="t"><b>'+c.l+'</b><span class="num">'+brl(u)+' de '+brl(G[k])+' · '+Math.round(p*100)+'%'+(p>1?' · passou '+brl(u-G[k]):p>=.8?' · quase':'')+'</span><button class="x" data-g="'+k+'" aria-label="Remover meta">×</button></div><div class="tr"><i style="width:'+Math.max(3,Math.min(100,p*100))+'%;animation-delay:'+(i*60)+'ms"></i></div></div>'}).join(''):'<p class="cap" style="margin:0">Nenhuma meta ainda. Escolha um tipo e o limite mensal.</p>';
   const gopts=Object.keys(CAT).filter(k=>!(G[k]>0)).map(k=>'<option value="'+k+'">'+CAT[k].l+'</option>').join('');
   const goals='<div class="card"><h3>Metas do mês</h3><div class="cap">Quanto você quer gastar por tipo em '+MES[V.m]+'. Avisa ao chegar em 80% e quando passar.</div>'+glist+
-    (gopts?'<div class="gadd"><select class="fld" id="gcat">'+gopts+'</select><input class="fld" id="gval" inputmode="decimal" placeholder="R$ limite"><button id="gsave">Salvar</button></div>':'')+'</div>';
+    (gopts?'<div class="gadd"><select class="fld" id="gcat">'+gopts+'</select><input class="fld" id="gval" autocorrect="off" spellcheck="false" autocomplete="off" inputmode="decimal" placeholder="R$ limite"><button id="gsave">Salvar</button></div>':'')+'</div>';
   const N=EV, evm=[];for(let i=N-1;i>=0;i--){const d=new Date(ty,tm-i,1),o=monthOccs(d.getFullYear(),d.getMonth());evm.push({l:MS[d.getMonth()],tot:sum(o),pd:sum(o.filter(x=>x.paid)),cur:i===0})}
   const emx=Math.max(1,...evm.map(x=>x.tot));
   const ebars=evm.map((x,i)=>'<div class="bc'+(x.cur?' cur':'')+'"><div class="v num">'+(x.tot?short(x.tot):'')+'</div><div class="b" style="height:'+Math.max(4,Math.round(x.tot/emx*100))+'px;--i:'+i+'">'+(x.tot&&x.pd?'<i style="height:'+Math.round(x.pd/x.tot*100)+'%"></i>':'')+'</div><div class="m">'+x.l+'</div></div>').join('');
@@ -1469,7 +1469,7 @@ function renderSet(){
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
    '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
-   '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
+   '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
    (window.__diag?window.__diag.card():'')+
    '<div class="card"><h3>Memória de imagens</h3><div class="cap">Apaga as imagens guardadas no aparelho (ícones e cartões) e baixa tudo de novo, como na primeira vez. Seus lançamentos e dados <b>não</b> são apagados.</div><button class="act" id="bclr">Limpar memória e recarregar</button><button class="act" id="bchk">Verificar arquivos de imagem</button><div class="cap" id="bchkr" style="margin:10px 0 0"></div></div>'+
