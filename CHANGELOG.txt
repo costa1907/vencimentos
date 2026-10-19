@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.104 · 19/10/2026 · "Teste de rolagem" do Diagnóstico agora tem 4 passos: normal → tela de trás escondida → + ícones → + cartões. (Com só os ícones escondidos a rolagem da janela NÃO melhorou: 36,9% de quadros lentos, então ícones não são a causa.)
   v13.103 · 19/10/2026 · NOVO no Diagnóstico: botão "Teste de rolagem" (esconde os ícones de banco e depois também os cartões, só até recarregar) para descobrir o que pesa ao rolar a janela; o relatório mostra qual teste estava ligado.
   v13.102 · 19/10/2026 · Desfeita a camada própria da grade de ícones da v13.101 (piorou a rolagem da janela no iPhone). Mantida a limpeza das opções inúteis do Diagnóstico.
   v13.101 · 19/10/2026 · LIMPEZA: removidos do código e do Diagnóstico "Trava nas pontas", "Sombras dos cartões" (agora sempre sem sombra), "Toque durante o encaixe", "Tamanho do cartão" e "Janela leve" (não ajudavam).
