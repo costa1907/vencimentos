@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.80';
+(function(){var V='13.81';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -677,7 +677,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.80</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.81</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -787,7 +787,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.80';
+const VERSION='13.81';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2679,8 +2679,8 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     ov.hidden=false;
     ov.innerHTML='<div class="lgb">'+MK()+'<p class="lgs">Onde o seu controle <b style="color:var(--gold2)">vira lucro.</b></p>'+
       '<div class="lgtab"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Entrar</button><button type="button" data-m="new" class="'+(mode==='new'?'on':'')+'">Criar conta</button></div>'+
-      '<input class="fld" id="lge" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">'+
-      '<input class="fld" id="lgp" type="password" autocomplete="'+(mode==='in'?'current-password':'new-password')+'" placeholder="'+(mode==='in'?'Senha':'Crie uma senha (mínimo 6)')+'">'+
+      '<input class="fld" id="lge" type="email" inputmode="email" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">'+
+      '<input class="fld" id="lgp" type="password" autocomplete="'+(mode==='in'?'current-password':'new-password')+'" name="sobrou-pw" placeholder="'+(mode==='in'?'Senha':'Crie uma senha (mínimo 6)')+'">'+
       '<button class="cta" id="lgg" type="button">'+(mode==='in'?'Entrar':'Criar conta e começar')+'</button>'+
       '<div class="lgerr" id="lgx"></div>'+
       (mode==='in'?'<a class="lgl" id="lgf">Esqueci minha senha</a>':'<p class="hint" style="margin-top:8px">'+TRIAL_DIAS+' dias grátis para testar tudo.</p>')+'</div>';
