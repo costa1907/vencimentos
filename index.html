@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.86';
+(function(){var V='13.87';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -679,7 +679,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.86</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.87</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -789,7 +789,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.86';
+const VERSION='13.87';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2000,8 +2000,9 @@ function openSheet(id,key){
     $('#st').textContent='Nova conta';$('#fs').textContent='Adicionar conta';
   }
   /* monta tudo com a janela ainda fora da tela e só depois começa a subida: o trabalho pesado não cai no meio da animação */
-  sh.hidden=false;document.body.style.overflow='hidden';pn.scrollTop=0;
-  PGK='';renderProv();syncForm();
+  /* v13.87: um layout só: antes o scrollTop=0 aqui obrigava o iPhone a medir a janela com o conteúdo ANTIGO e logo depois tudo era trocado e medido de novo; agora volta ao topo depois de montar o conteúdo novo */
+  sh.hidden=false;document.body.style.overflow='hidden';
+  PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
   if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}},380);
