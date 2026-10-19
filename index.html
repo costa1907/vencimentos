@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.106';
+(function(){var V='13.107';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -687,7 +687,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.106</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.107</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -797,7 +797,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.106';
+const VERSION='13.107';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1244,7 +1244,7 @@ if(JSNAP)document.documentElement.classList.add('jsnap');
 if(CGRID)document.documentElement.classList.add('cgrid');
 if(JSNAPW)document.documentElement.classList.add('jsnapw');
 if(HYBW)document.documentElement.classList.add('hybw');
-document.documentElement.classList.add('nosh'); /* v13.106: sombras dos cartões sempre removidas (opção apagada) */
+document.documentElement.classList.add('nosh'); /* v13.107: sombras dos cartões sempre removidas (opção apagada) */
 function cfLayout(tr,mark){
   const its=tr.children,n=its.length;if(!n)return -1;
   const k=n+':'+window.innerWidth;
@@ -1774,40 +1774,6 @@ function cpLabel(bi){
   if(JSNAP||JSNAPW)snapper(tr,()=>{tch=0;clearTimeout(idle);settle()});
   tr.addEventListener('touchstart',()=>{tch=1;fixd=0;clearTimeout(idle);CPIG=Date.now()-CPLS<350?1:0},{passive:true});
   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{tch=0;clearTimeout(idle);idle=setTimeout(settle,300)},{passive:true}));
-  /* v13.106: tocar no carrossel ainda andando/encaixando e arrastar para CIMA/BAIXO: o iPhone gastava o 1º gesto só para parar o carrossel e a janela não rolava (era preciso tentar de novo). Agora o app rola a janela junto com o dedo nesse caso, na hora, e solta se o iPhone assumir. */
-  {let vs=null,vraf=0;
-   document.addEventListener('touchstart',()=>{if(vraf){cancelAnimationFrame(vraf);vraf=0}},{capture:true,passive:true});
-   tr.addEventListener('touchstart',e=>{
-     vs=null;if(e.touches.length!==1||!CPIG)return;
-     const pn=$('#panel');if(!pn||document.body.classList.contains('dragging'))return;const t=e.touches[0];
-     vs={pn:pn,x0:t.clientX,y0:t.clientY,st0:pn.scrollTop,t0:performance.now(),h:[[performance.now(),t.clientY]],on:0,off:0};
-   },{passive:true});
-   tr.addEventListener('touchmove',e=>{
-     const s=vs;if(!s||s.off)return;const t=e.touches[0];if(!t||e.touches.length!==1){s.off=1;s.on=0;return}
-     const pn=s.pn,dx=t.clientX-s.x0,dy=t.clientY-s.y0;
-     s.h.push([performance.now(),t.clientY]);if(s.h.length>6)s.h.shift();
-     if(!s.on){
-       if(Math.abs(pn.scrollTop-s.st0)>4){s.off=1;return}
-       if(Math.abs(dx)>Math.abs(dy)*.8&&Math.abs(dx)>10){s.off=1;return}
-       if(Math.abs(dy)<14||Math.abs(dy)<Math.abs(dx)*1.5)return;
-       const mx0=Math.max(0,pn.scrollHeight-pn.clientHeight);if(dy>0?pn.scrollTop<=1:pn.scrollTop>=mx0-1){s.off=1;return}
-       s.on=1;s.yb=t.clientY;s.base=pn.scrollTop;s.exp=s.base;window.__resgT=performance.now();
-       window.__diagNote&&window.__diagNote('toque no carrossel ainda encaixando: o app rolou a janela junto com o dedo (aos '+Math.round(performance.now()-s.t0)+' ms, dedo '+Math.round(Math.abs(dy))+' px)','resgate');
-     }else if(Math.abs(pn.scrollTop-s.exp)>3){s.off=1;s.on=0;return}
-     const mx=Math.max(0,pn.scrollHeight-pn.clientHeight);
-     s.exp=Math.round(Math.max(0,Math.min(mx,s.base-(t.clientY-s.yb))));pn.scrollTop=s.exp;
-   },{passive:true});
-   ['touchend','touchcancel'].forEach(n=>tr.addEventListener(n,()=>{
-     const s=vs;vs=null;if(!s||!s.on||s.off)return;
-     const h=s.h,a0=h[0],b0=h[h.length-1];let v=(a0[1]-b0[1])/Math.max(16,b0[0]-a0[0]);
-     if(Math.abs(v)<.12)return;v=Math.max(-4,Math.min(4,v));
-     const pn=s.pn;let last=performance.now(),pos=pn.scrollTop;
-     const step=n2=>{const dt=Math.min(40,n2-last);last=n2;pos+=v*dt;v*=Math.pow(.994,dt);
-       const mx=Math.max(0,pn.scrollHeight-pn.clientHeight);if(pos<0||pos>mx){pos=Math.max(0,Math.min(mx,pos));v=0}
-       pn.scrollTop=pos;vraf=Math.abs(v)>.03?requestAnimationFrame(step):0};
-     vraf=requestAnimationFrame(step);
-   },{passive:true}));
-  }
   if('onscrollend' in window)tr.addEventListener('scrollend',()=>{if(tch)return;clearTimeout(idle);idle=setTimeout(settle,40)},{passive:true});
 })();
 /* v13.32: giro 3D dos cartões feito por JS, só nos que estão perto do centro; nenhuma animação nem camada fixa dentro da janela que rola */
@@ -1854,7 +1820,7 @@ function reviverRolagem(el){if(!el||el._rev)return;el._rev=1;el.style.overflowY=
 function socorroVertical(alvo,sel,rolador,nome,fora,lugar){
   if(!alvo)return;
   let g=null,emb=0;
-  const obs=()=>false; /* v13.106: socorro SEMPRE ligado (nos testes, quando só observava, a janela parou de verdade 2 de 2 vezes e nunca houve falso alarme) */
+  const obs=()=>false; /* v13.107: socorro SEMPRE ligado (nos testes, quando só observava, a janela parou de verdade 2 de 2 vezes e nunca houve falso alarme) */
   const para=()=>{if(emb){cancelAnimationFrame(emb);emb=0}};
   document.addEventListener('touchstart',para,{capture:true,passive:true});
   /* por que não socorreu (vai para o diagnóstico) */
@@ -1962,7 +1928,7 @@ socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.docu
 let CPACT=0;const CPQ=[];let CPQR=0;
 function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
 function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
-/* v13.106: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
+/* v13.107: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
 function cpGhostMake(){
   try{
     if(document.documentElement.classList.contains('nofx'))return null;
@@ -1973,7 +1939,7 @@ function cpGhostMake(){
     return {g:g,sl:old.scrollLeft,t:old.offsetTop,l:old.offsetLeft,w:old.offsetWidth,h:old.offsetHeight,par:par};
   }catch(e){return null}
 }
-/* v13.106: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
+/* v13.107: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
 let CSW=0;
 function cpSwap(o){
   const t=$('#cm');if(!t)return;
@@ -2004,7 +1970,7 @@ function cpSwap(o){
     setTimeout(()=>{if(!done)fin();if(my===CSW)t.style.opacity=''},700);
   }catch(e){try{t.style.opacity='';o&&o.g&&o.g.remove()}catch(_){}}
 }
-/* v13.106: fila ÚNICA de imagens de cartão. Cada foto é baixada e decodificada FORA da tela (new Image), no máximo 4 por vez, com
+/* v13.107: fila ÚNICA de imagens de cartão. Cada foto é baixada e decodificada FORA da tela (new Image), no máximo 4 por vez, com
    relógio de segurança (antes, se o iPhone cancelasse um download, a vaga ficava presa e as outras fotos NUNCA apareciam).
    Foto já pronta aparece junto com o cartão, sem passar pelo fundo de cor. */
 const IMGR={},WQ=[],WCB={},KEEP=new Map();let WACT=0;
@@ -3152,7 +3118,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     return t;
   }
   let AUTOR=[];
-  /* v13.106: a própria janela rola sozinha (rolagem feita pelo app, igual toda vez) com partes escondidas/simplificadas, medindo o tempo de cada quadro NO iPhone: sem dedo, sem variação. */
+  /* v13.107: a própria janela rola sozinha (rolagem feita pelo app, igual toda vez) com partes escondidas/simplificadas, medindo o tempo de cada quadro NO iPhone: sem dedo, sem variação. */
   async function autoTest(){
     const sh=document.getElementById('sheet'),pn=document.getElementById('panel'),cl=document.documentElement.classList;
     const tt=m=>{try{window.__app&&window.__app.toast(m)}catch(e){}};
