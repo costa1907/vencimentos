@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.108 · 19/10/2026 · O SOCORRO da rolagem volta a vir DESLIGADO (só observa e anota no relatório); botão "Socorro: ligar/desligar" no Diagnóstico (a escolha anterior é ignorada: precisa ligar de novo se quiser).
   v13.107 · 19/10/2026 · Removido o segundo "socorro" (da v13.99) que mexia na rolagem da janela ao tocar no carrossel encaixando: com o socorro geral agora sempre ligado, os dois rolavam a janela ao mesmo tempo e brigavam (engasgo/trava). Fica só um socorro.
   v13.106 · 19/10/2026 · O SOCORRO da rolagem agora fica SEMPRE ligado (antes só observava): nos testes a janela deixou de rolar com o dedo nos ícones 2 de 2 vezes e nunca houve falso alarme. Opção removida do Diagnóstico. Teste automático mostrou rolagem 100% fluida (0% de quadros lentos) em todas as variações da janela: o desenho da janela não é o problema.
   v13.105 · 19/10/2026 · Diagnóstico: o "Teste de rolagem" manual virou "Teste automático de rolagem" — a janela rola sozinha 10 vezes (normal, sem ícones, sem cartões, tudo escondido, painel simples, sem fundo escurecido…) e mede cada quadro NO iPhone, sem depender do dedo. (Com a tela de trás e os ícones escondidos a rolagem não melhorou: 31,8% lentos.)
