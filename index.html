@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.96';
+(function(){var V='13.97';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -541,7 +541,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .cc.w.tpl .cc-bg{opacity:0;transition:opacity .4s ease}
 .cc.w.tpl.rd .cc-bg{opacity:1}
 .cc.w.tpl:not(.rd) .cc-num{opacity:0}
-.cc.w.tpl:not(.rd){background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.cc.w.tpl:not(.rd){background:linear-gradient(135deg,var(--k1,rgba(255,255,255,.09)),var(--k2,rgba(255,255,255,.03)));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .cc-ld{position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:3px solid rgba(255,255,255,.16);border-top-color:var(--gold2);animation:ccspin .8s linear infinite;pointer-events:none}
 /* sumir sem mexer no layout: display:none aqui refazia o layout dentro do carrossel quando a imagem terminava de carregar, no meio do deslize, e o iPhone abandonava o encaixe */
 .cc.w.tpl.rd .cc-ld,.cc.mini .cc-ld{visibility:hidden;animation:none}
@@ -684,7 +684,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.96</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.97</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -794,7 +794,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.96';
+const VERSION='13.97';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -914,72 +914,72 @@ function badge(p){
 }
 const TPLS=[
 /* @@BB@@ ===== CARTÕES BANCO DO BRASIL ===== (p:"bb" · m = id do modelo em MODELS) */
- {p:"bb",m:"bbinf",b:"visa",t:"infinite",c:"#ffffff",rg:"255,224,150",n:1,s:"c-bb-bbinf.webp"},
- {p:"bb",m:"bbblack",b:"master",t:"black",c:"#d8c48e",rg:"255,224,150",n:1,s:"c-bb-bbblack.webp"},
- {p:"bb",m:"bbgold",b:"visa",t:"gold",c:"#6b5526",rg:"230,200,120",n:1,s:"c-bb-bbgold.webp"},
- {p:"bb",m:"bbgrafite",b:"elo",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,s:"c-bb-bbgrafite.webp"},
- {p:"bb",m:"bbmais",b:"elo",t:"gold",c:"#6b5526",rg:"230,200,120",n:1,s:"c-bb-bbmais.webp"},
- {p:"bb",m:"bbplatmc",b:"master",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,s:"c-bb-bbplatmc.webp"},
- {p:"bb",m:"bbplatvisa",b:"visa",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,s:"c-bb-bbplatvisa.webp"},
- {p:"bb",m:"bbnanquim",b:"elo",t:"black",c:"#d8c48e",rg:"255,224,150",n:1,s:"c-bb-bbnanquim.webp"},
- {p:"bb",m:"smilesplat",b:"visa",t:"platinum",c:"#ffffff",rg:"190,215,235",n:1,s:"c-bb-smilesplat.webp"},
- {p:"bb",m:"smilesgold",b:"visa",t:"gold",c:"#ffffff",rg:"255,236,170",n:1,s:"c-bb-smilesgold.webp"},
- {p:"bb",m:"smilesinf",b:"visa",t:"infinite",c:"#ffffff",rg:"220,225,235",n:1,s:"c-bb-smilesinf.webp"},
- {p:"bb",m:"petro",b:"visa",t:"standard",c:"#2f5a36",rg:"255,210,90",n:1,s:"c-bb-petro.webp"},
+ {p:"bb",m:"bbinf",b:"visa",t:"infinite",c:"#ffffff",rg:"255,224,150",n:1,k:"2f2d27",j:"302e28",s:"c-bb-bbinf.webp"},
+ {p:"bb",m:"bbblack",b:"master",t:"black",c:"#d8c48e",rg:"255,224,150",n:1,k:"2f2d28",j:"372e26",s:"c-bb-bbblack.webp"},
+ {p:"bb",m:"bbgold",b:"visa",t:"gold",c:"#6b5526",rg:"230,200,120",n:1,k:"efe3c7",j:"efe3c8",s:"c-bb-bbgold.webp"},
+ {p:"bb",m:"bbgrafite",b:"elo",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,k:"8d989d",j:"8d989d",s:"c-bb-bbgrafite.webp"},
+ {p:"bb",m:"bbmais",b:"elo",t:"gold",c:"#6b5526",rg:"230,200,120",n:1,k:"efe3c8",j:"efe3c8",s:"c-bb-bbmais.webp"},
+ {p:"bb",m:"bbplatmc",b:"master",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,k:"8d989d",j:"909496",s:"c-bb-bbplatmc.webp"},
+ {p:"bb",m:"bbplatvisa",b:"visa",t:"platinum",c:"#202a30",rg:"255,224,150",n:1,k:"909a9f",j:"909a9f",s:"c-bb-bbplatvisa.webp"},
+ {p:"bb",m:"bbnanquim",b:"elo",t:"black",c:"#d8c48e",rg:"255,224,150",n:1,k:"2f2d28",j:"2f2d27",s:"c-bb-bbnanquim.webp"},
+ {p:"bb",m:"smilesplat",b:"visa",t:"platinum",c:"#ffffff",rg:"190,215,235",n:1,k:"425d69",j:"496270",s:"c-bb-smilesplat.webp"},
+ {p:"bb",m:"smilesgold",b:"visa",t:"gold",c:"#ffffff",rg:"255,236,170",n:1,k:"877c39",j:"90843c",s:"c-bb-smilesgold.webp"},
+ {p:"bb",m:"smilesinf",b:"visa",t:"infinite",c:"#ffffff",rg:"220,225,235",n:1,k:"181a1a",j:"1d1f20",s:"c-bb-smilesinf.webp"},
+ {p:"bb",m:"petro",b:"visa",t:"standard",c:"#2f5a36",rg:"255,210,90",n:1,k:"f1f3e6",j:"f7f6e8",s:"c-bb-petro.webp"},
 
 /* @@SANTANDER@@ ===== CARTÕES SANTANDER ===== (p:"santander" · m = id do modelo em MODELS) */
- {p:"santander",m:"elite",b:"visa",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,s:"c-santander-elitevisa.webp"},
- {p:"santander",m:"unique",b:"visa",t:"infinite",c:"#ffffff",rg:"200,200,205",n:1,s:"c-santander-uniquevisa.webp"},
- {p:"santander",m:"unlimited",b:"visa",t:"infinite",c:"#ffffff",rg:"170,170,175",n:1,s:"c-santander-unlimited.webp"},
- {p:"santander",m:"amexplat",b:"amex",t:"platinum",c:"#ffffff",rg:"190,200,205",n:1,s:"c-santander-amexplat.webp"},
- {p:"santander",m:"amexgold",b:"amex",t:"gold",c:"#ffffff",rg:"225,190,90",n:1,s:"c-santander-amexgold.webp"},
- {p:"santander",m:"amexgreen",b:"amex",t:"standard",c:"#ffffff",rg:"150,205,175",n:1,s:"c-santander-amexgreen.webp"},
- {p:"santander",m:"sanfree",b:"*",t:"standard",c:"#ffffff",rg:"255,120,120",n:1,s:"c-santander-sanfree.webp"},
- {p:"santander",m:"smilesgold",b:"visa",t:"gold",c:"#ffffff",rg:"255,236,170",n:1,s:"c-santander-smilesgold.webp"},
- {p:"santander",m:"smilesplat",b:"visa",t:"platinum",c:"#ffffff",rg:"190,225,240",n:1,s:"c-santander-smilesplat.webp"},
- {p:"santander",m:"smilesinf",b:"visa",t:"infinite",c:"#ffffff",rg:"220,225,235",n:1,s:"c-santander-smilesinf.webp"},
- {p:"santander",m:"aablack",b:"master",t:"black",c:"#ffffff",rg:"200,200,205",n:1,s:"c-santander-aablack.webp"},
- {p:"santander",m:"aaplat",b:"master",t:"platinum",c:"#ffffff",rg:"220,220,225",n:1,s:"c-santander-aaplat.webp"},
- {p:"santander",m:"aawhite",b:"master",t:"standard",c:"#444444",rg:"200,200,210",n:1,s:"c-santander-aawhite.webp"},
+ {p:"santander",m:"elite",b:"visa",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,k:"484749",j:"454546",s:"c-santander-elitevisa.webp"},
+ {p:"santander",m:"unique",b:"visa",t:"infinite",c:"#ffffff",rg:"200,200,205",n:1,k:"37342f",j:"332f2a",s:"c-santander-uniquevisa.webp"},
+ {p:"santander",m:"unlimited",b:"visa",t:"infinite",c:"#ffffff",rg:"170,170,175",n:1,k:"0a0b0b",j:"080808",s:"c-santander-unlimited.webp"},
+ {p:"santander",m:"amexplat",b:"amex",t:"platinum",c:"#ffffff",rg:"190,200,205",n:1,k:"afb7b6",j:"b8c0c0",s:"c-santander-amexplat.webp"},
+ {p:"santander",m:"amexgold",b:"amex",t:"gold",c:"#ffffff",rg:"225,190,90",n:1,k:"b09a44",j:"b79f40",s:"c-santander-amexgold.webp"},
+ {p:"santander",m:"amexgreen",b:"amex",t:"standard",c:"#ffffff",rg:"150,205,175",n:1,k:"9cb9ac",j:"a4c4b5",s:"c-santander-amexgreen.webp"},
+ {p:"santander",m:"sanfree",b:"*",t:"standard",c:"#ffffff",rg:"255,120,120",n:1,k:"60191e",j:"23070c",s:"c-santander-sanfree.webp"},
+ {p:"santander",m:"smilesgold",b:"visa",t:"gold",c:"#ffffff",rg:"255,236,170",n:1,k:"935533",j:"97552d",s:"c-santander-smilesgold.webp"},
+ {p:"santander",m:"smilesplat",b:"visa",t:"platinum",c:"#ffffff",rg:"190,225,240",n:1,k:"436a79",j:"3f697a",s:"c-santander-smilesplat.webp"},
+ {p:"santander",m:"smilesinf",b:"visa",t:"infinite",c:"#ffffff",rg:"220,225,235",n:1,k:"131313",j:"0c0c0c",s:"c-santander-smilesinf.webp"},
+ {p:"santander",m:"aablack",b:"master",t:"black",c:"#ffffff",rg:"200,200,205",n:1,k:"4a4643",j:"484441",s:"c-santander-aablack.webp"},
+ {p:"santander",m:"aaplat",b:"master",t:"platinum",c:"#ffffff",rg:"220,220,225",n:1,k:"6f6d6c",j:"736863",s:"c-santander-aaplat.webp"},
+ {p:"santander",m:"aawhite",b:"master",t:"standard",c:"#444444",rg:"200,200,210",n:1,k:"efefef",j:"f3e9e4",s:"c-santander-aawhite.webp"},
 
 /* @@ITAU@@ ===== CARTÕES ITAÚ ===== (p:"itau" · m = id do modelo em MODELS · s = arquivo c-banco-modelo.webp na mesma pasta do index.html) */
- {p:"itau",m:"azulmc",b:"master",t:"gold",c:"#ffffff",rg:"150,190,255",v:1,s:"c-itau-azulmc.webp"},
- {p:"itau",m:"azulvisa",b:"visa",t:"gold",c:"#ffffff",rg:"150,190,255",v:1,s:"c-itau-azulvisa.webp"},
- {p:"itau",m:"azulvisan",b:"visa",t:"standard",c:"#ffffff",rg:"152,166,181",v:1,s:"c-itau-azulvisan.webp"},
- {p:"itau",m:"azulmcn",b:"master",t:"standard",c:"#ffffff",rg:"152,163,178",v:1,s:"c-itau-azulmcn.webp"},
- {p:"itau",m:"azulmcsky",b:"master",t:"standard",c:"#1f2a44",rg:"229,232,235",v:1,s:"c-itau-azulmcsky.webp"},
- {p:"itau",m:"azulvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"120,124,137",v:1,s:"c-itau-azulvisaplat.webp"},
- {p:"itau",m:"azulmcplat",b:"master",t:"platinum",c:"#ffffff",rg:"122,124,135",v:1,s:"c-itau-azulmcplat.webp"},
- {p:"itau",m:"azulvisainf",b:"visa",t:"infinite",c:"#1f2a44",rg:"231,234,236",v:1,s:"c-itau-azulvisainf.webp"},
- {p:"itau",m:"latamvisa",b:"visa",t:"standard",c:"#ffffff",rg:"158,111,129",v:1,s:"c-itau-latamvisa.webp"},
- {p:"itau",m:"latammc",b:"master",t:"standard",c:"#ffffff",rg:"158,112,127",v:1,s:"c-itau-latammc.webp"},
- {p:"itau",m:"latamvisagold",b:"visa",t:"gold",c:"#ffffff",rg:"158,111,129",v:1,s:"c-itau-latamvisagold.webp"},
- {p:"itau",m:"latammcgold",b:"master",t:"gold",c:"#ffffff",rg:"158,112,127",v:1,s:"c-itau-latammcgold.webp"},
- {p:"itau",m:"latamvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"171,163,154",v:1,s:"c-itau-latamvisaplat.webp"},
- {p:"itau",m:"latammcplat",b:"master",t:"platinum",c:"#ffffff",rg:"172,162,152",v:1,s:"c-itau-latammcplat.webp"},
- {p:"itau",m:"latamvisainf",b:"visa",t:"infinite",c:"#ffffff",rg:"118,122,130",v:1,s:"c-itau-latamvisainf.webp"},
- {p:"itau",m:"latammcblack",b:"master",t:"black",c:"#ffffff",rg:"121,121,121",v:1,s:"c-itau-latammcblack.webp"},
- {p:"itau",m:"passai",b:"visa",t:"gold",c:"#ffffff",rg:"200,183,125",v:1,s:"c-itau-passai.webp"},
- {p:"itau",m:"sennavisa",b:"visa",t:"standard",c:"#ffffff",rg:"147,151,148",v:1,s:"c-itau-sennavisa.webp"},
- {p:"itau",m:"sennamc",b:"master",t:"standard",c:"#ffffff",rg:"148,150,145",v:1,s:"c-itau-sennamc.webp"},
- {p:"itau",m:"uniclassv",b:"visa",t:"signature",c:"#ffffff",rg:"110,138,200",v:1,s:"c-itau-uniclassv.webp"},
+ {p:"itau",m:"azulmc",b:"master",t:"gold",c:"#ffffff",rg:"150,190,255",v:1,k:"3b5678",j:"214977",s:"c-itau-azulmc.webp"},
+ {p:"itau",m:"azulvisa",b:"visa",t:"gold",c:"#ffffff",rg:"150,190,255",v:1,k:"375b82",j:"214977",s:"c-itau-azulvisa.webp"},
+ {p:"itau",m:"azulvisan",b:"visa",t:"standard",c:"#ffffff",rg:"152,166,181",v:1,k:"75848d",j:"2d4e7b",s:"c-itau-azulvisan.webp"},
+ {p:"itau",m:"azulmcn",b:"master",t:"standard",c:"#ffffff",rg:"152,163,178",v:1,k:"777d84",j:"2d4e7b",s:"c-itau-azulmcn.webp"},
+ {p:"itau",m:"azulmcsky",b:"master",t:"standard",c:"#1f2a44",rg:"229,232,235",v:1,k:"d0d5dd",j:"dadedf",s:"c-itau-azulmcsky.webp"},
+ {p:"itau",m:"azulvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"120,124,137",v:1,k:"212a41",j:"1a2032",s:"c-itau-azulvisaplat.webp"},
+ {p:"itau",m:"azulmcplat",b:"master",t:"platinum",c:"#ffffff",rg:"122,124,135",v:1,k:"292a3c",j:"1a2032",s:"c-itau-azulmcplat.webp"},
+ {p:"itau",m:"azulvisainf",b:"visa",t:"infinite",c:"#1f2a44",rg:"231,234,236",v:1,k:"d5dae2",j:"dbdede",s:"c-itau-azulvisainf.webp"},
+ {p:"itau",m:"latamvisa",b:"visa",t:"standard",c:"#ffffff",rg:"158,111,129",v:1,k:"7f153c",j:"390b1c",s:"c-itau-latamvisa.webp"},
+ {p:"itau",m:"latammc",b:"master",t:"standard",c:"#ffffff",rg:"158,112,127",v:1,k:"7f1738",j:"390b1c",s:"c-itau-latammc.webp"},
+ {p:"itau",m:"latamvisagold",b:"visa",t:"gold",c:"#ffffff",rg:"158,111,129",v:1,k:"7f153c",j:"390b1c",s:"c-itau-latamvisagold.webp"},
+ {p:"itau",m:"latammcgold",b:"master",t:"gold",c:"#ffffff",rg:"158,112,127",v:1,k:"801838",j:"390b1c",s:"c-itau-latammcgold.webp"},
+ {p:"itau",m:"latamvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"171,163,154",v:1,k:"6f6354",j:"776858",s:"c-itau-latamvisaplat.webp"},
+ {p:"itau",m:"latammcplat",b:"master",t:"platinum",c:"#ffffff",rg:"172,162,152",v:1,k:"74604f",j:"776858",s:"c-itau-latammcplat.webp"},
+ {p:"itau",m:"latamvisainf",b:"visa",t:"infinite",c:"#ffffff",rg:"118,122,130",v:1,k:"1f2634",j:"151c2a",s:"c-itau-latamvisainf.webp"},
+ {p:"itau",m:"latammcblack",b:"master",t:"black",c:"#ffffff",rg:"121,121,121",v:1,k:"262626",j:"171717",s:"c-itau-latammcblack.webp"},
+ {p:"itau",m:"passai",b:"visa",t:"gold",c:"#ffffff",rg:"200,183,125",v:1,k:"a98d27",j:"9f8124",s:"c-itau-passai.webp"},
+ {p:"itau",m:"sennavisa",b:"visa",t:"standard",c:"#ffffff",rg:"147,151,148",v:1,k:"586268",j:"3c3f2e",s:"c-itau-sennavisa.webp"},
+ {p:"itau",m:"sennamc",b:"master",t:"standard",c:"#ffffff",rg:"148,150,145",v:1,k:"5e6060",j:"3c3f2e",s:"c-itau-sennamc.webp"},
+ {p:"itau",m:"uniclassv",b:"visa",t:"signature",c:"#ffffff",rg:"110,138,200",v:1,k:"0f3da4",j:"0d3ca5",s:"c-itau-uniclassv.webp"},
 
 /* @@BRADESCO@@ ===== CARTÕES BRADESCO ===== (p:"bradesco" · m = id do modelo em MODELS · s = arquivo c-bradesco-modelo.webp) */
- {p:"bradesco",m:"disneymickey",b:"visa",t:"infinite",c:"#ffffff",rg:"110,150,225",n:1,s:"c-bradesco-disneymickey.webp"},
- {p:"bradesco",m:"disneyamigos",b:"visa",t:"infinite",c:"#ffffff",rg:"235,95,105",n:1,s:"c-bradesco-disneyamigos.webp"},
- {p:"bradesco",m:"starwars",b:"visa",t:"infinite",c:"#ffffff",rg:"190,190,200",n:1,s:"c-bradesco-starwars.webp"},
+ {p:"bradesco",m:"disneymickey",b:"visa",t:"infinite",c:"#ffffff",rg:"110,150,225",n:1,k:"1b3051",j:"1d3657",s:"c-bradesco-disneymickey.webp"},
+ {p:"bradesco",m:"disneyamigos",b:"visa",t:"infinite",c:"#ffffff",rg:"235,95,105",n:1,k:"c64c58",j:"c85b5e",s:"c-bradesco-disneyamigos.webp"},
+ {p:"bradesco",m:"starwars",b:"visa",t:"infinite",c:"#ffffff",rg:"190,190,200",n:1,k:"222222",j:"161717",s:"c-bradesco-starwars.webp"},
 
 /* @@PORTO@@ @@CAIXA@@ ===== NOVOS (Santander extras, Caixa Elo Diners, Porto Seguro) ===== */
- {p:"santander",m:"uniquemc",b:"master",t:"black",c:"#ffffff",rg:"170,170,175",n:1,s:"c-santander-uniquemc.webp"},
- {p:"santander",m:"elitemc",b:"master",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,s:"c-santander-elitemc.webp"},
- {p:"santander",m:"sx",b:"visa",t:"standard",c:"#ffffff",rg:"235,35,45",n:1,s:"c-santander-sx.webp"},
- {p:"caixa",m:"dinerselo",b:"elo",t:"platinum",c:"#5a4a2a",rg:"200,185,150",n:1,s:"c-caixa-dinerselo.webp"},
- {p:"portobank",m:"pmcgold",b:"master",t:"gold",c:"#ffffff",rg:"200,170,80",n:1,s:"c-portobank-mcgold.webp"},
- {p:"portobank",m:"pmcplat",b:"master",t:"platinum",c:"#ffffff",rg:"170,170,175",n:1,s:"c-portobank-mcplat.webp"},
- {p:"portobank",m:"pmcblack",b:"master",t:"black",c:"#ffffff",rg:"110,110,115",n:1,s:"c-portobank-mcblack.webp"},
- {p:"portobank",m:"pvisagold",b:"visa",t:"gold",c:"#ffffff",rg:"200,170,80",n:1,s:"c-portobank-visagold.webp"},
- {p:"portobank",m:"pvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"170,170,175",n:1,s:"c-portobank-visaplat.webp"},
- {p:"portobank",m:"pvisainf",b:"visa",t:"infinite",c:"#ffffff",rg:"110,110,115",n:1,s:"c-portobank-visainf.webp"}
+ {p:"santander",m:"uniquemc",b:"master",t:"black",c:"#ffffff",rg:"170,170,175",n:1,k:"37342f",j:"35312c",s:"c-santander-uniquemc.webp"},
+ {p:"santander",m:"elitemc",b:"master",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,k:"484849",j:"4b413d",s:"c-santander-elitemc.webp"},
+ {p:"santander",m:"sx",b:"visa",t:"standard",c:"#ffffff",rg:"235,35,45",n:1,k:"c2302d",j:"752426",s:"c-santander-sx.webp"},
+ {p:"caixa",m:"dinerselo",b:"elo",t:"platinum",c:"#5a4a2a",rg:"200,185,150",n:1,k:"c8c5b4",j:"c7c4b2",s:"c-caixa-dinerselo.webp"},
+ {p:"portobank",m:"pmcgold",b:"master",t:"gold",c:"#ffffff",rg:"200,170,80",n:1,k:"706335",j:"775e2e",s:"c-portobank-mcgold.webp"},
+ {p:"portobank",m:"pmcplat",b:"master",t:"platinum",c:"#ffffff",rg:"170,170,175",n:1,k:"5f6262",j:"665b54",s:"c-portobank-mcplat.webp"},
+ {p:"portobank",m:"pmcblack",b:"master",t:"black",c:"#ffffff",rg:"110,110,115",n:1,k:"363637",j:"343435",s:"c-portobank-mcblack.webp"},
+ {p:"portobank",m:"pvisagold",b:"visa",t:"gold",c:"#ffffff",rg:"200,170,80",n:1,k:"6c6035",j:"6b5e35",s:"c-portobank-visagold.webp"},
+ {p:"portobank",m:"pvisaplat",b:"visa",t:"platinum",c:"#ffffff",rg:"170,170,175",n:1,k:"606161",j:"605e5d",s:"c-portobank-visaplat.webp"},
+ {p:"portobank",m:"pvisainf",b:"visa",t:"infinite",c:"#ffffff",rg:"110,110,115",n:1,k:"353639",j:"2e2f32",s:"c-portobank-visainf.webp"}
 ];
 const MODELS=[
 /* @@BB@@ ===== MODELOS BANCO DO BRASIL ===== */
@@ -1065,7 +1065,7 @@ function cardArt(o,mini){
   const nm=p?p.n:(o.name||'Cartão'), lg=p&&logo(p.id), l4=o.last4?esc(o.last4):'';
   const num='<span class="cc-num">•••• '+l4+'</span>';
   const tp=tplFor(o,tier,br);
-  if(tp) return '<div class="cc w tpl'+(tp.v?' vert':'')+(mini?' mini':'')+'" style="--nt:'+(tp.c||'#fff')+';--rg:'+tp.rg+'"><i class="cc-ld"></i><img class="cc-bg" alt="" draggable="false" decoding="async" src="'+imgU(tp.s)+'">'+(tp.n?num:'')+'<i class="cc-fx"></i></div>';
+  if(tp) return '<div class="cc w tpl'+(tp.v?' vert':'')+(mini?' mini':'')+'" style="--nt:'+(tp.c||'#fff')+';--rg:'+tp.rg+(tp.k?';--k1:#'+tp.k+';--k2:#'+tp.j:'')+'"><i class="cc-ld"></i><img class="cc-bg" alt="" draggable="false" decoding="async" src="'+imgU(tp.s)+'">'+(tp.n?num:'')+'<i class="cc-fx"></i></div>';
   const prod=o.name&&p&&o.name.trim().toLowerCase()!==p.n.toLowerCase()&&o.name.length<=16?o.name:(tier==='standard'?'':TIERS[tier]);
   return '<div class="cc w t-'+tier+(mini?' mini':'')+'" style="--c:'+(p?p.c:'#3a4163')+(tier==='standard'&&p?';--t:'+p.t:'')+'"><i class="cc-ln"></i>'+
    (lg?'<img class="cc-logo" alt="" src="'+lg+'">':'<span class="cc-n">'+esc(nm)+'</span>')+'<span class="cc-prod">'+esc(prod)+'</span>'+num+
@@ -1694,7 +1694,7 @@ function icoDecode(){
   };
   requestAnimationFrame(step);
 }
-let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0;const PREF=new Set(),CPC=new Map();
+let CF='',CK='',CSEL='',CKS='',CPLS=0,CPIG=0,CGH=null,CFI=0;const PREF=new Set(),CPC=new Map();
 const GLAB={visa:'Visa',master:'Mastercard',elo:'Elo',amex:'Amex',hiper:'Hipercard',smiles:'Smiles'},GORD=['visa','master','elo','amex','hiper','smiles'];
 function CG(x){return /smiles/i.test(x.id+' '+x.n)?'smiles':x.br}
 function cpCenter(id,beh){if(CGRID)return;const tr=$('#cm'),it=tr.querySelector('[data-m="'+id+'"]');if(!it)return;if(beh==='smooth'&&tr._snapTo){tr._snapTo([].indexOf.call(tr.children,it));return}const L=it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2;try{tr.scrollTo({left:Math.max(0,L),behavior:beh})}catch(e){tr.scrollLeft=Math.max(0,L)}}
@@ -1939,6 +1939,34 @@ socorroVertical($('#list'),'.cards',()=>document.scrollingElement||document.docu
 let CPACT=0;const CPQ=[];let CPQR=0;
 function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
 function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
+/* v13.97: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
+function cpGhostMake(){
+  try{
+    if(document.documentElement.classList.contains('nofx'))return null;
+    const old=$('#cm'),par=old&&old.parentNode,sh=$('#sheet');
+    if(!old||!par||old.hidden||!old.children.length||!(sh&&!sh.hidden&&sh.classList.contains('open')))return null;
+    if(getComputedStyle(par).position==='static')par.style.position='relative';
+    const g=old.cloneNode(true);g.removeAttribute('id');g.classList.remove('cpnt');g.setAttribute('aria-hidden','true');
+    return {g:g,sl:old.scrollLeft,t:old.offsetTop,l:old.offsetLeft,w:old.offsetWidth,h:old.offsetHeight,par:par};
+  }catch(e){return null}
+}
+function cpGhostGo(o){
+  try{
+    const g=o.g;
+    g.style.cssText='position:absolute;margin:0;left:'+o.l+'px;top:'+o.t+'px;width:'+o.w+'px;height:'+o.h+'px;pointer-events:none;z-index:3;overflow:hidden;scroll-snap-type:none;touch-action:none';
+    o.par.appendChild(g);g.scrollLeft=o.sl;
+    const a=g.animate([{opacity:1},{opacity:0}],{duration:240,easing:'ease-out',fill:'forwards'});
+    a.onfinish=a.oncancel=()=>{try{g.remove()}catch(e){}};
+    setTimeout(()=>{try{g.remove()}catch(e){}},700);
+  }catch(e){try{o.g.remove()}catch(_){}}
+}
+function cpFadeIn(){
+  try{
+    if(document.documentElement.classList.contains('nofx'))return;
+    const sh=$('#sheet');if(!(sh&&!sh.hidden&&sh.classList.contains('open')))return;
+    const t=$('#cm');if(t&&t.animate)t.animate([{opacity:0},{opacity:1}],{duration:220,easing:'ease-out'});
+  }catch(e){}
+}
 function cpLoad(c){
   const its=$$('#cm .cpi');if(!its.length)return;
   if(typeof c!=='number'){c=its.findIndex(x=>x.dataset.m===F.model);if(c<0)c=0}
@@ -1998,6 +2026,7 @@ function syncForm(){
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
+         CGH=cpGhostMake();if(!CGH)CFI=1;
          {const t=$('#cm');
           /* v13.96: ao trocar de bandeira/banco o carrossel antigo podia ainda estar andando (inércia do iPhone ou encaixe do app): a inércia continuava sobre os cartões NOVOS (eles "faziam o movimento do cartão anterior") e depois o app corrigia deslizando (-5 a -63 px). Agora a inércia é cortada na hora: encaixe do app parado + rolagem horizontal travada e carrossel tirado/recolocado do layout (isso encerra a inércia do iPhone), e só 2 quadros depois volta ao normal */
           try{t._stopSnap&&t._stopSnap()}catch(e){}
@@ -2019,6 +2048,7 @@ function syncForm(){
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
+       if(CGH){const g=CGH;CGH=null;CFI=0;cpGhostGo(g)}else if(CFI){CFI=0;cpFadeIn()}
      }
      $('#ccprev').hidden=has&&!!F.model;
     }
