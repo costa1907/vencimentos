@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.150 · 20/10/2026 · Carrossel de cartões: a trava na chegada ao primeiro/último cartão solta bem mais cedo (a 8 px da ponta ou 60 ms após parar) — volta a rolar quase na hora
   v13.149 · 20/10/2026 · Carrossel de cartões: a trava de toque vale só na chegada ao primeiro/último cartão (antes pegava também o segundo e o penúltimo)
   v13.148 · 20/10/2026 · Carrossel de cartões: enquanto ele desliza sozinho para o primeiro/último cartão, um novo toque não o interrompe (não pula mais para o centro nem treme); a janela continua rolando na vertical
   v13.147 · 20/10/2026 · Corrige v13.146: o bloqueio das pontas do carrossel de cartões só vale para arrasto horizontal (antes travava a rolagem vertical da janela quando o dedo estava no carrossel)
