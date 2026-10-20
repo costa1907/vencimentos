@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.133';
+(function(){var V='13.134';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.133</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.134</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.133';
+const VERSION='13.134';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1632,6 +1632,11 @@ function autoCat(){
 }
 /* ordem dos TIPOS: A–Z (padrão, "Outros" por último) ou "Minha ordem" (guardada em S.order._tipos, vai junto com o backup/nuvem) */
 const TCUS=()=>Array.isArray(S.order._tipos);
+const TKEY='vencimentos.tipos';
+function tipSave(){try{localStorage.setItem(TKEY,JSON.stringify(TCUS()?S.order._tipos:null))}catch(e){}}
+function tipRestore(){ /* se os dados (nuvem/backup) vieram sem a ordem dos tipos mas este aparelho tem uma guardada, volta a usá-la */
+  try{if(TCUS())return false;const f=JSON.parse(localStorage.getItem(TKEY)||'null');if(Array.isArray(f)&&f.length){S.order._tipos=f.filter(k=>CAT[k]);return true}}catch(e){}return false}
+if(tipRestore())try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
 function catIds(){
   const ks=Object.keys(CAT),az=ks.slice().sort((a,b)=>(a==='outros')-(b==='outros')||CAT[a].l.localeCompare(CAT[b].l,'pt-BR',{sensitivity:'base'}));
   if(!TCUS())return az;
@@ -2201,7 +2206,7 @@ $('#fa').addEventListener('input',e=>{
   const d=e.target.value.replace(/\D/g,'').slice(0,11);
   F.cents=d?parseInt(d,10):0;e.target.value=fmtAmt(F.cents);
 });
-$('#tm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.o==='custom'){if(!TCUS())S.order._tipos=catIds()}else delete S.order._tipos;save();renderCats()});
+$('#tm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.o==='custom'){if(!TCUS())S.order._tipos=catIds()}else delete S.order._tipos;save();tipSave();renderCats()});
 function fcSelect(b){
   F.cat=b.dataset.c;
   autoCat();
@@ -2435,7 +2440,7 @@ const HP=function(k){
       const to=st.to;
       if(st.to!==st.from){
         const arr=st.tiles.map(el=>el.dataset.c),id=arr.splice(st.from,1)[0];arr.splice(st.to,0,id);
-        S.order._tipos=arr.filter(Boolean);save();
+        S.order._tipos=arr.filter(Boolean);save();tipSave();
       }
       HP('drop');LASTDRAG=Date.now();document.body.classList.remove('dragging');document.removeEventListener('touchmove',block);
       if(pend){F.cat=tid;try{fcSelect(tile)}catch(e){}}
@@ -2802,7 +2807,7 @@ document.addEventListener('pointermove',e=>{if(ccHeld&&e.pointerType!=='touch')c
 
 window.VERSION_STR=VERSION;window.__diagF=()=>{try{const c=CAT[F&&F.cat];let t=c?c.l:'';if(F&&F.prov&&PROV[F.prov])t+=' · '+PROV[F.prov].n;if(F&&F.cat==='cartao'&&CF)t+=' ('+(GLAB[CF]||CF)+')';return t}catch(e){return ''}};
 window.__app={get:()=>S,toast:toast,renderAll:()=>renderAll(),
-  put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll()}};
+  put:(o)=>{S={bills:Array.isArray(o&&o.bills)?o.bills:[],goals:(o&&o.goals&&typeof o.goals==='object')?o.goals:{},order:(o&&o.order&&typeof o.order==='object')?o.order:{},pord:(o&&o.pord==='custom')?'custom':'az'};normS();const tr=tipRestore();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll();try{renderCats()}catch(e){}if(tr)setTimeout(save,80)}};
 $('#ver').textContent='v'+VERSION;document.querySelectorAll('.sband .ver').forEach(e=>e.textContent='v'+VERSION);
 setTab('home');
 /* v13.77: lista para o cronômetro do Diagnóstico trocar as funções por versões medidas */
@@ -3265,7 +3270,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc5')==='on'?'LIGADO (o app rola a janela quando o iPhone não rola)':'DESLIGADO — só observando (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length)+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+' · ordem dos tipos: '+(TCUS()?'Minha ordem ('+S.order._tipos.length+')':'A–Z')+'\nCarrossel de cartões: '+(document.documentElement.classList.contains('hybw')?'HÍBRIDO (iPhone acompanha o dedo, app encaixa)':document.documentElement.classList.contains('jsnapw')?'rolagem por JS':'nativo do iPhone')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc5')==='on'?'LIGADO (o app rola a janela quando o iPhone não rola)':'DESLIGADO — só observando (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length)+'\n\n';
     if(AUTOR.length){t+='TESTE AUTOMÁTICO DE ROLAGEM (a janela rola sozinha, mesma distância; quanto MENOR o tempo por quadro e a % lenta, melhor)\n'+AUTOR.join('\n')+'\n\n'}
     {const ks=Object.keys(RS).sort((x,y)=>RS[y].f-RS[x].f);
      t+='RITMO DA ROLAGEM (quadros durante a rolagem · lentos ≥25 ms · lentos ≥33 ms · pior)\n';
