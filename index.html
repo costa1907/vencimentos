@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.150';
+(function(){var V='13.151';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.150</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.151</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.150';
+const VERSION='13.151';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2569,8 +2569,21 @@ $('#cm').addEventListener('scroll',()=>{CMSC=performance.now()},{passive:true});
   const free=()=>{if(pe){t.style.pointerEvents='';pe=0}clearTimeout(pt);clearTimeout(pc)};
   t.addEventListener('touchstart',()=>{tch=1;free()},{passive:true});
   ['touchend','touchcancel'].forEach(n=>t.addEventListener(n,()=>{tch=0;ls=t.scrollLeft},{passive:true}));
+  /* v13.151: se o dedo tocar o carrossel durante a chegada à ponta, o app termina a chegada sozinho em ~0,1 s (em vez de esperar a inércia inteira) e libera na hora */
+  let fn=0;
+  const fin=()=>{
+    if(fn)return;fn=1;clearTimeout(pt);clearTimeout(pc);const from=t.scrollLeft,to=from<mx()/2?0:mx(),dist=to-from,T=Math.max(50,Math.min(130,Math.abs(dist)*1.4)),t0=performance.now();
+    t.style.overflowX='hidden';try{t._stopSnap&&t._stopSnap()}catch(_){}
+    const f=n=>{const k=Math.min(1,(n-t0)/T),e=1-Math.pow(1-k,3);t.scrollLeft=from+dist*e;
+      if(k<1)requestAnimationFrame(f);else{t.scrollLeft=to;t.style.overflowX='';fn=0;free()}};
+    requestAnimationFrame(f);
+  };
+  document.addEventListener('touchstart',e=>{
+    if(!pe||fn)return;const r=t.getBoundingClientRect(),p=e.touches[0];
+    if(p.clientX>=r.left&&p.clientX<=r.right&&p.clientY>=r.top&&p.clientY<=r.bottom)fin();
+  },{capture:true,passive:true});
   t.addEventListener('scroll',()=>{
-    const sl=t.scrollLeft,d=sl-ls;ls=sl;if(tch||Math.abs(d)<0.5)return;
+    const sl=t.scrollLeft,d=sl-ls;ls=sl;if(fn||tch||Math.abs(d)<0.5)return;
     const k=t.children,pitch=k.length>1?k[1].offsetLeft-k[0].offsetLeft:294,near=pitch*0.5,m=mx();
     if(!pe&&((d>0&&sl>=m-near)||(d<0&&sl<=near))){pe=1;t.style.pointerEvents='none';clearTimeout(pc);pc=setTimeout(free,900)}
     /* v13.150: solta o carrossel assim que ele chega a 8 px da ponta (o resto é só a cauda da inércia, imperceptível) e logo que a rolagem para (60 ms); antes esperava o fim todo e demorava a responder */
