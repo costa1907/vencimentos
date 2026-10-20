@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.153';
+(function(){var V='13.155';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.153</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.155</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.153';
+const VERSION='13.155';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1349,10 +1349,12 @@ function snapper(tr,done){
     /* v13.34: um gesto anda no máximo 1 cartão, não importa a força (antes a velocidade do dedo projetava até 3 cartões) */
     /* v13.91: regra de soltar mais sensível (relato: "às vezes rolo no cartão do meio e ele não anda"). Passada com velocidade > 0,1 px/ms (antes 0,2) ou arrasto de mais de 16% do cartão (antes 28%) já troca de cartão; a velocidade só vale se não for contrária ao sentido em que o cartão andou (dedo que voltou) */
     let dn=0;
-    if(Math.abs(v)>0.1&&(Math.abs(moved)<6||(v<0)===(moved>0)))dn=v<0?1:-1;
+    /* v13.155 (híbrido): a força do arremesso decide quantos cartões andam (1 a 3), como no nativo; fora do híbrido continua no máximo 1 */
+    const LIM=HYBW?3:1;
+    if(Math.abs(v)>0.1&&(Math.abs(moved)<6||(v<0)===(moved>0)))dn=(v<0?1:-1)*(HYBW?Math.max(1,Math.min(3,Math.round(Math.abs(v)*300/pitch))):1);
     else if(Math.abs(moved)>pitch*0.16)dn=moved>0?1:-1;
     tgt=s0+dn;
-    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-1,Math.min(s0+1,tgt))));
+    tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-LIM,Math.min(s0+LIM,tgt))));
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
   function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
@@ -1361,8 +1363,11 @@ function snapper(tr,done){
     const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){dir='h';movOn()}else if(Math.abs(dy)>6)dir='v';else return}
     if(dir!=='h')return;
+    /* v13.155 (híbrido): na ponta, puxar para fora não deixa o iPhone esticar o carrossel (elástico); o app continua o arrasto por JS, preso na ponta — assim não há tranco ao soltar */
+    if(HYBW&&!jsd){const sl=tr.scrollLeft,mxv=tr.scrollWidth-tr.clientWidth;
+      if(((sl<=0.5&&dx>0)||(sl>=mxv-0.5&&dx<0))&&e.cancelable){e.preventDefault();jsd=true;sm=[{x:p.clientX,t:performance.now()}]}}
     if(!HYBW||jsd){sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();tr.scrollLeft=sl0-dx}
-  },{passive:true});
+  },{passive:!HYBW});
   tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
   tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
   if(HYBW){ /* híbrido: se o carrossel parar fora do centro (gesto cancelado), o app completa o encaixe */
@@ -2551,40 +2556,6 @@ $('#ccx').addEventListener('click',e=>{
 });
 let CFT2=0,CMSC=0;
 $('#cm').addEventListener('scroll',()=>{CMSC=performance.now()},{passive:true});
-(function(){
-  const t=$('#cm');if(!t)return;
-  const mx=()=>t.scrollWidth-t.clientWidth;
-  /* v13.152: na chegada ao primeiro/último cartão o APP assume o final do movimento (a partir da velocidade que o iPhone já tinha, sem mudar o ritmo) em vez de deixar a inércia + encaixe nativos terminarem. Sem inércia nativa na ponta não há elástico nem "encaixe atropelado" quando o dedo toca de novo. Tocar no carrossel durante esse trecho só acelera o fim (~0,1 s). */
-  let tch=0,ls=t.scrollLeft,lt=performance.now(),vel=0,gl=0,pe=0;
-  const hold=on=>{t.style.pointerEvents=on?'none':'';pe=on};
-  const end=()=>{const g=gl;if(!g)return;gl=0;cancelAnimationFrame(g.raf);t.scrollLeft=g.to;t.style.overflowX='';t.style.scrollSnapType='';hold(0);ls=t.scrollLeft;lt=performance.now();vel=0};
-  const step=n=>{const g=gl;if(!g)return;const k=Math.min(1,(n-g.t0)/g.T),k2=k*k,k3=k2*k,h=(k3-2*k2+k)*g.m0+(3*k2-2*k3);
-    t.scrollLeft=g.from+g.dist*h;if(k<1)g.raf=requestAnimationFrame(step);else end()};
-  const glide=(to,v)=>{
-    const from=t.scrollLeft,dist=to-from,ad=Math.abs(dist);if(ad<1)return;
-    const T=Math.max(160,Math.min(420,3*ad/Math.max(v,0.05))),m0=Math.min(4,v*T/ad);
-    gl={from,to,dist,T,m0,t0:performance.now()-12,raf:0}; /* -12 ms: o primeiro quadro já anda (senão para 1 quadro e depois alcança) */
-    hold(1);t.style.overflowX='hidden';t.style.scrollSnapType='none';
-    gl.raf=requestAnimationFrame(step);
-  };
-  t.addEventListener('touchstart',()=>{tch=1},{passive:true});
-  ['touchend','touchcancel'].forEach(n=>t.addEventListener(n,()=>{tch=0;ls=t.scrollLeft;lt=performance.now();vel=0},{passive:true}));
-  document.addEventListener('touchstart',e=>{
-    if(!gl)return;const r=t.getBoundingClientRect(),p=e.touches[0];
-    if(p.clientX<r.left||p.clientX>r.right||p.clientY<r.top||p.clientY>r.bottom)return;
-    cancelAnimationFrame(gl.raf);const cur=t.scrollLeft;
-    gl.from=cur;gl.dist=gl.to-cur;gl.T=Math.min(110,gl.T);gl.m0=0;gl.t0=performance.now();gl.raf=requestAnimationFrame(step);
-  },{capture:true,passive:true});
-  t.addEventListener('scroll',()=>{
-    const now=performance.now(),sl=t.scrollLeft;if(gl||tch){ls=sl;lt=now;return}
-    const d=sl-ls,dt=now-lt;if(Math.abs(d)<0.5||dt<=0){return}
-    if(Math.abs(d)>150||dt>120){ls=sl;lt=now;vel=0;return} /* salto de programa (não é inércia do dedo) */
-    ls=sl;lt=now;vel=vel*0.5+(d/dt)*0.5;
-    const k=t.children,pitch=k.length>1?k[1].offsetLeft-k[0].offsetLeft:294,near=pitch*0.6,m=mx();
-    if(vel>0.08&&sl>=m-near&&sl<m-1)glide(m,vel);
-    else if(vel<-0.08&&sl<=near&&sl>1)glide(0,-vel);
-  },{passive:true});
-})();
 function parseBoleto(raw){
   let d=String(raw).replace(/\D/g,'');
   const dg=i=>+d[i];
