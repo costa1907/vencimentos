@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.122 · 20/10/2026 · O espaço acima da janela (Nova conta etc.) agora mostra o cabeçalho do app (logo, "Sobrou!", versão e selo Premium), parado e sem custo de rolagem. A janela fica até 58 px abaixo do relógio (a altura máxima de 94% continua valendo) para dar lugar ao cabeçalho.
   v13.121 · 20/10/2026 · O espaço acima da janela (Nova conta etc.) deixa de ser um vazio preto: ganha um brilho suave na cor do tema e a borda de cima da janela fica na cor de destaque. É só desenho estático; a altura da janela continua a da v13.120 (a v13.119, mais alta, engasgou).
   v13.120 · 20/10/2026 · Volta a janela ao tamanho da v13.118 (altura máxima de 94%): com a janela mais alta da v13.119 a tela voltou a engasgar. O conteúdo é o mesmo da v13.118, só com o número de versão novo.
   v13.119 · 20/10/2026 · A janela (Nova conta etc.) sobe até ~10 px do relógio (antes parava em 94% da altura e deixava uma faixa vazia no topo).
