@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.116';
+(function(){var V='13.118';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -560,7 +560,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .pgrid.org .pt.pick{animation:none;outline:2px solid var(--gold);transform:scale(1.07);background:rgba(var(--ar),.16);z-index:1}
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
-.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(3,4,8,.8)!important}
+.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg)!important;transition:opacity .22s!important} /* v13.118: fundo da janela OPACO (antes 80%): a tela de trás aparecia fraca e sumia de repente quando o app a escondia */
 /* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
@@ -688,7 +688,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.116</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.118</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -798,7 +798,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.116';
+const VERSION='13.118';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1644,7 +1644,7 @@ function provNodes(cat){const t=document.createElement('div');t.innerHTML=ordere
 function provWarm(){clearTimeout(PGWT);const cats=Object.keys(CAT).filter(c=>c!==F.cat);let i=0;
   const step=()=>{const sh=$('#sheet');if(!sh||sh.hidden||i>=cats.length)return;const c=cats[i++],dk=c+'|'+S.pord;
     try{if(!PGD.has(dk)){const nd=provNodes(c);PGD.set(dk,nd);
-      if(!PGW){PGW=document.createElement('div');PGW.setAttribute('aria-hidden','true');PGW.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:'+(($('#pg')||{}).clientWidth||360)+'px';document.body.appendChild(PGW)}
+      if(!PGW){PGW=document.createElement('div');PGW.id='pgw';PGW.setAttribute('aria-hidden','true');PGW.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:'+(($('#pg')||{}).clientWidth||360)+'px';document.body.appendChild(PGW)}
       PGW.append(...nd)}}catch(e){}
     PGWT=setTimeout(step,300)};
   PGWT=setTimeout(step,900)}
@@ -1912,7 +1912,7 @@ function redecodificar(){
     if(aberta)icoDecode();
     const vh=innerHeight,L=[...document.querySelectorAll('#cm img:not([data-src])')];
     document.querySelectorAll('img').forEach(im=>{
-      if(im.closest('#pg')||im.closest('#cm')||im.getAttribute('data-src'))return;
+      if(im.closest('#pg')||im.closest('#cm')||im.closest('#pgw')||im.getAttribute('data-src'))return; /* v13.117: não decodifica as grades guardadas fora da tela (#pgw) */
       const r=im.getBoundingClientRect();if(r.width&&r.bottom>-300&&r.top<vh+600)L.push(im);
     });
     let i=0;const step=()=>{if(TCHD){requestAnimationFrame(step);return}for(let k=0;k<2&&i<L.length;k++,i++){try{L[i].decode&&L[i].decode().catch(()=>{})}catch(e){}}if(i<L.length)requestAnimationFrame(step)};
