@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.129 · 20/10/2026 · Tipos (Boleto, Cartão, Assinatura…) em ordem alfabética ("Outros" por último) com opção "Minha ordem": segure um tipo e arraste; a ordem fica salva (backup e nuvem)
+  v13.128 · 20/10/2026 · Ícones das empresas: só encolhem depois de segurar um pouco (não brigam mais com a rolagem); toque curto acende na hora
   v13.127 · 20/10/2026 · Toque nos ícones mais ágil: (1) os ícones de TIPO (Boleto, Cartão, Financiamento…) mudam em 0,1 s (antes 0,25 s) e encolhem um pouco ao toque; (2) ao tocar numa empresa (Quem é?), o ícone marca primeiro e o restante (nome, carrossel de cartões) roda no quadro seguinte, em vez de tudo antes de o ícone aparecer marcado.
   v13.126 · 20/10/2026 · Escolher banco/empresa mais ágil: o cartão novo aparece em ~180 ms (antes ~335 ms: espera mínima de 100 → 50 ms e animação de entrada/saída de 200 → 130 ms, mantendo a proteção contra cartão preto) e o ícone reage na hora ao toque (encolhe um pouco enquanto o dedo está sobre ele).
   v13.125 · 20/10/2026 · Banco SEM cartões cadastrados passa a mostrar UM só cartão genérico Visa (antes 5, depois 1 com botões de bandeira): sem botões de bandeira nesses bancos. Ao editar uma conta antiga com outra bandeira, ela continua aparecendo com a bandeira dela. Quando houver cartões de verdade do banco, basta cadastrá-los.

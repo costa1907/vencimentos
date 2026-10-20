@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.127';
+(function(){var V='13.129';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -574,7 +574,10 @@ body.so .panel .cc-fx::after{animation:none}
 .pt.ghost{background-color:var(--card2);background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04));border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
 @keyframes gpop{from{scale:1;box-shadow:0 1px 3px rgba(0,0,0,.2)}to{scale:1.1}}
 body.dragging .pt:active,body.dragging .pt.on{transform:none}
-.pgrid:not(.org) .pt:active{transform:scale(.94)}
+.pgrid:not(.org) .pt.pre{transform:scale(.95)}
+.tbar{display:flex;align-items:center;justify-content:space-between;gap:8px}.tbar .segP{text-transform:none;letter-spacing:0;margin:0}.tbar .segP button{padding:5px 12px;font-size:12px}
+.cat.cpick{transform:scale(1.07)!important;border-color:rgba(var(--ar),.8);background:rgba(var(--ar),.16);z-index:1;position:relative;transition:transform .12s var(--ease)}
+#fc.drg .cat{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .cat{transition:transform .12s var(--ease),color .1s,background .1s,border-color .1s}.cat:active{transform:scale(.95)} /* v13.127: os ícones de TIPO (Boleto, Cartão…) mudam em 0,1 s (antes 0,25 s) e reagem na hora ao toque */ /* v13.126: o ícone reage NA HORA ao toque (encolhe um pouco), antes só marcava depois de soltar */
 .pt.ph.on{opacity:.5;border:1px dashed rgba(var(--ar),.9);background:rgba(var(--ar),.08);transform:none}
 .pt.ghost,.pt.ghost:active{transform:none}
@@ -694,7 +697,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.127</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.129</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -738,7 +741,8 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
     <label class="amtbox" id="amtbox"><span>Valor</span><input id="fa" autocorrect="off" spellcheck="false" autocomplete="off" type="text" inputmode="numeric" value="R$ 0,00" aria-label="Valor"></label>
     <div id="scopebox" hidden><div class="lbl">Aplicar o valor a</div><div class="seg" id="fs2" style="grid-template-columns:1fr 1fr"><button type="button" data-sc="one">Só este mês</button><button type="button" data-sc="all">Todos os meses</button></div></div>
     <input class="fld" id="fn" autocorrect="off" spellcheck="false" autocomplete="off" autocapitalize="words" type="text" placeholder="Nome (opcional)" maxlength="60" style="margin-top:6px">
-    <div class="lbl">Tipo</div>
+    <div class="lbl tbar"><span>Tipo</span><div class="segP" id="tm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
+    <div class="phint" id="thint" hidden>Segure um tipo e arraste para onde quiser.</div>
     <div class="cats" id="fc"></div>
     <div class="lbl" id="pl">Quem é?</div>
     <input class="fld sm" id="ps" autocorrect="off" spellcheck="false" type="search" placeholder="Buscar banco, streaming, empresa..." autocomplete="off">
@@ -805,7 +809,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.127';
+const VERSION='13.129';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1627,7 +1631,20 @@ function autoCat(){
   if(!F.modeTouched)F.mode=SPEND.indexOf(F.cat)>-1?'spent':'bill';
   if(F.mode==='spent')F.rep='once';
 }
-$('#fc').innerHTML=Object.keys(CAT).map(k=>'<button type="button" class="cat" data-c="'+k+'" style="--c:'+CAT[k].c+'">'+svg(k)+'<span>'+CAT[k].l+'</span></button>').join('');
+/* ordem dos TIPOS: A–Z (padrão, "Outros" por último) ou "Minha ordem" (guardada em S.order._tipos, vai junto com o backup/nuvem) */
+const TCUS=()=>Array.isArray(S.order._tipos);
+function catIds(){
+  const ks=Object.keys(CAT),az=ks.slice().sort((a,b)=>(a==='outros')-(b==='outros')||CAT[a].l.localeCompare(CAT[b].l,'pt-BR',{sensitivity:'base'}));
+  if(!TCUS())return az;
+  const pos={};S.order._tipos.forEach((k,i)=>{pos[k]=i});
+  return az.sort((a,b)=>((a in pos)?pos[a]:1e6)-((b in pos)?pos[b]:1e6));
+}
+function renderCats(){
+  let cur='';try{cur=F&&F.cat||''}catch(e){}
+  $('#fc').innerHTML=catIds().map(k=>'<button type="button" class="cat'+(k===cur?' on':'')+'" data-c="'+k+'" style="--c:'+CAT[k].c+'">'+svg(k)+'<span>'+CAT[k].l+'</span></button>').join('');
+  const cu=TCUS();$$('#tm button').forEach(b=>b.classList.toggle('on',b.dataset.o===(cu?'custom':'az')));$('#thint').hidden=!cu;
+}
+renderCats();
 $('#cb').innerHTML=Object.keys(BRANDS).map(k=>'<button type="button" class="chip" data-b="'+k+'">'+BRANDS[k]+'</button>').join('');
 $('#ct').innerHTML=Object.keys(TIERS).map(k=>'<button type="button" class="chip" data-t="'+k+'">'+TIERS[k]+'</button>').join('');
 const fmtAmt=c=>brl(c);
@@ -2185,8 +2202,62 @@ $('#fa').addEventListener('input',e=>{
   const d=e.target.value.replace(/\D/g,'').slice(0,11);
   F.cents=d?parseInt(d,10):0;e.target.value=fmtAmt(F.cents);
 });
+/* arrastar os TIPOS (só em "Minha ordem"): segura ~0,45 s, o tipo "levanta" e os outros se arrumam; solta e guarda */
+(function(){
+  const g=$('#fc');let st=null,tm=0;
+  const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
+  const block=e=>{if(st&&st.on&&e.cancelable)e.preventDefault()};
+  function start(e){
+    const t=e.target.closest&&e.target.closest('.cat');if(!t||!TCUS())return;
+    const p=pt(e);st={t:t,x0:p.clientX,y0:p.clientY,x:p.clientX,y:p.clientY,on:false,sc:$('#panel').scrollTop};
+    clearTimeout(tm);tm=setTimeout(lift,450);
+  }
+  function lift(){
+    if(!st)return;
+    if(Math.abs($('#panel').scrollTop-st.sc)>2){st=null;return}
+    st.on=true;document.body.classList.add('dragging');g.classList.add('drg');st.t.classList.add('cpick');
+    HP('lift');document.addEventListener('touchmove',block,{passive:false});
+  }
+  function hit(){
+    const els=Array.from(g.children);let best=-1,bd=1e9;
+    els.forEach((el,i)=>{const r=el.getBoundingClientRect(),dx=st.x-(r.left+r.width/2),dy=st.y-(r.top+r.height/2),d=dx*dx+dy*dy;if(d<bd){bd=d;best=i}});
+    const cur=els.indexOf(st.t);if(best<0||best===cur)return;
+    const first=els.map(el=>el.getBoundingClientRect());
+    g.insertBefore(st.t,best>cur?els[best].nextSibling:els[best]);
+    els.forEach((el,i)=>{const r=el.getBoundingClientRect(),dx=first[i].left-r.left,dy=first[i].top-r.top;if(dx||dy){el.style.transition='none';el.style.transform='translate('+dx+'px,'+dy+'px)'}});
+    void g.offsetWidth;
+    els.forEach(el=>{if(el.style.transform){el.style.transition='transform .2s cubic-bezier(.2,.8,.2,1)';el.style.transform=''}});
+    HP('tick');
+  }
+  function move(e){
+    if(!st)return;const p=pt(e);st.x=p.clientX;st.y=p.clientY;
+    if(!st.on){if(Math.hypot(st.x-st.x0,st.y-st.y0)>9){clearTimeout(tm);st=null}return}
+    hit();
+  }
+  function clean(){
+    document.removeEventListener('touchmove',block);document.body.classList.remove('dragging');g.classList.remove('drg');
+    Array.from(g.children).forEach(el=>{el.classList.remove('cpick');setTimeout(()=>{el.style.transition='';el.style.transform=''},260)});
+  }
+  function end(){
+    clearTimeout(tm);if(!st)return;
+    if(st.on){
+      S.order._tipos=Array.from(g.children).map(el=>el.dataset.c);save();
+      HP('drop');LASTDRAG=Date.now();clean();
+    }
+    st=null;
+  }
+  g.addEventListener('touchstart',start,{passive:true});g.addEventListener('touchmove',move,{passive:true});
+  g.addEventListener('touchend',end,{passive:true});g.addEventListener('touchcancel',end,{passive:true});
+  document.addEventListener('touchend',e=>{if(st&&st.on&&!e.touches.length)end()},{capture:true,passive:true});
+  $('#panel').addEventListener('scroll',()=>{if(st&&!st.on){clearTimeout(tm);st=null}},{passive:true});
+  g.addEventListener('contextmenu',e=>e.preventDefault());
+  const abort=()=>{clearTimeout(tm);if(st&&st.on){clean();renderCats()}st=null};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)abort()});window.addEventListener('pagehide',abort);
+})();
+$('#tm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.o==='custom'){if(!TCUS())S.order._tipos=catIds()}else delete S.order._tipos;save();renderCats()});
 $('#fc').addEventListener('click',e=>{
   const b=e.target.closest('.cat');if(!b)return;
+  if(Date.now()-LASTDRAG<500)return;
   F.cat=b.dataset.c;
   autoCat();
   if(F.prov&&(LIST[F.cat]||[]).indexOf(F.prov)<0){
@@ -2309,10 +2380,10 @@ const HP=function(k){
   /* acende o ícone quando o dedo fica parado sobre ele (não acende ao rolar a tela) */
   let preEl=null,preX=0,preY=0,preT=0;
   const preOff=(d)=>{clearTimeout(preT);const el=preEl;preEl=null;if(el)setTimeout(()=>el.classList.remove('pre'),d||0)};
-  const preOn=e=>{const t=e.target.closest&&e.target.closest('.pt');if(!t)return;const p=pt(e);preX=p.clientX;preY=p.clientY;preOff();preEl=t;preT=setTimeout(()=>{if(preEl===t)t.classList.add('pre')},90)};
+  const preOn=e=>{const t=e.target.closest&&e.target.closest('.pt');if(!t)return;const p=pt(e);preX=p.clientX;preY=p.clientY;preOff();preEl=t;preT=setTimeout(()=>{if(preEl===t)t.classList.add('pre')},140)};
   grid.addEventListener('touchstart',preOn,{passive:true});
   grid.addEventListener('touchmove',e=>{if(!preEl)return;const p=pt(e);if(Math.abs(p.clientX-preX)>6||Math.abs(p.clientY-preY)>6)preOff()},{passive:true});
-  grid.addEventListener('touchend',()=>preOff(160),{passive:true});grid.addEventListener('touchcancel',()=>preOff(),{passive:true});
+  grid.addEventListener('touchend',()=>{if(preEl)preEl.classList.add('pre');preOff(160)},{passive:true});grid.addEventListener('touchcancel',()=>preOff(),{passive:true});
   /* a janela rolou: cancela o "segurar para arrastar" que ainda ia começar (e apaga o ícone aceso) */
   $('#panel').addEventListener('scroll',()=>{if(st&&!st.on){clearTimeout(timer);st=null}if(preEl)preOff()},{passive:true});
   grid.addEventListener('mousedown',e=>{if(Date.now()-lastTouch>800)preOn(e)},{passive:true});
