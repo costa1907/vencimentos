@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.130';
+(function(){var V='13.131';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.130</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.131</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.130';
+const VERSION='13.131';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2321,8 +2321,7 @@ const HP=function(k){
     st.tiles=tiles;st.from=tiles.indexOf(st.tile);st.to=st.from;
     st.slots=tiles.map(el=>{const r=el.getBoundingClientRect();return{x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height}});
     const r=st.tile.getBoundingClientRect();st.dx=st.x0-r.left;st.dy=st.y0-r.top;
-    /* arrastar um ícone também o seleciona (e tira a seleção do anterior) */
-    {const pid=st.tile.dataset.p;if(pid&&!st.tile.classList.contains('on')&&(LIST[F.cat]||[]).indexOf(pid)>=0){setProv(pid);tiles.forEach(x=>x.classList.toggle('on',x===st.tile));syncForm()}}
+    /* v13.131: arrastar NÃO muda a seleção (antes remontava formulário/carrossel no meio do arrasto) */
     const g=st.tile.cloneNode(true);st.sel=st.tile.classList.contains('on');g.className='pt ghost'+(st.sel?' on':'');
     g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;translate:'+r.left+'px '+r.top+'px';
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
@@ -2379,7 +2378,7 @@ const HP=function(k){
   /* acende o ícone quando o dedo fica parado sobre ele (não acende ao rolar a tela) */
   let preEl=null,preX=0,preY=0,preT=0;
   const preOff=(d)=>{clearTimeout(preT);const el=preEl;preEl=null;if(el)setTimeout(()=>el.classList.remove('pre'),d||0)};
-  const preOn=e=>{const t=e.target.closest&&e.target.closest('.pt');if(!t)return;const p=pt(e);preX=p.clientX;preY=p.clientY;preOff();preEl=t;preT=setTimeout(()=>{if(preEl===t)t.classList.add('pre')},140)};
+  const preOn=()=>{}; /* v13.131: sem realce ao segurar (só o toque seleciona, igual aos tipos) */
   grid.addEventListener('touchstart',preOn,{passive:true});
   grid.addEventListener('touchmove',e=>{if(!preEl)return;const p=pt(e);if(Math.abs(p.clientX-preX)>6||Math.abs(p.clientY-preY)>6)preOff()},{passive:true});
   grid.addEventListener('touchend',()=>{if(preEl)preEl.classList.add('pre');preOff(160)},{passive:true});grid.addEventListener('touchcancel',()=>preOff(),{passive:true});

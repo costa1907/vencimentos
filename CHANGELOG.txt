@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.131 · 20/10/2026 · Ícones das empresas iguais aos de tipo: sem realce ao segurar (antes dois ícones ficavam acesos juntos e parecia atraso); arrastar não seleciona nem remonta o formulário
   v13.130 · 20/10/2026 · Ícones de tipo e de empresas: removido o "salto" ao tocar (subir 2 px e encolher); agora só a cor/borda da seleção muda, sem movimento
   v13.129 · 20/10/2026 · Tipos (Boleto, Cartão, Assinatura…) em ordem alfabética ("Outros" por último) com opção "Minha ordem": segure um tipo e arraste; a ordem fica salva (backup e nuvem)
   v13.128 · 20/10/2026 · Ícones das empresas: só encolhem depois de segurar um pouco (não brigam mais com a rolagem); toque curto acende na hora
