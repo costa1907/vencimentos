@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.156';
+(function(){var V='13.157';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.156</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.157</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.156';
+const VERSION='13.157';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1277,7 +1277,7 @@ function cfLayout(tr,mark){
    e ao soltar o cartão continua com a mesma velocidade do dedo até parar exatamente no centro.
    Sem inércia nativa não há encaixe errado nem correção depois. */
 function snapper(tr,done){
-  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,jsd=false,hlt=0,holdUntil=0;
+  let sm=[],x0=0,y0=0,sl0=0,anim=0,dir='',intr=false,jsd=false,hlt=0,holdUntil=0,ign=0;
   /* híbrido: durante o encaixe a rolagem nativa fica travada (overflow-x:hidden) para a inércia do iPhone não empurrar o cartão para fora do centro; um toque durante o encaixe vira arrasto por JS (como no modo JS) */
   function hLock(ms){if(!HYBW)return;holdUntil=performance.now()+ms;tr.style.overflowX='hidden';clearTimeout(hlt);hlt=setTimeout(hUnl,ms+5)}
   function hUnl(){if(!HYBW)return;if(anim||jsd||performance.now()<holdUntil)return;tr.style.overflowX=''}
@@ -1316,7 +1316,7 @@ function snapper(tr,done){
         tr.scrollLeft=to;const real=tr.scrollLeft,dx=real-from;
         if(Math.abs(dx)<0.5){movOff();done&&done();return}
         const ez='cubic-bezier(0.3333,'+(m0/3).toFixed(4)+',0.6667,1)';
-        const me={as:[],ref:its[Math.max(lo,Math.min(hi,i1))]};anim=me;
+        const me={as:[],ref:its[Math.max(lo,Math.min(hi,i1))],to:to};anim=me;
         const mk=(d,dur,e)=>{const as=[];for(let i=lo;i<=hi;i++)as.push(its[i].animate([{transform:'translate3d('+d+'px,0,0)'},{transform:'translate3d(0,0,0)'}],{duration:dur,easing:e,fill:'both'}));me.as=as;
           as[0].onfinish=()=>{if(anim!==me)return;anim=0;cancelAnimationFrame(me.tk);tr._seff=null;as.forEach(x=>{x.onfinish=null;x.cancel()});try{tr._sc&&tr._sc();tr._vis&&tr._vis()}catch(e){}movOff();done&&done();hUnl()}};
         mk(dx,T,ez);
@@ -1327,7 +1327,7 @@ function snapper(tr,done){
           me.tk=requestAnimationFrame(tick)};me.tk=requestAnimationFrame(tick);
         /* híbrido: a inércia nativa do navegador pode empurrar a rolagem depois do app pôr o ponto final (corrida entre o app e o iPhone): nos primeiros quadros confere e, se fugiu, devolve ao ponto final e refaz a animação a partir da posição visual atual (sem salto) */
         if(HYBW){let n=0;const w=()=>{if(anim!==me||++n>12)return;const cur=tr.scrollLeft;
-          if(Math.abs(cur-real)>0.5){window.__diagNote&&window.__diagNote('híbrido · o iPhone empurrou a rolagem '+Math.round(cur-real)+' px (posição '+Math.round(cur)+' de '+Math.round(tr.scrollWidth-tr.clientWidth)+') e o app refez o encaixe');try{const m=getComputedStyle(me.ref).transform,tau=m&&m!=='none'?new DOMMatrix(m).m41:0,t=me.as[0].currentTime||0;
+          if(Math.abs(cur-real)>0.5){window.__diagNote&&window.__diagNote('híbrido · o iPhone empurrou a rolagem '+Math.round(cur-real)+' px (posição '+Math.round(cur)+' de '+Math.round(tr.scrollWidth-tr.clientWidth)+') e o app refez o encaixe','info');try{const m=getComputedStyle(me.ref).transform,tau=m&&m!=='none'?new DOMMatrix(m).m41:0,t=me.as[0].currentTime||0;
             me.as.forEach(x=>{x.onfinish=null;x.cancel()});tr.scrollLeft=real;mk(tau+(real-cur),Math.max(140,T-t),'cubic-bezier(0.2,0.7,0.3,1)')}catch(e){}}
           requestAnimationFrame(w)};requestAnimationFrame(w)}
         return;
@@ -1356,22 +1356,31 @@ function snapper(tr,done){
     else if(Math.abs(moved)>pitch*0.16)dn=moved>0?1:-1;
     tgt=s0+dn;
     tgt=Math.max(0,Math.min(cx.length-1,Math.max(s0-LIM,Math.min(s0+LIM,tgt))));
-    if(HYBW&&window.__diagNote){const mxv=tr.scrollWidth-W,sl=tr.scrollLeft;if(sl<=2||sl>=mxv-2||tgt===0||tgt===cx.length-1)window.__diagNote('híbrido · ponta · soltou · cartão '+(s0+1)+'→'+(tgt+1)+' de '+cx.length+' · v '+v.toFixed(2)+' · posição '+Math.round(sl)+' de '+Math.round(mxv)+(intr?' · tinha interrompido um encaixe':''))}
+    if(HYBW&&window.__diagNote){const mxv=tr.scrollWidth-W,sl=tr.scrollLeft;if(sl<=2||sl>=mxv-2||tgt===0||tgt===cx.length-1)window.__diagNote('híbrido · ponta · soltou · cartão '+(s0+1)+'→'+(tgt+1)+' de '+cx.length+' · v '+v.toFixed(2)+' · posição '+Math.round(sl)+' de '+Math.round(mxv)+(intr?' · tinha interrompido um encaixe':''),'info')}
     animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[tgt]-W/2)),-v);
   }
   function nearest(){const cx=centers();if(!cx.length){done&&done();return}const W=tr.clientWidth,c=tr.scrollLeft+W/2;let k=0,bd=1e9;cx.forEach((x,n)=>{const d=Math.abs(x-c);if(d<bd){bd=d;k=n}});animTo(Math.max(0,Math.min(tr.scrollWidth-W,cx[k]-W/2)),0)}
-  tr.addEventListener('touchstart',e=>{intr=!!anim;jsd=HYBW&&(!!anim||tr.style.overflowX==='hidden');stop();const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:(HYBW&&!jsd)?-tr.scrollLeft:p.clientX,t:performance.now()}]},{passive:true});
+  tr.addEventListener('touchstart',e=>{
+    /* v13.157 (híbrido): se o encaixe em andamento está indo para o PRIMEIRO ou o ÚLTIMO cartão, o novo toque não o interrompe (interromper fazia o cartão tremer/pular): o encaixe termina sozinho e um arrasto para fora é ignorado; arrastar no sentido contrário assume na hora */
+    ign=0;if(HYBW&&anim&&anim.as&&anim.to!=null){const mxv=tr.scrollWidth-tr.clientWidth;if(anim.to>=mxv-0.5)ign=-1;else if(anim.to<=0.5)ign=1}
+    if(ign){intr=false;jsd=false}else{intr=!!anim;jsd=HYBW&&(!!anim||tr.style.overflowX==='hidden');stop()}
+    const p=e.touches[0];x0=p.clientX;y0=p.clientY;sl0=tr.scrollLeft;dir='';sm=[{x:(HYBW&&!jsd)?-tr.scrollLeft:p.clientX,t:performance.now()}]},{passive:true});
   tr.addEventListener('touchmove',e=>{
     const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;
     if(!dir){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){dir='h';movOn()}else if(Math.abs(dy)>6)dir='v';else return}
+    if(ign){
+      if(dir!=='h')return;
+      if(Math.sign(dx)===ign){if(e.cancelable)e.preventDefault();return}
+      /* mudou de sentido: assume o arrasto a partir de onde o carrossel está */
+      ign=0;intr=false;stop();tr.style.overflowX='hidden';jsd=true;sl0=tr.scrollLeft;x0=p.clientX;sm=[{x:p.clientX,t:performance.now()}];return}
     if(dir!=='h')return;
     /* v13.155 (híbrido): na ponta, puxar para fora não deixa o iPhone esticar o carrossel (elástico); o app continua o arrasto por JS, preso na ponta — assim não há tranco ao soltar */
     if(HYBW&&!jsd){const sl=tr.scrollLeft,mxv=tr.scrollWidth-tr.clientWidth;
       if(((sl<=0.5&&dx>0)||(sl>=mxv-0.5&&dx<0))&&e.cancelable){e.preventDefault();jsd=true;sm=[{x:p.clientX,t:performance.now()}]}}
     if(!HYBW||jsd){sm.push({x:p.clientX,t:performance.now()});if(sm.length>12)sm.shift();tr.scrollLeft=sl0-dx}
   },{passive:!HYBW});
-  tr.addEventListener('touchend',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
-  tr.addEventListener('touchcancel',()=>{if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
+  tr.addEventListener('touchend',()=>{if(ign){ign=0;jsd=false;hUnl();return}if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
+  tr.addEventListener('touchcancel',()=>{if(ign){ign=0;jsd=false;hUnl();return}if(dir==='h')release();else{movOff();if(intr){intr=false;nearest()}}jsd=false;hUnl()},{passive:true});
   if(HYBW){ /* híbrido: se o carrossel parar fora do centro (gesto cancelado), o app completa o encaixe */
     let hid=0,tc=0;
     tr.addEventListener('touchstart',()=>{tc=1;clearTimeout(hid)},{passive:true});

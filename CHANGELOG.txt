@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.157 · 20/10/2026 · Carrossel híbrido: se o encaixe está indo para o primeiro/último cartão, um novo arrasto para fora não o interrompe (acaba o tranco); arrastar no sentido contrário assume na hora
   v13.156 · 20/10/2026 · Carrossel híbrido: encaixe mais rápido (150–330 ms, igual ao nativo) + o diagnóstico passa a anotar o que acontece nas pontas (soltar no 1º/último cartão e empurrão do iPhone) para achar o tranco
   v13.155 · 20/10/2026 · Carrossel de cartões, modo híbrido: sem elástico nas pontas (arrasto preso na ponta, sem tranco ao soltar) e o arremesso decide 1 a 3 cartões por gesto (mais próximo do nativo)
   v13.154 · 20/10/2026 · Carrossel de cartões volta ao código da v13.145 (as tentativas 13.146–13.153 para o tranco nas pontas foram retiradas: no iPhone pioravam)
