@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.144 · 20/10/2026 · Carrossel de cartões: tocar no cartão do lado não troca mais (aparecia de repente e piscava); o cartão muda arrastando com o dedo
+  v13.143 · 20/10/2026 · Abrir pelo + mais ágil: com o app parado, deixa prontos os ícones de Boleto, Cartão e Assinatura (para sozinho se o dedo encostar, a janela abrir ou o app sair de cena)
   v13.142 · 20/10/2026 · Teclado sem deslocar a tela agora no app inteiro (login por e-mail, Ajustes, metas, backup, campo de observação); campo de senha continua nativo
   v13.141 · 20/10/2026 · Teclado sem deslocar a janela agora em todos os campos de texto da janela (nome, observação, final do cartão, limite, dia do fechamento, boleto, busca); 1º toque foca, toques seguintes movem o cursor
   v13.140 · 20/10/2026 · EXPERIMENTO teclado: toque no campo do valor foca sem deixar o iPhone rolar/deslocar a janela (focus com preventScroll). Se der problema, voltar à v13.139

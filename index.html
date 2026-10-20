@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.142';
+(function(){var V='13.144';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.142</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.144</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.142';
+const VERSION='13.144';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1679,6 +1679,25 @@ function provWarm(){clearTimeout(PGWT);const cats=Object.keys(CAT).filter(c=>c!=
       PGW.append(...nd)}}catch(e){}
     PGWT=setTimeout(step,300)};
   PGWT=setTimeout(step,900)}
+/* v13.143: com o app parado (sem dedo na tela, sem janela aberta, app visível), deixa PRONTOS os ícones dos 3 tipos mais usados, um a cada ~450 ms.
+   Assim o 1º toque no + já encontra tudo montado (antes montava na hora: parte dos ~30 ms de código ao abrir). Para sozinho se o dedo encostar, a janela abrir ou o app sair de cena. */
+let AWT=0,AWI=0,AWTouch=0;
+addEventListener('touchstart',()=>{AWTouch=performance.now()},{passive:true,capture:true});
+function appWarm(){
+  clearTimeout(AWT);
+  const cats=['boleto','cartao','assinatura'];
+  const step=()=>{
+    if(AWI>=cats.length)return;
+    const sh=$('#sheet');
+    if(document.hidden||(sh&&!sh.hidden)){return} /* app fora de cena ou janela aberta: o provWarm normal assume */
+    if(performance.now()-AWTouch<700){AWT=setTimeout(step,700);return} /* dedo na tela há pouco: espera */
+    const c=cats[AWI++],dk=c+'|'+S.pord;
+    try{if(!PGD.has(dk)){const nd=provNodes(c);PGD.set(dk,nd);
+      if(!PGW){PGW=document.createElement('div');PGW.id='pgw';PGW.setAttribute('aria-hidden','true');PGW.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:360px';document.body.appendChild(PGW)}
+      PGW.append(...nd)}}catch(e){}
+    AWT=setTimeout(step,450)};
+  AWT=setTimeout(step,300);
+}
 function renderProv(){
   window.__diagAct&&window.__diagAct('montando os ícones');
   {const pl=$('#pl');if(pl)pl.textContent=F.cat==='transferencia'?'Para qual banco?':'Quem é?'}
@@ -2256,6 +2275,7 @@ document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.
     }catch(e){}
   }
   window.fixTop=fix;
+  try{(window.requestIdleCallback||setTimeout)(()=>setTimeout(()=>{try{appWarm()}catch(e){}},2500),{timeout:6000})}catch(e){}
   document.addEventListener('focusout',()=>{setTimeout(fix,350)});
   ['pageshow','focus','resize','orientationchange'].forEach(n=>window.addEventListener(n,()=>{fix();setTimeout(fix,120);setTimeout(fix,450)}));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){fix();setTimeout(fix,120);setTimeout(fix,450)}});
@@ -2514,7 +2534,8 @@ function setProv(id){
 $('#ccx').addEventListener('click',e=>{
   const f=e.target.closest('[data-f]');if(f){CF=f.dataset.f;const l=MF(F.prov).filter(x=>CG(x)===CF);if(l.length&&!l.some(x=>x.id===F.model)){F.model=l[0].id;F.brand=l[0].br;F.tier=l[0].tr}syncForm();return}
   const b=e.target.closest('[data-b]'),t=e.target.closest('[data-t]'),m=e.target.closest('[data-m]');
-  if(m){if(!m.dataset.m)return;if(m.classList.contains('cpi')&&(CPIG||Date.now()-CPLS<350)){CPIG=0;return}if(m.dataset.m===F.model)return;F.model=m.dataset.m;const md=MF(F.prov).find(x=>x.id===F.model);F.brand=(md&&md.br)||'visa';F.tier=(md&&md.tr)||'gold';syncForm();return}
+  if(m){if(!m.dataset.m)return;if(m.classList.contains('cpi')&&!CGRID){CPIG=0;return} /* v13.144: no carrossel, tocar no cartão do lado não troca mais (o salto/pisca era dessa troca); só arrastar com o dedo */
+  if(m.classList.contains('cpi')&&(CPIG||Date.now()-CPLS<350)){CPIG=0;return}if(m.dataset.m===F.model)return;F.model=m.dataset.m;const md=MF(F.prov).find(x=>x.id===F.model);F.brand=(md&&md.br)||'visa';F.tier=(md&&md.tr)||'gold';syncForm();return}
   if(b){F.brand=b.dataset.b;F.model='';syncForm()}
   if(t){F.tier=t.dataset.t;F.model='';syncForm()}
 });
