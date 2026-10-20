@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.129';
+(function(){var V='13.130';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -249,7 +249,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cat svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cat span{max-width:100%;text-align:center;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere}
 @media(max-width:380px){.cat span{font-size:9.5px;letter-spacing:-.1px}}
-.cat.on{color:var(--gold2);background:rgba(var(--ar),.15);border-color:rgba(var(--ar),.55);transform:translateY(-2px)}
+.cat.on{color:var(--gold2);background:rgba(var(--ar),.15);border-color:rgba(var(--ar),.55)}
 .dates{display:flex;gap:8px;flex-wrap:wrap}
 .chip{height:44px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);font:600 13px var(--fb);color:var(--mu);transition:all .25s var(--ease)}
 .chip.on{background:rgba(var(--ar),.14);border-color:rgba(var(--ar),.5);color:var(--gold2)}
@@ -329,7 +329,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 @media(max-width:380px){.pgrid{gap:6px}.pt span{font-size:9.5px;letter-spacing:-.1px}.pt .pv{width:40px;height:40px}}
 /* v13.86: ícones fora da tela não são desenhados até aparecerem (continuam carregados); a altura reservada vira a medida real depois do primeiro desenho */
 /* v13.95: removido o content-visibility dos ícones (v13.86): o tempo de montar os ícones não melhorou e o iPhone passava a desenhar cada fileira só quando ela entrava na tela, durante a rolagem */
-.pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transform:translateY(-2px)}
+.pt.on{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1)}
 .pt.on span{color:var(--gold2)}
 /* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
    rolagem feita com o dedo sobre os ícones. O ícone segue acendendo (.pre) quando o dedo fica parado, e marca ao tocar */
@@ -569,16 +569,15 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
-.pt{transition:transform .12s var(--ease),border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.pt{transition:border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
 .pt.ghost{background-color:var(--card2);background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04));border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
 @keyframes gpop{from{scale:1;box-shadow:0 1px 3px rgba(0,0,0,.2)}to{scale:1.1}}
 body.dragging .pt:active,body.dragging .pt.on{transform:none}
-.pgrid:not(.org) .pt.pre{transform:scale(.95)}
 .tbar{display:flex;align-items:center;justify-content:space-between;gap:8px}.tbar .segP{text-transform:none;letter-spacing:0;margin:0}.tbar .segP button{padding:5px 12px;font-size:12px}
 .cat.cpick{transform:scale(1.07)!important;border-color:rgba(var(--ar),.8);background:rgba(var(--ar),.16);z-index:1;position:relative;transition:transform .12s var(--ease)}
 #fc.drg .cat{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-.cat{transition:transform .12s var(--ease),color .1s,background .1s,border-color .1s}.cat:active{transform:scale(.95)} /* v13.127: os ícones de TIPO (Boleto, Cartão…) mudam em 0,1 s (antes 0,25 s) e reagem na hora ao toque */ /* v13.126: o ícone reage NA HORA ao toque (encolhe um pouco), antes só marcava depois de soltar */
+.cat{transition:color .1s,background .1s,border-color .1s} /* v13.130: sem pulo/encolher: só a cor/borda muda ao tocar */ /* v13.126: o ícone reage NA HORA ao toque (encolhe um pouco), antes só marcava depois de soltar */
 .pt.ph.on{opacity:.5;border:1px dashed rgba(var(--ar),.9);background:rgba(var(--ar),.08);transform:none}
 .pt.ghost,.pt.ghost:active{transform:none}
 .pt.pre{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transition:none}
@@ -697,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.129</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.130</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -809,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.129';
+const VERSION='13.130';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
