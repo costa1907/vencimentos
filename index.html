@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.131';
+(function(){var V='13.132';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -580,6 +580,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .cat{transition:color .1s,background .1s,border-color .1s} /* v13.130: sem pulo/encolher: só a cor/borda muda ao tocar */ /* v13.126: o ícone reage NA HORA ao toque (encolhe um pouco), antes só marcava depois de soltar */
 .pt.ph.on{opacity:.5;border:1px dashed rgba(var(--ar),.9);background:rgba(var(--ar),.08);transform:none}
 .pt.ghost,.pt.ghost:active{transform:none}
+.pt.ghost.on{background-image:linear-gradient(rgba(var(--ar),.18),rgba(var(--ar),.18));border-color:rgba(var(--ar),.8)}
 .pt.pre{border-color:rgba(var(--ar),.7);background:rgba(var(--ar),.1);transition:none}
 .pt.ghost.on{background-color:var(--card2);background-image:linear-gradient(rgba(var(--ar),.12),rgba(var(--ar),.12))}
 
@@ -696,7 +697,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.131</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.132</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +809,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.131';
+const VERSION='13.132';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2214,13 +2215,14 @@ $('#fa').addEventListener('input',e=>{
   function lift(){
     if(!st)return;
     if(Math.abs($('#panel').scrollTop-st.sc)>2){st=null;return}
+    st.slots=Array.from(g.children).map(el=>{const r=el.getBoundingClientRect();return{cx:r.left+r.width/2,cy:r.top+r.height/2}});
     st.on=true;document.body.classList.add('dragging');g.classList.add('drg');st.t.classList.add('cpick');
     HP('lift');document.addEventListener('touchmove',block,{passive:false});
   }
   function hit(){
     const els=Array.from(g.children);let best=-1,bd=1e9;
-    els.forEach((el,i)=>{const r=el.getBoundingClientRect(),dx=st.x-(r.left+r.width/2),dy=st.y-(r.top+r.height/2),d=dx*dx+dy*dy;if(d<bd){bd=d;best=i}});
-    const cur=els.indexOf(st.t);if(best<0||best===cur)return;
+    st.slots.forEach((r,i)=>{const dx=st.x-r.cx,dy=st.y-r.cy,d=dx*dx+dy*dy;if(d<bd){bd=d;best=i}});
+    const cur=els.indexOf(st.t);if(best<0||best===cur||best>=els.length)return;
     const first=els.map(el=>el.getBoundingClientRect());
     g.insertBefore(st.t,best>cur?els[best].nextSibling:els[best]);
     els.forEach((el,i)=>{const r=el.getBoundingClientRect(),dx=first[i].left-r.left,dy=first[i].top-r.top;if(dx||dy){el.style.transition='none';el.style.transform='translate('+dx+'px,'+dy+'px)'}});
@@ -2302,6 +2304,15 @@ const HP=function(k){
 };
 (function(){
   const grid=$('#pg');let st=null,timer=0,lastTouch=0;
+  /* v13.132: toque curto seleciona já no touchend (o iPhone só manda o "click" depois); o click que vem em seguida é ignorado */
+  let tp=null;
+  grid.addEventListener('touchstart',e=>{const t=e.target.closest&&e.target.closest('.pt');const p=e.touches&&e.touches[0];tp=(t&&p&&e.touches.length===1)?{x:p.clientX,y:p.clientY,sc:$('#panel').scrollTop,t0:performance.now(),el:e.target}:null},{passive:true});
+  grid.addEventListener('touchmove',e=>{if(!tp)return;const p=e.touches[0];if(p&&Math.hypot(p.clientX-tp.x,p.clientY-tp.y)>8)tp=null},{passive:true});
+  grid.addEventListener('touchend',e=>{
+    const k=tp;tp=null;if(!k||document.body.classList.contains('dragging'))return;
+    if(performance.now()-k.t0>350||Math.abs($('#panel').scrollTop-k.sc)>2||Date.now()-LASTDRAG<500)return;
+    PGFAST=Date.now();pgClick({target:k.el});
+  },{passive:true});
   const pt=e=>(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;
   function start(e){
     const t=e.target.closest&&e.target.closest('.pt');
@@ -2321,7 +2332,8 @@ const HP=function(k){
     st.tiles=tiles;st.from=tiles.indexOf(st.tile);st.to=st.from;
     st.slots=tiles.map(el=>{const r=el.getBoundingClientRect();return{x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height}});
     const r=st.tile.getBoundingClientRect();st.dx=st.x0-r.left;st.dy=st.y0-r.top;
-    /* v13.131: arrastar NÃO muda a seleção (antes remontava formulário/carrossel no meio do arrasto) */
+    /* arrastar um ícone também o seleciona: a cor muda na hora; nome/carrossel (syncForm) só depois de soltar, pra não travar o arrasto */
+    {const pid=st.tile.dataset.p;if(pid&&!st.tile.classList.contains('on')&&(LIST[F.cat]||[]).indexOf(pid)>=0){setProv(pid);tiles.forEach(x=>x.classList.toggle('on',x===st.tile));st.pend=1}}
     const g=st.tile.cloneNode(true);st.sel=st.tile.classList.contains('on');g.className='pt ghost'+(st.sel?' on':'');
     g.style.cssText='position:fixed;left:0;top:0;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:90;pointer-events:none;translate:'+r.left+'px '+r.top+'px';
     document.body.appendChild(g);st.ghost=g;st.tile.classList.add('ph');
@@ -2361,6 +2373,7 @@ const HP=function(k){
   function end(){
     clearTimeout(timer);if(!st)return;
     if(st.on){
+      if(st.pend)setTimeout(()=>requestAnimationFrame(()=>{try{syncForm()}catch(e){}}),260);
       cancelAnimationFrame(st.raf);place();
       const g=st.ghost,gr=grid.getBoundingClientRect(),s=st.slots[st.to];
       g.style.animation='none';g.style.transition='translate .22s cubic-bezier(.2,.8,.2,1),scale .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s';
@@ -2412,7 +2425,7 @@ $('#pm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
 $('#phint').addEventListener('click',e=>{
   if(e.target.id==='prst'){delete S.order[F.cat];S.pord='az';save();pgdClear();renderProv();toast('Ordem A–Z restaurada')}
 });
-$('#pg').addEventListener('click',e=>{
+function pgClick(e){
   const t=e.target.closest('.pt');if(!t)return;
   const id=t.dataset.p, q=($('#ps').value||'').trim();
   if(Date.now()-LASTDRAG<500)return;
@@ -2426,8 +2439,9 @@ $('#pg').addEventListener('click',e=>{
   else $$('#pg .pt').forEach(x=>x.classList.toggle('on',x.dataset.p===(F.prov||'')));
   /* v13.127: o ícone marca primeiro (desenhado logo) e o resto do trabalho (nome, carrossel de cartões…) roda no quadro seguinte; antes tudo rodava antes de o ícone aparecer marcado. Se tocar em outro ícone antes, só vale o último */
   const my=++PGT2;requestAnimationFrame(()=>setTimeout(()=>{if(my===PGT2)syncForm()},0));
-});
-let PGT2=0;
+}
+let PGT2=0,PGFAST=0;
+$('#pg').addEventListener('click',e=>{if(Date.now()-PGFAST<700)return;pgClick(e)});
 /* escolhe a empresa (nome automático + seleção); usado no toque e ao começar a arrastar */
 function setProv(id){
   const p=PROV[id], fn=$('#fn');
