@@ -1,11 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
-  v13.151 · 20/10/2026 · Carrossel de cartões: tocar nele na chegada ao primeiro/último cartão termina a chegada sozinho em ~0,1 s e libera na hora (antes esperava a inércia toda)
-  v13.150 · 20/10/2026 · Carrossel de cartões: a trava na chegada ao primeiro/último cartão solta bem mais cedo (a 8 px da ponta ou 60 ms após parar) — volta a rolar quase na hora
-  v13.149 · 20/10/2026 · Carrossel de cartões: a trava de toque vale só na chegada ao primeiro/último cartão (antes pegava também o segundo e o penúltimo)
-  v13.148 · 20/10/2026 · Carrossel de cartões: enquanto ele desliza sozinho para o primeiro/último cartão, um novo toque não o interrompe (não pula mais para o centro nem treme); a janela continua rolando na vertical
-  v13.147 · 20/10/2026 · Corrige v13.146: o bloqueio das pontas do carrossel de cartões só vale para arrasto horizontal (antes travava a rolagem vertical da janela quando o dedo estava no carrossel)
-  v13.146 · 20/10/2026 · Carrossel de cartões: sem elástico nas pontas (primeiro cartão não puxa para a direita, último não puxa para a esquerda, nem com ele em movimento) — acaba o tranco/tremida
+  v13.153 · 20/10/2026 · Carrossel de cartões: base v13.145 (sem as tentativas 13.146–13.151) + o app assume o fim do movimento na chegada ao primeiro/último cartão (mesma velocidade, sem inércia/encaixe nativo na ponta); tocar só acelera o fim
   v13.145 · 20/10/2026 · Carrossel: tocar na bandeira já marcada não faz nada (não pisca mais); trocar de bandeira com o carrossel ainda andando primeiro o para no lugar e só então troca (sem tremida)
   v13.144 · 20/10/2026 · Carrossel de cartões: tocar no cartão do lado não troca mais (aparecia de repente e piscava); o cartão muda arrastando com o dedo
   v13.143 · 20/10/2026 · Abrir pelo + mais ágil: com o app parado, deixa prontos os ícones de Boleto, Cartão e Assinatura (para sozinho se o dedo encostar, a janela abrir ou o app sair de cena)

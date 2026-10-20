@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.151';
+(function(){var V='13.153';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.151</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.153</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.151';
+const VERSION='13.153';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2551,50 +2551,38 @@ $('#ccx').addEventListener('click',e=>{
 });
 let CFT2=0,CMSC=0;
 $('#cm').addEventListener('scroll',()=>{CMSC=performance.now()},{passive:true});
-/* v13.146: sem "elástico" nas pontas do carrossel de cartões. Primeiro cartão: não deixa puxar para a direita; último: não deixa puxar para a esquerda (dedo, mesmo com o carrossel ainda em movimento). Se a inércia empurrar além da ponta, o carrossel é parado na ponta (antes o iPhone esticava e voltava = tranco/tremida). */
 (function(){
-  const t=$('#cm');if(!t)return;let x0=0,y0=0,dr='',fz=0;
+  const t=$('#cm');if(!t)return;
   const mx=()=>t.scrollWidth-t.clientWidth;
-  t.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;dr=''},{passive:true});
-  t.addEventListener('touchmove',e=>{
-    const dx=e.touches[0].clientX-x0,dy=e.touches[0].clientY-y0;
-    /* v13.147: só bloqueia gesto claramente HORIZONTAL (a v13.146 bloqueava também o arrasto vertical na ponta e a janela parecia travada) */
-    if(!dr){if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)*1.5)dr='h';else if(Math.abs(dy)>8)dr='v';else return}
-    if(dr!=='h')return;
-    const sl=t.scrollLeft;
-    if(e.cancelable&&((sl<=0.5&&dx>0)||(sl>=mx()-0.5&&dx<0)))e.preventDefault();
-  },{passive:false});
-  /* v13.148: o carrossel está a caminho do primeiro/último cartão sozinho (inércia, dedo fora): ele fica "intocável" até parar. Assim um novo toque/arrasto não interrompe a animação nem faz o cartão pular para o centro (era o tranco/tremida). Toques nessa hora passam para a janela (rolar na vertical continua funcionando). */
-  let tch=0,ls=t.scrollLeft,pe=0,pt=0,pc=0;
-  const free=()=>{if(pe){t.style.pointerEvents='';pe=0}clearTimeout(pt);clearTimeout(pc)};
-  t.addEventListener('touchstart',()=>{tch=1;free()},{passive:true});
-  ['touchend','touchcancel'].forEach(n=>t.addEventListener(n,()=>{tch=0;ls=t.scrollLeft},{passive:true}));
-  /* v13.151: se o dedo tocar o carrossel durante a chegada à ponta, o app termina a chegada sozinho em ~0,1 s (em vez de esperar a inércia inteira) e libera na hora */
-  let fn=0;
-  const fin=()=>{
-    if(fn)return;fn=1;clearTimeout(pt);clearTimeout(pc);const from=t.scrollLeft,to=from<mx()/2?0:mx(),dist=to-from,T=Math.max(50,Math.min(130,Math.abs(dist)*1.4)),t0=performance.now();
-    t.style.overflowX='hidden';try{t._stopSnap&&t._stopSnap()}catch(_){}
-    const f=n=>{const k=Math.min(1,(n-t0)/T),e=1-Math.pow(1-k,3);t.scrollLeft=from+dist*e;
-      if(k<1)requestAnimationFrame(f);else{t.scrollLeft=to;t.style.overflowX='';fn=0;free()}};
-    requestAnimationFrame(f);
+  /* v13.152: na chegada ao primeiro/último cartão o APP assume o final do movimento (a partir da velocidade que o iPhone já tinha, sem mudar o ritmo) em vez de deixar a inércia + encaixe nativos terminarem. Sem inércia nativa na ponta não há elástico nem "encaixe atropelado" quando o dedo toca de novo. Tocar no carrossel durante esse trecho só acelera o fim (~0,1 s). */
+  let tch=0,ls=t.scrollLeft,lt=performance.now(),vel=0,gl=0,pe=0;
+  const hold=on=>{t.style.pointerEvents=on?'none':'';pe=on};
+  const end=()=>{const g=gl;if(!g)return;gl=0;cancelAnimationFrame(g.raf);t.scrollLeft=g.to;t.style.overflowX='';t.style.scrollSnapType='';hold(0);ls=t.scrollLeft;lt=performance.now();vel=0};
+  const step=n=>{const g=gl;if(!g)return;const k=Math.min(1,(n-g.t0)/g.T),k2=k*k,k3=k2*k,h=(k3-2*k2+k)*g.m0+(3*k2-2*k3);
+    t.scrollLeft=g.from+g.dist*h;if(k<1)g.raf=requestAnimationFrame(step);else end()};
+  const glide=(to,v)=>{
+    const from=t.scrollLeft,dist=to-from,ad=Math.abs(dist);if(ad<1)return;
+    const T=Math.max(160,Math.min(420,3*ad/Math.max(v,0.05))),m0=Math.min(4,v*T/ad);
+    gl={from,to,dist,T,m0,t0:performance.now()-12,raf:0}; /* -12 ms: o primeiro quadro já anda (senão para 1 quadro e depois alcança) */
+    hold(1);t.style.overflowX='hidden';t.style.scrollSnapType='none';
+    gl.raf=requestAnimationFrame(step);
   };
+  t.addEventListener('touchstart',()=>{tch=1},{passive:true});
+  ['touchend','touchcancel'].forEach(n=>t.addEventListener(n,()=>{tch=0;ls=t.scrollLeft;lt=performance.now();vel=0},{passive:true}));
   document.addEventListener('touchstart',e=>{
-    if(!pe||fn)return;const r=t.getBoundingClientRect(),p=e.touches[0];
-    if(p.clientX>=r.left&&p.clientX<=r.right&&p.clientY>=r.top&&p.clientY<=r.bottom)fin();
+    if(!gl)return;const r=t.getBoundingClientRect(),p=e.touches[0];
+    if(p.clientX<r.left||p.clientX>r.right||p.clientY<r.top||p.clientY>r.bottom)return;
+    cancelAnimationFrame(gl.raf);const cur=t.scrollLeft;
+    gl.from=cur;gl.dist=gl.to-cur;gl.T=Math.min(110,gl.T);gl.m0=0;gl.t0=performance.now();gl.raf=requestAnimationFrame(step);
   },{capture:true,passive:true});
   t.addEventListener('scroll',()=>{
-    const sl=t.scrollLeft,d=sl-ls;ls=sl;if(fn||tch||Math.abs(d)<0.5)return;
-    const k=t.children,pitch=k.length>1?k[1].offsetLeft-k[0].offsetLeft:294,near=pitch*0.5,m=mx();
-    if(!pe&&((d>0&&sl>=m-near)||(d<0&&sl<=near))){pe=1;t.style.pointerEvents='none';clearTimeout(pc);pc=setTimeout(free,900)}
-    /* v13.150: solta o carrossel assim que ele chega a 8 px da ponta (o resto é só a cauda da inércia, imperceptível) e logo que a rolagem para (60 ms); antes esperava o fim todo e demorava a responder */
-    if(pe){if(sl<=8||sl>=m-8){free();return}clearTimeout(pt);pt=setTimeout(free,60)}
-  },{passive:true});
-  t.addEventListener('scroll',()=>{
-    if(fz)return;const sl=t.scrollLeft,m=mx();
-    if(sl>=-0.5&&sl<=m+0.5)return;
-    fz=1;t.style.overflowX='hidden';try{t._stopSnap&&t._stopSnap()}catch(_){}
-    t.scrollLeft=sl<0?0:m;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{t.style.overflowX='';fz=0}));
+    const now=performance.now(),sl=t.scrollLeft;if(gl||tch){ls=sl;lt=now;return}
+    const d=sl-ls,dt=now-lt;if(Math.abs(d)<0.5||dt<=0){return}
+    if(Math.abs(d)>150||dt>120){ls=sl;lt=now;vel=0;return} /* salto de programa (não é inércia do dedo) */
+    ls=sl;lt=now;vel=vel*0.5+(d/dt)*0.5;
+    const k=t.children,pitch=k.length>1?k[1].offsetLeft-k[0].offsetLeft:294,near=pitch*0.6,m=mx();
+    if(vel>0.08&&sl>=m-near&&sl<m-1)glide(m,vel);
+    else if(vel<-0.08&&sl<=near&&sl>1)glide(0,-vel);
   },{passive:true});
 })();
 function parseBoleto(raw){
