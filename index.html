@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.120';
+(function(){var V='13.121';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -560,7 +560,8 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .pgrid.org .pt.pick{animation:none;outline:2px solid var(--gold);transform:scale(1.07);background:rgba(var(--ar),.16);z-index:1}
 @keyframes wob{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
 *{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
-.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg)!important;transition:opacity .22s!important} /* v13.118: fundo da janela OPACO (antes 80%): a tela de trás aparecia fraca e sumia de repente quando o app a escondia */
+.scrim{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:radial-gradient(110% 60% at 50% 0%,rgba(var(--ar),.20),transparent 72%),var(--bg)!important;transition:opacity .22s!important}
+.panel{border-top-color:rgba(var(--ar),.45)} /* v13.121: o espaço acima da janela ganha um brilho suave na cor do tema e a borda de cima da janela fica na cor de destaque (desenho estático; a altura da janela NÃO muda) */ /* v13.118: fundo da janela OPACO (antes 80%): a tela de trás aparecia fraca e sumia de repente quando o app a escondia */
 /* janela aberta: pausa só o que anima na tela de trás. Antes era ".page *" e ".cc *" (todos os elementos), e abrir ou fechar
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-ld,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
@@ -688,7 +689,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.120</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.121</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -798,7 +799,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.120';
+const VERSION='13.121';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
