@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.161';
+(function(){var V='13.162';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -698,7 +698,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.161</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.162</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -810,7 +810,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.161';
+const VERSION='13.162';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2220,7 +2220,7 @@ function openSheet(id,key){
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  if(!b)setTimeout(()=>{const a=$('#fa');try{a.focus({preventScroll:true})}catch(e){a.focus()}},380);
+  /* v13.162: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -2253,7 +2253,9 @@ $('#fa').addEventListener('beforeinput',e=>{
   panel.addEventListener('touchmove',e=>{if(!tp)return;const p=e.touches[0];if(p&&Math.hypot(p.clientX-tp.x,p.clientY-tp.y)>8)tp=null},{passive:true});
   panel.addEventListener('touchend',e=>{
     const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
-    const el=pick(e.target);if(!el||el===document.activeElement)return;
+    const el=pick(e.target);if(!el)return;
+    /* v13.162: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
+    if(el===document.activeElement){const vv=window.visualViewport;if(!(vv&&window.innerHeight-vv.height<120))return;try{el.blur()}catch(_){}}
     e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
     try{el.focus({preventScroll:true});const n=el.value.length;try{el.setSelectionRange(n,n)}catch(_){}}catch(_){try{el.focus()}catch(_2){}}
   },{passive:false});

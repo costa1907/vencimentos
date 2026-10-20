@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.162 · 20/10/2026 · Nova conta: a tela não sobe mais quando o teclado abre no campo Valor (tirado o foco automático ao abrir; toque em campo focado sem teclado também usa preventScroll)
   v13.161 · 20/10/2026 · Com o teclado aberto (campo de texto em foco), a barra de abas e o botão + ficam escondidos e voltam ao fechar (menos desenho para o iPhone enquanto a tela sobe e desce)
   v13.160 · 20/10/2026 · Troca de bandeira dos cartões: o carrossel novo aparece inteiro por baixo e só o antigo esmaece (antes os dois esmaeciam juntos e o cartão ficava semitransparente no meio da troca = piscada)
   v13.159 · 20/10/2026 · Carrossel híbrido: o destino do encaixe passa a ser guardado à parte (a regra de não interromper no último cartão não pegava em alguns casos) + duração do encaixe proporcional à distância e com arranque mínimo (menos lento no curto, menos rápido no forte)
