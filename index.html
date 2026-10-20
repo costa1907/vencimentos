@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.138';
+(function(){var V='13.140';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.138</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.140</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.138';
+const VERSION='13.140';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2203,6 +2203,17 @@ $('#fa').addEventListener('beforeinput',e=>{
   if(t==='deleteContentBackward'){e.preventDefault();poe(tudo?0:Math.floor(F.cents/10))}
 });
 /* colar, cortar, preencher: cai aqui e lê os dígitos do texto */
+/* v13.140 (EXPERIMENTO): toque no campo do valor foca com preventScroll, pra o iPhone não deslocar a janela ao abrir/fechar o teclado */
+(function(){
+  const box=$('#amtbox'),fa=$('#fa');let tp=null;
+  box.addEventListener('touchstart',e=>{const p=e.touches[0];tp=(e.touches.length===1&&p)?{x:p.clientX,y:p.clientY,t:performance.now()}:null},{passive:true});
+  box.addEventListener('touchmove',e=>{if(!tp)return;const p=e.touches[0];if(p&&Math.hypot(p.clientX-tp.x,p.clientY-tp.y)>8)tp=null},{passive:true});
+  box.addEventListener('touchend',e=>{
+    const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
+    e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
+    try{fa.focus({preventScroll:true});const n=fa.value.length;fa.setSelectionRange(n,n)}catch(_){try{fa.focus()}catch(_2){}}
+  },{passive:false});
+})();
 $('#fa').addEventListener('input',e=>{
   const d=e.target.value.replace(/\D/g,'').slice(0,11);
   F.cents=d?parseInt(d,10):0;e.target.value=fmtAmt(F.cents);
@@ -2241,19 +2252,6 @@ document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.
     }catch(e){}
   }
   window.fixTop=fix;
-  /* v13.138: com o teclado aberto o iPhone desloca a área visível (visualViewport.offsetTop) e a janela inteira "sobe" ~7 px ao tocar no valor e "desce" ao fechar o teclado.
-     Em vez de brigar com a rolagem (isso fazia a tela tremer), a janela só recebe o deslocamento contrário: continua parada na tela. */
-  function cnt(){
-    try{
-      const sh=document.getElementById('sheet');if(!sh||!vv)return;
-      const o=sh.hidden?0:Math.max(0,vv.offsetTop||0);
-      const t=o>0.5?'translateY('+o.toFixed(1)+'px)':'';
-      if(sh.style.transform!==t)sh.style.transform=t;
-    }catch(e){}
-  }
-  if(vv){vv.addEventListener('scroll',cnt);vv.addEventListener('resize',cnt)}
-  document.addEventListener('focusin',()=>{[0,60,160,320,600].forEach(t=>setTimeout(cnt,t))});
-  document.addEventListener('focusout',()=>{[0,120,360,700].forEach(t=>setTimeout(cnt,t))});
   document.addEventListener('focusout',()=>{setTimeout(fix,350)});
   ['pageshow','focus','resize','orientationchange'].forEach(n=>window.addEventListener(n,()=>{fix();setTimeout(fix,120);setTimeout(fix,450)}));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){fix();setTimeout(fix,120);setTimeout(fix,450)}});
