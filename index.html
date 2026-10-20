@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.144';
+(function(){var V='13.145';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -696,7 +696,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.144</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.145</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -808,7 +808,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.144';
+const VERSION='13.145';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2532,13 +2532,25 @@ function setProv(id){
   F.prov=id||'';
 }
 $('#ccx').addEventListener('click',e=>{
-  const f=e.target.closest('[data-f]');if(f){CF=f.dataset.f;const l=MF(F.prov).filter(x=>CG(x)===CF);if(l.length&&!l.some(x=>x.id===F.model)){F.model=l[0].id;F.brand=l[0].br;F.tier=l[0].tr}syncForm();return}
+  const f=e.target.closest('[data-f]');if(f){
+    const nc=f.dataset.f;
+    if(nc===CF)return; /* v13.145: tocar na bandeira que já está marcada não faz nada (antes remontava o carrossel e ele piscava) */
+    const go=()=>{CF=nc;const l=MF(F.prov).filter(x=>CG(x)===CF);if(l.length&&!l.some(x=>x.id===F.model)){F.model=l[0].id;F.brand=l[0].br;F.tier=l[0].tr}syncForm()};
+    const t=$('#cm'),my=++CFT2;
+    /* v13.145: se o carrossel ainda está andando (inércia do dedo), primeiro ele é parado onde está (2 quadros) e só então troca; antes a troca acontecia com ele em movimento e ele "tremia" e era empurrado pro lado */
+    if(t&&performance.now()-CMSC<180){
+      t.style.overflowX='hidden';try{t._stopSnap&&t._stopSnap()}catch(_){}
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{t.style.overflowX='';if(my===CFT2)go()}));
+    }else go();
+    return}
   const b=e.target.closest('[data-b]'),t=e.target.closest('[data-t]'),m=e.target.closest('[data-m]');
   if(m){if(!m.dataset.m)return;if(m.classList.contains('cpi')&&!CGRID){CPIG=0;return} /* v13.144: no carrossel, tocar no cartão do lado não troca mais (o salto/pisca era dessa troca); só arrastar com o dedo */
   if(m.classList.contains('cpi')&&(CPIG||Date.now()-CPLS<350)){CPIG=0;return}if(m.dataset.m===F.model)return;F.model=m.dataset.m;const md=MF(F.prov).find(x=>x.id===F.model);F.brand=(md&&md.br)||'visa';F.tier=(md&&md.tr)||'gold';syncForm();return}
   if(b){F.brand=b.dataset.b;F.model='';syncForm()}
   if(t){F.tier=t.dataset.t;F.model='';syncForm()}
 });
+let CFT2=0,CMSC=0;
+$('#cm').addEventListener('scroll',()=>{CMSC=performance.now()},{passive:true});
 function parseBoleto(raw){
   let d=String(raw).replace(/\D/g,'');
   const dg=i=>+d[i];
