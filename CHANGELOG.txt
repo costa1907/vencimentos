@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.120 · 20/10/2026 · Volta a janela ao tamanho da v13.118 (altura máxima de 94%): com a janela mais alta da v13.119 a tela voltou a engasgar. O conteúdo é o mesmo da v13.118, só com o número de versão novo.
   v13.119 · 20/10/2026 · A janela (Nova conta etc.) sobe até ~10 px do relógio (antes parava em 94% da altura e deixava uma faixa vazia no topo).
   v13.118 · 20/10/2026 · Ao abrir a janela (Nova conta etc.), a tela de trás ("Sobrou!", resumo) não aparece mais fraquinha para sumir de repente depois: o fundo da janela agora é opaco (cor do tema) e aparece em 0,22 s (antes 80% de opacidade em 0,35 s).
   v13.117 · 20/10/2026 · Ao voltar do segundo plano o app decodificava até 46 imagens (incluindo as grades de ícones guardadas fora da tela desde a v13.111); agora só decodifica o que está visível (~11 a 15).
