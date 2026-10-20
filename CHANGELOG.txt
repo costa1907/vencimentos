@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.135 · 20/10/2026 · Corrigido: trocar de "Minha ordem" para A–Z e voltar apagava a ordem dos tipos; agora a ordem fica guardada e só o modo muda (igual às empresas)
   v13.134 · 20/10/2026 · Ordem dos tipos mais segura: guarda também uma cópia neste aparelho e volta a usá-la se a nuvem/backup vier sem ela; tela dos tipos atualiza quando a nuvem traz dados; diagnóstico mostra a ordem dos tipos
   v13.133 · 20/10/2026 · Arrastar os tipos (Boleto, Assinatura…) agora idêntico ao das empresas: o ícone voa com o dedo, os outros abrem espaço, encaixa ao soltar e fica selecionado
   v13.132 · 20/10/2026 · Empresas: toque curto seleciona já ao soltar o dedo (sem esperar o click do iPhone); arrastar volta a pintar o ícone e apagar o anterior (formulário só atualiza depois de soltar). Tipos: arrastar com posições fixas (acabou o pisca-pisca)
