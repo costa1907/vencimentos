@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.110 · 19/10/2026 · Trocar o tipo de conta (Boleto/Cartão/…) ficou mais leve: a grade de ícones agora é guardada pronta (elementos já criados e decodificados) e só é trocada de lugar, em vez de refazer ~45 imagens a cada toque (era o engasgo de ~55 ms que mais se repetia no relatório). Busca, escolha do banco e "Minha ordem" continuam iguais.
   v13.109 · 19/10/2026 · Diagnóstico: 6 botões "Teste de sensação" que escondem uma parte da janela AO VIVO (ícones, carrossel, tudo da janela, painel simples, fundo escuro, animação) para achar com o dedo qual peça causa o engasgo (o medidor de quadros mostrou-se enganoso: uma página de teste lisa também marca ~30% de quadros lentos). Nada mais mudou no app.
   v13.108 · 19/10/2026 · O SOCORRO da rolagem volta a vir DESLIGADO (só observa e anota no relatório); botão "Socorro: ligar/desligar" no Diagnóstico (a escolha anterior é ignorada: precisa ligar de novo se quiser).
   v13.107 · 19/10/2026 · Removido o segundo "socorro" (da v13.99) que mexia na rolagem da janela ao tocar no carrossel encaixando: com o socorro geral agora sempre ligado, os dois rolavam a janela ao mesmo tempo e brigavam (engasgo/trava). Fica só um socorro.
