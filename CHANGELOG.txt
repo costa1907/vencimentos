@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.138 · 20/10/2026 · Teclado: a janela não sobe mais ~7 px ao tocar no valor nem desce ao fechar o teclado (recebe o deslocamento contrário do iPhone em vez de brigar com a rolagem)
   v13.137 · 20/10/2026 · Arrastar ícones (tipos e empresas): o tempo de segurar caiu de 0,45 s para 0,30 s
   v13.136 · 20/10/2026 · Corrigido: o relatório do Diagnóstico não abria (erro na linha nova da ordem dos tipos, introduzida na v13.134)
   v13.135 · 20/10/2026 · Corrigido: trocar de "Minha ordem" para A–Z e voltar apagava a ordem dos tipos; agora a ordem fica guardada e só o modo muda (igual às empresas)
