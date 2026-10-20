@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.148 · 20/10/2026 · Carrossel de cartões: enquanto ele desliza sozinho para o primeiro/último cartão, um novo toque não o interrompe (não pula mais para o centro nem treme); a janela continua rolando na vertical
   v13.147 · 20/10/2026 · Corrige v13.146: o bloqueio das pontas do carrossel de cartões só vale para arrasto horizontal (antes travava a rolagem vertical da janela quando o dedo estava no carrossel)
   v13.146 · 20/10/2026 · Carrossel de cartões: sem elástico nas pontas (primeiro cartão não puxa para a direita, último não puxa para a esquerda, nem com ele em movimento) — acaba o tranco/tremida
   v13.145 · 20/10/2026 · Carrossel: tocar na bandeira já marcada não faz nada (não pisca mais); trocar de bandeira com o carrossel ainda andando primeiro o para no lugar e só então troca (sem tremida)
