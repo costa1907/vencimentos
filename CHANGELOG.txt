@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.142 · 20/10/2026 · Teclado sem deslocar a tela agora no app inteiro (login por e-mail, Ajustes, metas, backup, campo de observação); campo de senha continua nativo
+  v13.141 · 20/10/2026 · Teclado sem deslocar a janela agora em todos os campos de texto da janela (nome, observação, final do cartão, limite, dia do fechamento, boleto, busca); 1º toque foca, toques seguintes movem o cursor
   v13.140 · 20/10/2026 · EXPERIMENTO teclado: toque no campo do valor foca sem deixar o iPhone rolar/deslocar a janela (focus com preventScroll). Se der problema, voltar à v13.139
   v13.139 · 20/10/2026 · Desfeita a compensação do teclado da v13.138 (fazia a tela tremer); volta ao comportamento da v13.137
   v13.137 · 20/10/2026 · Arrastar ícones (tipos e empresas): o tempo de segurar caiu de 0,45 s para 0,30 s
