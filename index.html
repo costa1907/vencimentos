@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.167';
+(function(){var V='13.169';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -600,20 +600,27 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .swc.on{border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 3px rgba(var(--ar),.55)}
 
 /* Abertura (splash) */
-.spl{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:radial-gradient(120% 80% at 50% 38%,var(--h1) 0%,var(--bg2) 55%,var(--bg) 100%);transition:opacity .55s ease,visibility .55s;overflow:hidden}
+.spl{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#0a0c13;transition:opacity .4s ease,visibility .4s;overflow:hidden}
 .spl.out{opacity:0;visibility:hidden}
-.spl::after{content:"";position:absolute;left:50%;top:42%;width:120vmin;height:120vmin;margin:-60vmin 0 0 -60vmin;background:radial-gradient(circle,rgba(var(--ar),.20),transparent 62%);opacity:0;animation:splg 1.6s .2s ease forwards}
+.spl::after{content:"";position:absolute;left:50%;top:42%;width:120vmin;height:120vmin;margin:-60vmin 0 0 -60vmin;background:radial-gradient(circle,rgba(var(--ar),.26),transparent 62%);opacity:0;transform:scale(.7);animation:splg 2s .1s cubic-bezier(.22,1,.36,1) forwards}
 .spl-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-top:-5vh;text-align:center}
 .spl-mw{width:min(62vw,270px);aspect-ratio:270/240}
-.spl-mw>img{display:block;width:100%;height:auto;filter:var(--mf);clip-path:inset(100% 0 0 0);transform:translateY(14px) scale(.94);animation:splm 1.15s .2s cubic-bezier(.65,0,.2,1) forwards,splj 1.4s 1.2s ease forwards}
-.spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb;opacity:0;transform:translateY(12px);animation:spln .9s 1.05s var(--ease,cubic-bezier(.22,1,.36,1)) forwards}
+.spl-mw>img{display:block;width:100%;height:auto;filter:var(--mf);clip-path:inset(100% 0 0 0);transform:translateY(18px) scale(.9);animation:splm .85s .1s cubic-bezier(.65,0,.2,1) forwards,splj 1s .75s ease forwards}
+.spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb}
+.spl-n i,.spl-n span{display:inline-block;font-style:normal;opacity:0;transform:translateY(14px) scale(.96);animation:spll .55s calc(.6s + var(--i)*.05s) cubic-bezier(.22,1,.36,1) forwards}
+@keyframes spll{to{opacity:1;transform:none}}
+/* v13.169: reflexo de luz que atravessa o logo (só opacidade/posição, recortado no formato do logo) */
+.spl-mw{position:relative}
+.spl-mw::after{content:"";position:absolute;inset:0;pointer-events:none;-webkit-mask:url(i-sobrou-mark.webp) center/contain no-repeat;mask:url(i-sobrou-mark.webp) center/contain no-repeat;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.7) 50%,transparent 62%) -120% 0/250% 100% no-repeat;opacity:0;animation:spls .75s 1.05s ease-out forwards}
+@keyframes spls{0%{opacity:1;background-position:-120% 0}100%{opacity:1;background-position:120% 0}}
+
 .spl-n span{color:var(--gold)}
-.spl-t{margin-top:14px;font:500 13.5px/1.55 var(--fb,system-ui);letter-spacing:.22em;text-transform:uppercase;color:#aab1c4;opacity:0;animation:splf .8s 1.5s ease forwards}
+.spl-t{margin-top:14px;font:500 13.5px/1.55 var(--fb,system-ui);letter-spacing:.22em;text-transform:uppercase;color:#aab1c4;opacity:0;animation:splf .5s .85s ease forwards}
 .spl-t b{display:block;font-weight:700;color:var(--gold)}
-@keyframes splm{0%{clip-path:inset(100% 0 0 0);transform:translateY(14px) scale(.94)}100%{clip-path:inset(-60% -60% -60% -60%);transform:none}}
+@keyframes splm{0%{clip-path:inset(100% 0 0 0);transform:translateY(18px) scale(.9)}100%{clip-path:inset(-60% -60% -60% -60%);transform:none}}
 @keyframes splj{0%{filter:var(--mf) drop-shadow(0 0 0 rgba(var(--ar),0))}45%{filter:var(--mf) drop-shadow(0 0 26px rgba(var(--ar),.7))}100%{filter:var(--mf) drop-shadow(0 12px 22px rgba(0,0,0,.45))}}
 @keyframes splf{to{opacity:1}}
-@keyframes splg{to{opacity:1}}
+@keyframes splg{0%{opacity:0;transform:scale(.7)}55%{opacity:1;transform:scale(1)}100%{opacity:.8;transform:scale(1.08)}}
 @keyframes spln{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.spl *,.spl::after{animation-duration:.01s!important;animation-delay:0s!important}}
 /* v13.77: abertura do app = continuação da imagem de início do iPhone: já nasce no último quadro (logo, nome e frase visíveis, igual à imagem), segura um instante e sai com um zoom suave */
@@ -687,7 +694,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <div class="spl" id="spl" aria-hidden="true">
   <div class="spl-in">
     <div class="spl-mw"><img data-mk alt=""></div>
-    <div class="spl-n">Sobrou<span>!</span></div>
+    <div class="spl-n"><i style="--i:0">S</i><i style="--i:1">o</i><i style="--i:2">b</i><i style="--i:3">r</i><i style="--i:4">o</i><i style="--i:5">u</i><span style="--i:6">!</span></div>
     <div class="spl-t">Onde o seu controle<b>vira lucro.</b></div>
   </div>
 </div>
@@ -698,7 +705,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.167</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.169</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -810,7 +817,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.167';
+const VERSION='13.169';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2112,7 +2119,7 @@ function cpLoad(c){
   /* depois do cartão escolhido, as fotos de todos os outros cartões do banco (todas as bandeiras) ficam prontas em segundo plano */
   clearTimeout(cpLoad._t);cpLoad._t=setTimeout(()=>{try{MF(F.prov).forEach(x=>{const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s)cpWarm(imgU(t.s))})}catch(e){}},300);
 }
-/* v13.167: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
+/* v13.169: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
    Ao encostar o dedo no ícone do banco, já começa a preparar as 3 primeiras fotos daquele banco (antes só começava depois do toque terminar). */
 function imgPre(){
   try{
@@ -2167,7 +2174,7 @@ function syncForm(){
      $('#cml').hidden=!has;$('#cm').hidden=!has;$('#cpt').hidden=!has;
      $('#cbf').hidden=!(has&&brs.length>1);
      $('#cgen').hidden=has;
-     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.167: kch = trocou de banco/bandeira de verdade */
+     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.169: kch = trocou de banco/bandeira de verdade */
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
@@ -2192,7 +2199,7 @@ function syncForm(){
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
-       /* v13.167: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
+       /* v13.169: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
        if(kch){const g=CGH;CGH=null;CFI=0;cpSwap(g)}else{CGH=null}
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -2238,7 +2245,7 @@ function openSheet(id,key){
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  /* v13.167: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
+  /* v13.169: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -2272,7 +2279,7 @@ $('#fa').addEventListener('beforeinput',e=>{
   panel.addEventListener('touchend',e=>{
     const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
     const el=pick(e.target);if(!el)return;
-    /* v13.167: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
+    /* v13.169: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
     if(el===document.activeElement){const vv=window.visualViewport;if(!(vv&&window.innerHeight-vv.height<120))return;try{el.blur()}catch(_){}}
     e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
     try{el.focus({preventScroll:true});const n=el.value.length;try{el.setSelectionRange(n,n)}catch(_){}}catch(_){try{el.focus()}catch(_2){}}
@@ -3436,7 +3443,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
 
 /* Abertura: aparece só ao abrir o app (não a cada volta ao app); toque para pular */
 (function(){
-  const HTML='<div class="spl-in"><div class="spl-mw"><img src="'+window.MARK+'" alt=""></div><div class="spl-n">Sobrou<span>!</span></div><div class="spl-t">Onde o seu controle<b>vira lucro.</b></div></div>';
+  const HTML='<div class="spl-in"><div class="spl-mw"><img src="'+window.MARK+'" alt=""></div><div class="spl-n"><i style="--i:0">S</i><i style="--i:1">o</i><i style="--i:2">b</i><i style="--i:3">r</i><i style="--i:4">o</i><i style="--i:5">u</i><span style="--i:6">!</span></div><div class="spl-t">Onde o seu controle<b>vira lucro.</b></div></div>';
   function run(el,ms){
     const done=()=>{if(el.dataset.d)return;el.dataset.d=1;el.classList.add('out');setTimeout(()=>el.remove(),650)};
     el.addEventListener('pointerdown',done,{passive:true});setTimeout(done,ms||2500);
@@ -3454,20 +3461,8 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
-  el.classList.add('boot');
-  /* v13.167: a abertura do iPhone (splash-*.png) cobre a TELA inteira (956 px) e põe o texto em 58,3% dela. Mas no iPhone a janela do app começa ~62 px abaixo do topo (barra de status) e tem só 894 px: o app centralizava o texto dentro dessa janela e ele caía ~31 px mais abaixo que no PNG. Na troca (um esmaece, o outro aparece) o "Sobrou!" aparecia duas vezes. Aqui o conteúdo é deslocado para cair exatamente onde o PNG o desenha. */
-  let dg='';
-  try{
-    const sh=Math.max(screen.height||0,screen.width||0),st=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
-    const off=sh-innerHeight,inn=el.querySelector('.spl-in'),n=el.querySelector('.spl-n');
-    if(st&&inn&&n&&off>20&&off<200){
-      const b=n.getBoundingClientRect(),dl=0.5832*sh-off-(b.top+b.height/2);
-      if(Math.abs(dl)<120){inn.style.top=dl.toFixed(1)+'px';dg=' · deslocada '+Math.round(dl)+' px'}
-    }else dg=' · sem ajuste';
-    const vv=window.visualViewport;
-    setTimeout(()=>{try{const b=n&&n.getBoundingClientRect();window.__diagNote&&window.__diagNote('abertura: tela '+sh+' · janela '+innerHeight+(vv?' · visual '+Math.round(vv.height)+'/'+Math.round(vv.offsetTop):'')+dg+(b?' · texto em '+Math.round(b.top+b.height/2):''),'info')}catch(_){}},40);
-  }catch(_){}
-  run(el,1200);
+  /* v13.169: a imagem de início do iPhone agora é só o fundo liso (#0a0c13), igual ao fundo desta abertura: a troca é invisível e o logo anima sobre o mesmo fundo (como no app do Porto). Sem 2ª tela, sem deslocamento. */
+  run(el,2300);
 })();
 
 document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))i.src=window.MARK});

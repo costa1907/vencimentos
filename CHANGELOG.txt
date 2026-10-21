@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.169 · 21/10/2026 · Abertura mais luxuosa: reflexo de luz atravessando o logo, "Sobrou!" entrando letra por letra, logo com mais profundidade e halo de luz que respira (só movimento/opacidade; some do app depois de ~2,3 s)
+  v13.168 · 20/10/2026 · Abertura refeita (como app nativo): imagem do iPhone = só o fundo liso; o logo anima no app sobre o mesmo fundo (~1,7 s) e some com fade; acabou a repetição de telas e o "Sobrou!" duplicado. Trocar os splash-*.png pelos lisos (Sobrou_splash_lisos.zip)
   v13.167 · 20/10/2026 · Abertura (corrige a v13.166): medido no iPhone, a janela do app começa 62 px abaixo do topo (894 de 956 px); o texto da abertura do app é deslocado para cair no mesmo lugar do PNG do iPhone, sem "Sobrou!" duplicado na troca
   v13.166 · 20/10/2026 · Abertura: corrigido o "Sobrou!" aparecendo duas vezes na troca da abertura do iPhone para a do app (a camada do app era mais alta que a tela e o conteúdo ficava ~31 px mais abaixo); altura da abertura igual à da tela e proporção da marca fixa; diagnóstico registra as medidas
   v13.165 · 20/10/2026 · Corrigido: o cartão piscava a cada toque no formulário (Hoje/Amanhã, Única/Todo mês/Parcelada, parcelas +/−, etc.) porque a troca com esmaecer rodava em toda atualização do formulário; agora só roda ao trocar de banco ou bandeira
