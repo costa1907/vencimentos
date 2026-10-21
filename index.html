@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.175';
+(function(){var V='13.176';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -702,7 +702,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.175</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.176</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -814,7 +814,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.175';
+const VERSION='13.176';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2027,7 +2027,7 @@ let CPACT=0;const CPQ=[];let CPQR=0;
 function cpReveal(cc){CPQ.push(cc);if(!CPQR)CPQR=requestAnimationFrame(cpRevealStep)}
 function cpRevealStep(){CPQR=0;const cc=CPQ.shift();if(cc&&cc.classList){cc.classList.add('rd');try{const im=cc.querySelector&&cc.querySelector('img.cc-bg'),t0=im&&im._t0,dt=t0?performance.now()-t0:0;
     if(dt>250&&performance.now()-(window.__cpN||0)>1500&&cc.closest&&cc.closest('#cm')){window.__cpN=performance.now();
-      let o='';try{const u=im.currentSrc||im.src,e=performance.getEntriesByName(u).pop();if(e)o=' · '+(e.transferSize===0&&e.decodedBodySize>0?'veio do cache do app':'veio da rede ('+Math.round(e.duration)+' ms)')}catch(_){}
+      let o='';try{const u=im.currentSrc||im.src,e=performance.getEntriesByName(u).pop();if(u.indexOf('blob:')===0)o=' · direto da memória do app (sem sw.js)';else if(e)o=' · '+(e.transferSize===0&&e.decodedBodySize>0?'veio do cache do app':'veio da rede ('+Math.round(e.duration)+' ms)')}catch(_){}
       const nm=(cc.closest('.cpi')||{}).dataset;window.__diagNote&&window.__diagNote('foto de cartão '+((nm&&nm.n)||'')+' demorou '+Math.round(dt)+' ms para aparecer (fila '+WQ.length+' · baixando '+WACT+' · guardadas: '+(localStorage.getItem('imgpre')===IMGCACHE?'sim':'não')+')'+o,'info')}}catch(_){}window.__diagAct&&window.__diagAct('imagem de cartão aparecendo')}if(CPQ.length)CPQR=requestAnimationFrame(cpRevealStep)}
 /* v13.108: troca de bandeira/banco SUAVE. O carrossel antigo é copiado (fantasma) por cima do novo e some em 240 ms (só opacidade, feita pelo navegador): o novo já está no lugar certo embaixo e a troca vira uma dissolução em vez de um "pulo". Sem carrossel antigo (1ª vez), o novo aparece com fade-in */
 function cpGhostMake(){
@@ -2075,7 +2075,14 @@ function cpSwap(o){
 /* v13.108: fila ÚNICA de imagens de cartão. Cada foto é baixada e decodificada FORA da tela (new Image), no máximo 4 por vez, com
    relógio de segurança (antes, se o iPhone cancelasse um download, a vaga ficava presa e as outras fotos NUNCA apareciam).
    Foto já pronta aparece junto com o cartão, sem passar pelo fundo de cor. */
-const IMGR={},WQ=[],WCB={},KEEP=new Map();let WACT=0;
+const IMGR={},WQ=[],WCB={},KEEP=new Map(),BLOB={};let WACT=0;
+/* v13.175: lê a foto DIRETO da memória de imagens do app (Cache API), sem passar pelo sw.js. O iPhone "dorme" o sw.js e acordá-lo
+   levava ~1 s no 1º cartão depois de um tempo parado (Porto 1007 ms, Caixa 1159 ms). Se a foto não estiver guardada, usa o caminho de antes. */
+function blobGet(u){
+  if(BLOB[u])return Promise.resolve(BLOB[u]);
+  if(!window.caches)return Promise.resolve(null);
+  return caches.open(IMGCACHE).then(c=>c.match(new URL(u,location.href).href)).then(r=>r&&r.ok?r.blob():null).then(b=>b&&b.size?(BLOB[u]=URL.createObjectURL(b)):null).catch(()=>null)
+}
 function wpump(){
   while(WACT<10&&WQ.length){
     const u=WQ.shift();WACT++;let d=0,tm=0;
@@ -2083,7 +2090,7 @@ function wpump(){
     const im=new Image();im.onerror=()=>fin(0);
     im.onload=()=>{KEEP.set(u,im);if(KEEP.size>40)KEEP.delete(KEEP.keys().next().value);(im.decode?im.decode():Promise.resolve()).then(()=>fin(1),()=>fin(1))};
     tm=setTimeout(()=>fin(0),5000);
-    im.src=u;
+    blobGet(u).then(b=>{if(!d)im.src=b||u});
   }
 }
 function cpWarm(u,cb,front){
@@ -2112,7 +2119,7 @@ function cpLoad(c){
       const cc=im.parentNode;if(!cc||!cc.classList)return;
       im.addEventListener('load',()=>cpReveal(cc),{once:true});
       /* download preso/falho: pede de novo com um carimbo, para o iPhone não reaproveitar o pedido travado */
-      im.src=ok===0||im._rt?u+(u.indexOf('?')<0?'?':'&')+'r='+Date.now():u;
+      im.src=ok===0||im._rt?u+(u.indexOf('?')<0?'?':'&')+'r='+Date.now():(BLOB[u]||u);
       if(im.complete&&im.naturalWidth)cc.classList.add('rd');
     };
     if(IMGR[u])show();else cpWarm(u,show,k<3);
