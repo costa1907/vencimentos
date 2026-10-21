@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.178';
+(function(){var V='13.179';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -369,6 +369,10 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .c3d.sda .cpk .cpi.nr .cpa{will-change:transform;backface-visibility:hidden;animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--w) - 14px) cover calc(50% + var(--w) + 14px)}
 /* v13.36: os cartões só viram camada enquanto o carrossel anda de lado (a rolagem vertical da janela fica sem camadas) */
 /* giro 3D preso à rolagem (roda no compositor do iPhone: liso mesmo com o app ocupado) */
+/* v13.179: valor, situação e limite do cartão aparecem JUNTO com o deslize (acompanham a posição do cartão), em vez de esperar o carrossel parar (~0,5 s) */
+.sda .cards.cf .cw .meta,.sda .cards.cf .cw .lim{animation:cfm linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
+.sda .cards.cf .cw:not(.ctr) .cc-num{visibility:visible}
+@keyframes cfm{0%,32%{opacity:0}47%,53%{opacity:1}68%,100%{opacity:0}}
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
 .sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
 
@@ -452,7 +456,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .cards::-webkit-scrollbar{display:none}
 .cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
-.cw .meta,.cw .lim{transition:opacity .25s}
+.cw .meta,.cw .lim{transition:opacity .14s}
 .cards.cf .cw:not(.ctr) .meta,.cards.cf .cw:not(.ctr) .lim{opacity:0}
 .cards.cf .cw:not(.ctr) .cc-num{visibility:hidden}
 .cw:active .cc{transform:scale(.98)}
@@ -718,7 +722,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.178</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.179</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -830,7 +834,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.178';
+const VERSION='13.179';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1485,8 +1489,7 @@ function renderHome(){
     const nw=tmp.querySelectorAll('.cw'),ow=oldSec.querySelectorAll('.cw');
     ow.forEach((o,i)=>{const n=nw[i];if(!n)return;o.dataset.key=n.dataset.key;
       const cc=o.querySelector('.cc');[].slice.call(o.children).forEach(x=>{if(x!==cc)o.removeChild(x)});
-      [].slice.call(n.children).forEach(x=>{if(!x.classList.contains('cc'))o.appendChild(x)});
-      [].slice.call(o.children).forEach(x=>{if(x!==cc&&x.animate){try{x.animate([{opacity:.25},{opacity:1}],{duration:260,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}})});
+      [].slice.call(n.children).forEach(x=>{if(!x.classList.contains('cc'))o.appendChild(x)});});
     [].slice.call(L.children).forEach(x=>{if(x!==oldSec)L.removeChild(x)});oldSec.insertAdjacentHTML('afterend',h);kept=true;
   }else if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
     /* carrossel igual ao anterior: fica no lugar e troca só as listas abaixo dele. Antes ele era tirado e devolvido à
