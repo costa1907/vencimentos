@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.181';
+(function(){var V='13.183';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -292,6 +292,21 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;margin-top:16px}
 .card h3{margin:0 0 4px;font:700 16px var(--fd)}
 .card .cap{color:var(--mu);font-size:12.5px;margin-bottom:14px;line-height:1.45}
+/* v13.183: acabamento premium igual nas três telas (Contas, Panorama, Ajustes). Tudo estático (degradê, relevo e sombra): sem desfoque e sem animação nova, para não pesar */
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 40%),var(--card);box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
+.card h3::before{content:"";display:inline-block;vertical-align:-1px;width:3px;height:14px;margin-right:8px;border-radius:2px;background:var(--gold);box-shadow:0 0 9px rgba(var(--ar),.65)}
+.pg-title{background:linear-gradient(180deg,#fff,#c9cfe2);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.pg-title::after{content:"";display:block;width:34px;height:3px;margin-top:9px;border-radius:2px;background:linear-gradient(90deg,var(--gold2),transparent);box-shadow:0 0 10px rgba(var(--ar),.5)}
+.kpi div{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.bc .b{background:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.07))}
+.bc.cur .b{background:linear-gradient(180deg,rgba(var(--ar),.65),rgba(var(--ar),.3));box-shadow:0 0 18px -6px rgba(var(--ar),.65)}
+.ico{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 24%,transparent),color-mix(in srgb,var(--c) 8%,transparent));box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.row:active{background:linear-gradient(90deg,rgba(var(--ar),.08),rgba(var(--ar),0) 85%)}
+.cheer{background:linear-gradient(180deg,rgba(52,211,153,.14),rgba(52,211,153,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 26px -18px rgba(52,211,153,.55)}
+.tp{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.tp.on{background:linear-gradient(180deg,rgba(var(--ar),.16),rgba(var(--ar),.07));box-shadow:0 0 0 1px rgba(var(--ar),.35),0 10px 24px -14px rgba(var(--ar),.65),inset 0 1px 0 rgba(255,255,255,.1)}
+.act{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.act.armed{background:var(--bad)}
 .bars{display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:8px}
 .bc{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;cursor:default}
 .bc .v{font:700 11px var(--fb);color:var(--mu);white-space:nowrap}
@@ -317,7 +332,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .install b{color:var(--gold2)}
 .bk{width:100%;min-height:90px;margin-top:10px;font-size:12px;font-family:ui-monospace,Menlo,monospace}
 .pg-title{margin:6px 4px 0;font:800 26px var(--fd);letter-spacing:-.025em}
-.pg-sub{margin:6px 4px 0;color:var(--mu);font-size:13.5px}
+.pg-sub{margin:11px 4px 0;color:var(--mu);font-size:13.5px}
 
 /* aviso e confete */
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 168px);transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 18px;border-radius:18px;border:1px solid var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.5);font-weight:600;font-size:14px;white-space:nowrap;z-index:70;transition:all .4s var(--ease);background:#232941}
@@ -370,7 +385,7 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 /* v13.179: valor, situação e limite do cartão aparecem JUNTO com o deslize (acompanham a posição do cartão), em vez de esperar o carrossel parar (~0,5 s) */
 .sda .cards.cf .cw .meta,.sda .cards.cf .cw .lim{animation:cfm linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
 .sda .cards.cf .cw:not(.ctr) .cc-num{visibility:visible}
-@keyframes cfm{0%,32%{opacity:0}47%,53%{opacity:1}68%,100%{opacity:0}}
+@keyframes cfm{0%,18%{opacity:0}42%,58%{opacity:1}82%,100%{opacity:0}} /* v13.182: janela mais larga: o valor do cartão que chega aparece aos poucos enquanto o outro some (antes ficava um instante sem nenhum valor) */
 @keyframes cf3d{0%{transform:perspective(900px) rotateY(-34deg) scale(.86)}50%{transform:perspective(900px) rotateY(0deg) scale(1)}100%{transform:perspective(900px) rotateY(34deg) scale(.86)}}
 .sda .cards.cf .cw .cc{animation:cf3d linear both;animation-timeline:view(inline);animation-range:cover calc(50% - var(--cw) - 14px) cover calc(50% + var(--cw) + 14px)}
 
@@ -452,6 +467,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .cc.mini::after{display:none}
 .cards{--cw:min(272px,76vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:6px calc(50% + 16px - var(--cw)/2) 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:none}
 .cards::-webkit-scrollbar{display:none}
+.cards.rv .cw{animation:none} /* v13.182: depois da 1ª entrada a animação sai: ao voltar do segundo plano o app refaz o carrossel (display:none→volta) e isso reiniciava a entrada (cartão escuro, subindo 14 px e com texto duplicado) */
 .cw{flex:none;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:normal;cursor:pointer;animation:rin .6s var(--ease) backwards}
 .cw .cc{transition:none!important;transform-origin:50% 60%;will-change:transform;backface-visibility:hidden}
 .cw .meta,.cw .lim{transition:opacity .14s}
@@ -720,7 +736,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.181</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.183</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -832,7 +848,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.181';
+const VERSION='13.183';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1498,6 +1514,7 @@ function renderHome(){
     if(osl){const nc=L.querySelector('.cards');if(nc)nc.scrollLeft=osl}
     cfInit();
   }
+  clearTimeout(renderHome._rv);renderHome._rv=setTimeout(()=>{const c=document.querySelector('#list .cards');if(c)c.classList.add('rv')},1400);
   LCH=ch;HKEY=hk;ODC=null;HPREV={rest:rest,pct:pct};
   tween($('#hbig'),rest,brl,NAVM?550:ANIM?900:500);
   tween($('#rpc'),pct,v=>Math.round(v)+'%',NAVM?550:ANIM?900:500);
@@ -2031,7 +2048,7 @@ function reviverCarrosseis(){
     if(!tr||!tr.children.length||(aberta&&CGRID))return;
     if(Date.now()-(aberta?CPLS:HCLS)<400)return; /* o dedo acabou de mexer nele: não mexe */
     const sl=tr.scrollLeft;
-    tr.classList.add('cpnt');tr.style.display='none';void tr.offsetWidth;tr.style.display='';tr.scrollLeft=sl;
+    tr.classList.add('cpnt','rv');tr.style.display='none';void tr.offsetWidth;tr.style.display='';tr.scrollLeft=sl;
     tr._k='';tr._c=-1;
     if(aberta){tr._vb=-1;const bi=cpLayout(true);cpLabel(bi)}else cfLayout(tr,true);
     requestAnimationFrame(()=>requestAnimationFrame(()=>tr.classList.remove('cpnt')));
