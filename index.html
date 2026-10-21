@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.177';
+(function(){var V='13.178';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -123,10 +123,10 @@ svg{display:block}
 .brand h1 .ex{color:var(--gold)}
 .brand .logo>img{width:24px;height:auto;filter:var(--mf)}
 .brand h1{font:800 21px/1 var(--fd);margin:0;letter-spacing:-.02em}
-.pill{font:700 9.5px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--on);background:linear-gradient(120deg,var(--gold2),var(--gold));padding:5px 8px;border-radius:99px}
+.pill{position:relative;overflow:hidden;font:700 9.5px/1 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--on);background:linear-gradient(120deg,var(--gold2),var(--gold));padding:5px 8px;border-radius:99px}
 
 /* resumo */
-.hero{position:relative;overflow:hidden;border-radius:28px;padding:18px 18px 16px;background:linear-gradient(160deg,var(--h1) 0%,var(--h2) 55%,var(--bg2) 100%);border:1px solid var(--line2);box-shadow:0 24px 50px -24px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:18px 18px 16px;border:1px solid transparent;background:linear-gradient(160deg,var(--h1) 0%,var(--h2) 55%,var(--bg2) 100%) padding-box,linear-gradient(150deg,rgba(var(--ar),.6),rgba(255,255,255,.08) 36%,rgba(255,255,255,.04) 64%,rgba(var(--ar),.28)) border-box;box-shadow:0 24px 50px -24px rgba(0,0,0,.7),0 0 40px -22px rgba(var(--ar),.5),inset 0 1px 0 rgba(255,255,255,.07)}
 .hero::before{content:"";position:absolute;inset:-40% -20% auto auto;width:360px;height:360px;background:radial-gradient(circle,rgba(var(--ar),.20),transparent 62%);animation:drift 14s ease-in-out infinite alternate;pointer-events:none}
 .hero::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-18deg);animation:sheen 1.8s .5s var(--ease) 1 both;pointer-events:none}
 @keyframes drift{to{transform:translate(-40px,30px) scale(1.12)}}
@@ -148,7 +148,12 @@ svg{display:block}
 .ring .ct{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 22px/1 var(--fd)}
 .ring .ct small{display:block;font:500 9.5px/1 var(--fb);color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
 .stats{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-.st{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:10px 11px;min-width:0}
+.st{background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.022));box-shadow:inset 0 1px 0 rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:10px 11px;min-width:0}
+.pill::before{content:"✦";margin-right:4px;font-size:9px}
+.pill::after{content:"";position:absolute;top:0;bottom:0;left:0;width:55%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:translateX(-140%) skewX(-20deg);animation:psh 6.5s 2.5s ease-in-out infinite;pointer-events:none}
+@keyframes psh{0%,68%{transform:translateX(-140%) skewX(-20deg)}100%{transform:translateX(300%) skewX(-20deg)}}
+body.so .pill::after{animation-play-state:paused}
+.nofx .pill::after{display:none}
 .st span{display:block;font:600 10px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .st b{display:block;margin-top:7px;font:700 14px/1.1 var(--fd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st.bad b{color:var(--bad)} .st.ok b{color:var(--ok)}
@@ -161,11 +166,14 @@ svg{display:block}
    montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
 #pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.sec h3::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--gold);box-shadow:0 0 9px rgba(var(--ar),.65);flex:none}
+.sec.late h3::before{background:var(--bad);box-shadow:0 0 9px rgba(251,111,111,.6)}
+.sec.done h3::before{background:var(--ok);box-shadow:0 0 9px rgba(52,211,153,.55)}
 .sec h3 em{font-style:normal;background:rgba(255,255,255,.08);color:var(--tx);border-radius:99px;padding:3px 8px;font-size:11px;letter-spacing:0}
 .sec h3 span{margin-left:auto;letter-spacing:0;text-transform:none;font:600 13px var(--fb)}
 .sec.late h3{color:var(--bad)} .sec.late h3 em{background:rgba(251,111,111,.16);color:var(--bad)}
 .sec.done h3{color:var(--ok)}
-.group{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.group{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 40%),var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
 .row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
@@ -710,7 +718,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.177</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.178</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -822,7 +830,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.177';
+const VERSION='13.178';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1470,7 +1478,17 @@ function renderHome(){
   }
   const L=$('#list'),oldSec=L.querySelector('.sec.cardsec'),oc=oldSec&&oldSec.querySelector('.cards'),osl=(oc&&hk===HKEY)?oc.scrollLeft:0;
   L.className=(ANIM&&!NAVM)?'':'noanim';
-  if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
+  let kept=false;
+  if(NAVM&&ch&&oldSec&&(ch.match(/data-id="[^"]*"/g)||[]).join()===[].map.call(oldSec.querySelectorAll('.cw'),x=>'data-id="'+x.dataset.id+'"').join()){
+    /* v13.178: trocar de mês NÃO recria os cartões (a foto era recarregada e piscava): a arte fica no lugar e só o valor/situação e o limite trocam, com um esmaecer rápido */
+    const tmp=document.createElement('div');tmp.innerHTML=ch;
+    const nw=tmp.querySelectorAll('.cw'),ow=oldSec.querySelectorAll('.cw');
+    ow.forEach((o,i)=>{const n=nw[i];if(!n)return;o.dataset.key=n.dataset.key;
+      const cc=o.querySelector('.cc');[].slice.call(o.children).forEach(x=>{if(x!==cc)o.removeChild(x)});
+      [].slice.call(n.children).forEach(x=>{if(!x.classList.contains('cc'))o.appendChild(x)});
+      [].slice.call(o.children).forEach(x=>{if(x!==cc&&x.animate){try{x.animate([{opacity:.25},{opacity:1}],{duration:260,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}})});
+    [].slice.call(L.children).forEach(x=>{if(x!==oldSec)L.removeChild(x)});oldSec.insertAdjacentHTML('afterend',h);kept=true;
+  }else if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
     /* carrossel igual ao anterior: fica no lugar e troca só as listas abaixo dele. Antes ele era tirado e devolvido à
        tela, e o iPhone refazia o 3D e redesenhava os cartões a cada conta marcada como paga */
     [].slice.call(L.children).forEach(x=>{if(x!==oldSec)L.removeChild(x)});oldSec.insertAdjacentHTML('afterend',h);
@@ -1480,7 +1498,7 @@ function renderHome(){
     cfInit();
   }
   LCH=ch;HKEY=hk;ODC=null;HPREV={rest:rest,pct:pct};
-  if(NAVM&&L.animate){try{L.animate([{opacity:.4},{opacity:1}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}
+  if(NAVM){[].slice.call(L.children).forEach(x=>{if(kept&&x===oldSec)return;if(x.animate){try{x.animate([{opacity:.4},{opacity:1}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}})}
   tween($('#hbig'),rest,brl,NAVM?550:ANIM?900:500);
   tween($('#rpc'),pct,v=>Math.round(v)+'%',NAVM?550:ANIM?900:500);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const r=$('#rpr');if(r)r.style.strokeDashoffset=(C*(1-pct/100)).toFixed(1)}));
