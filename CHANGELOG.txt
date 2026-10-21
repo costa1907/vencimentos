@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.166 · 20/10/2026 · Abertura: corrigido o "Sobrou!" aparecendo duas vezes na troca da abertura do iPhone para a do app (a camada do app era mais alta que a tela e o conteúdo ficava ~31 px mais abaixo); altura da abertura igual à da tela e proporção da marca fixa; diagnóstico registra as medidas
   v13.165 · 20/10/2026 · Corrigido: o cartão piscava a cada toque no formulário (Hoje/Amanhã, Única/Todo mês/Parcelada, parcelas +/−, etc.) porque a troca com esmaecer rodava em toda atualização do formulário; agora só roda ao trocar de banco ou bandeira
   v13.164 · 20/10/2026 · Fotos dos cartões: o download em segundo plano passou para o sw.js (fora da tela do app, sem custo de fluidez); o app só entrega a lista e para de repetir depois de concluir
   v13.163 · 20/10/2026 · Fotos dos cartões: com o app parado, todas as ~58 fotos são baixadas em segundo plano (uma vez só, ~3,4 MB) para ficarem prontas; ao encostar no ícone do banco já começa a preparar as 3 primeiras fotos dele

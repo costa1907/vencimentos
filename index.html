@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.165';
+(function(){var V='13.166';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -604,7 +604,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .spl.out{opacity:0;visibility:hidden}
 .spl::after{content:"";position:absolute;left:50%;top:42%;width:120vmin;height:120vmin;margin:-60vmin 0 0 -60vmin;background:radial-gradient(circle,rgba(var(--ar),.20),transparent 62%);opacity:0;animation:splg 1.6s .2s ease forwards}
 .spl-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-top:-5vh;text-align:center}
-.spl-mw{width:min(62vw,270px)}
+.spl-mw{width:min(62vw,270px);aspect-ratio:270/240}
 .spl-mw>img{display:block;width:100%;height:auto;filter:var(--mf);clip-path:inset(100% 0 0 0);transform:translateY(14px) scale(.94);animation:splm 1.15s .2s cubic-bezier(.65,0,.2,1) forwards,splj 1.4s 1.2s ease forwards}
 .spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb;opacity:0;transform:translateY(12px);animation:spln .9s 1.05s var(--ease,cubic-bezier(.22,1,.36,1)) forwards}
 .spl-n span{color:var(--gold)}
@@ -698,7 +698,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.165</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.166</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -810,7 +810,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.165';
+const VERSION='13.166';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2112,7 +2112,7 @@ function cpLoad(c){
   /* depois do cartão escolhido, as fotos de todos os outros cartões do banco (todas as bandeiras) ficam prontas em segundo plano */
   clearTimeout(cpLoad._t);cpLoad._t=setTimeout(()=>{try{MF(F.prov).forEach(x=>{const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s)cpWarm(imgU(t.s))})}catch(e){}},300);
 }
-/* v13.165: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
+/* v13.166: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
    Ao encostar o dedo no ícone do banco, já começa a preparar as 3 primeiras fotos daquele banco (antes só começava depois do toque terminar). */
 function imgPre(){
   try{
@@ -2167,7 +2167,7 @@ function syncForm(){
      $('#cml').hidden=!has;$('#cm').hidden=!has;$('#cpt').hidden=!has;
      $('#cbf').hidden=!(has&&brs.length>1);
      $('#cgen').hidden=has;
-     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.165: kch = trocou de banco/bandeira de verdade */
+     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.166: kch = trocou de banco/bandeira de verdade */
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
@@ -2192,7 +2192,7 @@ function syncForm(){
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
-       /* v13.165: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
+       /* v13.166: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
        if(kch){const g=CGH;CGH=null;CFI=0;cpSwap(g)}else{CGH=null}
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -2238,7 +2238,7 @@ function openSheet(id,key){
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  /* v13.165: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
+  /* v13.166: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -2272,7 +2272,7 @@ $('#fa').addEventListener('beforeinput',e=>{
   panel.addEventListener('touchend',e=>{
     const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
     const el=pick(e.target);if(!el)return;
-    /* v13.165: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
+    /* v13.166: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
     if(el===document.activeElement){const vv=window.visualViewport;if(!(vv&&window.innerHeight-vv.height<120))return;try{el.blur()}catch(_){}}
     e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
     try{el.focus({preventScroll:true});const n=el.value.length;try{el.setSelectionRange(n,n)}catch(_){}}catch(_){try{el.focus()}catch(_2){}}
@@ -3455,6 +3455,16 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
   el.classList.add('boot');
+  /* v13.166: a abertura do iPhone (imagem splash-*.png) é desenhada com o texto em ~58,3% da altura da TELA. No iPhone a camada do app podia ser mais alta que a tela (≈62 px a mais embaixo): o conteúdo centralizava ~31 px mais abaixo e, na troca (um esmaece, o outro aparece), aparecia "Sobrou!" duas vezes. Aqui a altura da abertura passa a ser a da tela. */
+  let dg='';
+  try{
+    const sh=Math.max(screen.height||0,screen.width||0),st=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+    const r0=el.getBoundingClientRect();
+    if(st&&sh>500&&r0.height>sh+8&&r0.height<sh+200){el.style.bottom='auto';el.style.height=sh+'px';dg=' · ajustada de '+Math.round(r0.height)+' para '+sh}
+    else dg=' · sem ajuste'
+    const vv=window.visualViewport;
+    setTimeout(()=>{try{const n=el.querySelector('.spl-n');const b=n&&n.getBoundingClientRect();window.__diagNote&&window.__diagNote('abertura: tela '+sh+' · janela '+innerHeight+(vv?' · visual '+Math.round(vv.height)+'/'+Math.round(vv.offsetTop):'')+' · camada '+Math.round(r0.height)+dg+(b?' · texto em '+Math.round(b.top+b.height/2):''),'info')}catch(_){}},40);
+  }catch(_){}
   run(el,1200);
 })();
 
