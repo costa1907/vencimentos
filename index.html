@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.169';
+(function(){var V='13.170';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -609,7 +609,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb}
 .spl-n i,.spl-n span{display:inline-block;font-style:normal;opacity:0;transform:translateY(14px) scale(.96);animation:spll .55s calc(.6s + var(--i)*.05s) cubic-bezier(.22,1,.36,1) forwards}
 @keyframes spll{to{opacity:1;transform:none}}
-/* v13.169: reflexo de luz que atravessa o logo (só opacidade/posição, recortado no formato do logo) */
+/* v13.170: reflexo de luz que atravessa o logo (só opacidade/posição, recortado no formato do logo) */
 .spl-mw{position:relative}
 .spl-mw::after{content:"";position:absolute;inset:0;pointer-events:none;-webkit-mask:url(i-sobrou-mark.webp) center/contain no-repeat;mask:url(i-sobrou-mark.webp) center/contain no-repeat;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.7) 50%,transparent 62%) -120% 0/250% 100% no-repeat;opacity:0;animation:spls .75s 1.05s ease-out forwards}
 @keyframes spls{0%{opacity:1;background-position:-120% 0}100%{opacity:1;background-position:120% 0}}
@@ -705,7 +705,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.169</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.170</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -817,7 +817,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.169';
+const VERSION='13.170';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2119,7 +2119,7 @@ function cpLoad(c){
   /* depois do cartão escolhido, as fotos de todos os outros cartões do banco (todas as bandeiras) ficam prontas em segundo plano */
   clearTimeout(cpLoad._t);cpLoad._t=setTimeout(()=>{try{MF(F.prov).forEach(x=>{const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s)cpWarm(imgU(t.s))})}catch(e){}},300);
 }
-/* v13.169: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
+/* v13.170: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
    Ao encostar o dedo no ícone do banco, já começa a preparar as 3 primeiras fotos daquele banco (antes só começava depois do toque terminar). */
 function imgPre(){
   try{
@@ -2174,7 +2174,7 @@ function syncForm(){
      $('#cml').hidden=!has;$('#cm').hidden=!has;$('#cpt').hidden=!has;
      $('#cbf').hidden=!(has&&brs.length>1);
      $('#cgen').hidden=has;
-     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.169: kch = trocou de banco/bandeira de verdade */
+     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.170: kch = trocou de banco/bandeira de verdade */
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
@@ -2199,7 +2199,7 @@ function syncForm(){
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
-       /* v13.169: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
+       /* v13.170: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
        if(kch){const g=CGH;CGH=null;CFI=0;cpSwap(g)}else{CGH=null}
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -2245,7 +2245,7 @@ function openSheet(id,key){
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  /* v13.169: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
+  /* v13.170: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -2279,7 +2279,7 @@ $('#fa').addEventListener('beforeinput',e=>{
   panel.addEventListener('touchend',e=>{
     const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
     const el=pick(e.target);if(!el)return;
-    /* v13.169: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
+    /* v13.170: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
     if(el===document.activeElement){const vv=window.visualViewport;if(!(vv&&window.innerHeight-vv.height<120))return;try{el.blur()}catch(_){}}
     e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
     try{el.focus({preventScroll:true});const n=el.value.length;try{el.setSelectionRange(n,n)}catch(_){}}catch(_){try{el.focus()}catch(_2){}}
@@ -3094,22 +3094,54 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   '.lgpix{margin:16px 0;padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--line);text-align:left;font-size:14px;line-height:1.5}.lgpix b{color:var(--gold2)}.lgpix code{display:block;margin-top:6px;word-break:break-all;font:600 13px ui-monospace,monospace;color:var(--tx)}'+
   '.lgb.adm .adl{display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px;text-align:left}';
   const st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
+
+  const st2=document.createElement('style');st2.textContent=`
+.lgv{background:radial-gradient(90% 55% at 50% 0%,rgba(var(--ar),.20) 0%,transparent 70%),radial-gradient(80% 50% at 50% 105%,rgba(var(--ar),.10) 0%,transparent 70%),linear-gradient(180deg,var(--bg2),var(--bg))}
+.lgb{--d:0s}.lgv.lgw .lgb{--d:2.6s}
+.lgb .lgm{width:104px;height:92px;margin:0 auto 12px;filter:drop-shadow(0 14px 28px rgba(var(--ar),.35))}
+.lgb .lgm>img{animation:lgm .8s calc(var(--d) + .05s) cubic-bezier(.22,1,.36,1) both}
+.lgb h1{font:800 38px/1 var(--fd,var(--fb));letter-spacing:-.03em;animation:lgu .6s calc(var(--d) + .12s) cubic-bezier(.22,1,.36,1) both}
+.lgb .lgs{margin:12px 0 26px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;animation:lgu .6s calc(var(--d) + .2s) cubic-bezier(.22,1,.36,1) both}
+@keyframes lgu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.lgc{padding:18px;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.028));border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 60px -24px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.09);animation:lgu .65s calc(var(--d) + .28s) cubic-bezier(.22,1,.36,1) both}
+.lgc .lgtab{margin-bottom:16px;background:rgba(0,0,0,.28)}
+.lgc .lgtab button.on{box-shadow:0 6px 18px -6px rgba(var(--ar),.7)}
+.lgfw{position:relative;margin-top:12px}
+.lgfw .fld{margin:0;height:56px;padding-left:48px;border-radius:18px;font-size:16px;background-color:rgba(0,0,0,.28)}
+.lgfw .ic{position:absolute;left:16px;top:50%;margin-top:-10px;width:20px;height:20px;stroke:var(--mu);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;transition:stroke .2s}
+.lgfw:focus-within .ic{stroke:var(--gold2)}
+.lgfw .fld:focus{border-color:rgba(var(--ar),.7);box-shadow:0 0 0 4px rgba(var(--ar),.15)}
+.lgfw.pw .fld{padding-right:52px}
+.lgeye{position:absolute;right:6px;top:50%;margin-top:-22px;width:44px;height:44px;display:grid;place-items:center;color:var(--mu)}
+.lgeye svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lgeye.on{color:var(--gold2)}
+.lgc .cta{height:56px;border-radius:18px;margin-top:16px;font-size:16px;letter-spacing:.01em;box-shadow:0 14px 30px -10px rgba(var(--ar),.75),inset 0 1px 0 rgba(255,255,255,.35)}
+.lgsec{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--mu2);animation:lgu .6s calc(var(--d) + .4s) both}
+.lgsec svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lgb .fld:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #121626 inset!important;-webkit-text-fill-color:var(--tx)!important;caret-color:var(--tx);transition:background-color 99999s}
+.lgc .lgerr{margin-top:10px;min-height:18px}
+`;document.head.appendChild(st2);
   const ov=document.createElement('div');ov.className='lgv';ov.id='lgv';ov.hidden=true;document.body.appendChild(ov);
   /* v13.80: com a tela de Entrar aberta a página de trás é congelada (sem rolar, sem desenhar) e o tamanho da tela de Entrar é travado: com o teclado / Face ID de "Preencher Senha" o iPhone mexe na área visível e rola a página; a tela de trás reagia e a de Entrar (centralizada) pulava e piscava */
   const lockOv=(nolock)=>{const de=document.documentElement;if(!nolock)de.classList.add('lgon');const H=window.innerHeight;ov.style.height=H+'px';const b=ov.querySelector('.lgb');if(b){ov.style.setProperty('--lgt',Math.max(16,Math.min(Math.round((H-b.offsetHeight)/2),nolock?H:Math.round(H*.1)))+'px')}};
+  const fadeOv=()=>{const de=document.documentElement;de.classList.remove('lgon');ov.style.transition='opacity .3s ease';ov.style.opacity='0';ov.style.pointerEvents='none';setTimeout(()=>{ov.style.transition='';ov.style.opacity='';ov.style.pointerEvents='';hideOv()},320)};
   const hideOv=()=>{ov.hidden=true;ov.innerHTML='';ov.style.height='';document.documentElement.classList.remove('lgon')};
   const MK=()=>'<div class="lgm"><img src="'+(window.MARK||'')+'" alt=""></div><h1>Sobrou<span>!</span></h1>';
 
   function showLogin(mode){
     mode=mode||'in';
     ov.hidden=false;
+    const IC_M='<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 8 8 6 8-6"/></svg>',IC_L='<svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg>',IC_E='<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    ov.classList.toggle('lgw',!!document.getElementById('spl'));
     ov.innerHTML='<div class="lgb">'+MK()+'<p class="lgs">Onde o seu controle <b style="color:var(--gold2)">vira lucro.</b></p>'+
-      '<div class="lgtab"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Entrar</button><button type="button" data-m="new" class="'+(mode==='new'?'on':'')+'">Criar conta</button></div>'+
-      '<input class="fld" id="lge" type="email" inputmode="email" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">'+
-      '<input class="fld" id="lgp" type="password" autocomplete="'+(mode==='in'?'current-password':'new-password')+'" name="sobrou-pw" placeholder="'+(mode==='in'?'Senha':'Crie uma senha (mínimo 6)')+'">'+
+      '<div class="lgc"><div class="lgtab"><button type="button" data-m="in" class="'+(mode==='in'?'on':'')+'">Entrar</button><button type="button" data-m="new" class="'+(mode==='new'?'on':'')+'">Criar conta</button></div>'+
+      '<div class="lgfw">'+IC_M+'<input class="fld" id="lge" type="email" inputmode="email" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Seu e-mail"></div>'+
+      '<div class="lgfw pw">'+IC_L+'<input class="fld" id="lgp" type="password" autocomplete="'+(mode==='in'?'current-password':'new-password')+'" name="sobrou-pw" placeholder="'+(mode==='in'?'Senha':'Crie uma senha (mínimo 6)')+'"><button type="button" class="lgeye" id="lgey" aria-label="Mostrar senha">'+IC_E+'</button></div>'+
       '<button class="cta" id="lgg" type="button">'+(mode==='in'?'Entrar':'Criar conta e começar')+'</button>'+
       '<div class="lgerr" id="lgx"></div>'+
-      (mode==='in'?'<a class="lgl" id="lgf">Esqueci minha senha</a>':'<p class="hint" style="margin-top:8px">'+TRIAL_DIAS+' dias grátis para testar tudo.</p>')+'</div>';
+      (mode==='in'?'<a class="lgl" id="lgf">Esqueci minha senha</a>':'<p class="hint" style="margin-top:8px">'+TRIAL_DIAS+' dias grátis para testar tudo.</p>')+'</div>'+
+      '<div class="lgsec"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg>Conexão segura</div></div>';
+    {const ey=ov.querySelector('#lgey'),pw=ov.querySelector('#lgp');if(ey&&pw){ey.addEventListener('pointerdown',e=>e.preventDefault());ey.onclick=()=>{const sh=pw.type==='password';pw.type=sh?'text':'password';ey.classList.toggle('on',sh);ey.setAttribute('aria-label',sh?'Ocultar senha':'Mostrar senha')}}}
     lockOv();
     ov.querySelectorAll('.lgtab button').forEach(b=>b.onclick=()=>showLogin(b.dataset.m));
     const x=(t,ok)=>{const e=$('#lgx');e.textContent=t;e.className='lgerr'+(ok?' ok':'')};
@@ -3123,7 +3155,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
         x('Entrando…',1);
         await pull(false);
         await checkLic();
-        if(ov.hidden===false&&status().k!=='exp')hideOv();
+        if(ov.hidden===false&&status().k!=='exp')fadeOv();
         window.__app.renderAll();
       }catch(e){x(errTxt(e));b.disabled=false;b.style.opacity=1}
     };
@@ -3456,12 +3488,11 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   const el=document.getElementById('spl');if(!el)return;
   if(document.documentElement.classList.contains('nofx')){el.remove();return}
   /* v13.77: quem ainda não entrou (primeiro acesso ou saiu da conta) vai direto para a tela de login/cadastro, sem a abertura */
-  let logado=false;try{logado=!!localStorage.getItem('sobrou.auth')}catch(_){}
-  if(!logado){el.remove();return}
+  /* v13.170: a abertura aparece em TODA abertura do app (logado ou não) e depois vem o login ou as Contas; depois de fazer login não repete (só um fade) */
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
-  /* v13.169: a imagem de início do iPhone agora é só o fundo liso (#0a0c13), igual ao fundo desta abertura: a troca é invisível e o logo anima sobre o mesmo fundo (como no app do Porto). Sem 2ª tela, sem deslocamento. */
+  /* v13.170: a imagem de início do iPhone agora é só o fundo liso (#0a0c13), igual ao fundo desta abertura: a troca é invisível e o logo anima sobre o mesmo fundo (como no app do Porto). Sem 2ª tela, sem deslocamento. */
   run(el,2300);
 })();
 
