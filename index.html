@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.176';
+(function(){var V='13.177';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -152,8 +152,8 @@ svg{display:block}
 .st span{display:block;font:600 10px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .st b{display:block;margin-top:7px;font:700 14px/1.1 var(--fd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st.bad b{color:var(--bad)} .st.ok b{color:var(--ok)}
-.todaybtn{margin:12px auto 0;display:none;padding:8px 14px;border-radius:99px;background:rgba(var(--ar),.12);color:var(--gold2);font:600 12.5px var(--fb);border:1px solid rgba(var(--ar),.25)}
-.todaybtn.show{display:block}
+.todaybtn{display:inline-block;margin:0;padding:2px 9px;border-radius:99px;background:rgba(var(--ar),.14);color:var(--gold2);font:600 10.5px/13px var(--fb);letter-spacing:.02em;text-transform:none;border:1px solid rgba(var(--ar),.28);animation:tbin .25s var(--ease) both}
+@keyframes tbin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 
 /* lista */
 .sec{margin-top:24px}
@@ -169,7 +169,7 @@ svg{display:block}
 .row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 12px;cursor:pointer;transition:background .2s;animation:rin .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
 .row+.row{border-top:1px solid var(--line)}
 .row:active{background:rgba(255,255,255,.04)}
-.noanim .row{animation:none}
+.noanim .row,.noanim .cw{animation:none}
 .row.na{animation:none}
 @keyframes rin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .chk{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;color:transparent;transition:all .3s var(--ease);position:relative}
@@ -210,18 +210,26 @@ svg{display:block}
 /* v13.115: no iOS 26 o sistema borra ~40 px do topo do app instalado (efeito de borda de rolagem) e só deixa de borrar quando há uma barra FIXA, de largura total, de cor SÓLIDA e que ele consiga "ver" (com pointer-events:none ele ignorava). Por isso o tapa-relógio volta, agora tocável e opaco */
 .topbar{position:fixed;top:0;left:0;right:0;height:var(--st);background-color:var(--bg);opacity:1;z-index:40;pointer-events:auto;touch-action:none}
 /* barra e botão + (sem desfoque por trás: o desfoque era refeito a cada quadro enquanto a lista rolava por baixo) */
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:var(--card);border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05);z-index:20}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.018) 60%),var(--card);border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.85),0 0 34px -16px rgba(var(--ar),.45),inset 0 1px 0 rgba(255,255,255,.1);z-index:20}
 /* v13.161: com o teclado aberto, as abas e o botão + ficam escondidos (menos coisa para o iPhone redesenhar enquanto a tela sobe e desce) */
 html.kbd .tabs,html.kbd .fab{visibility:hidden}
-.tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:rgba(var(--ar),.14);box-shadow:inset 0 0 0 1px rgba(var(--ar),.30);transition:transform .45s var(--ease)}
+.tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:linear-gradient(180deg,rgba(var(--ar),.24),rgba(var(--ar),.1));box-shadow:inset 0 0 0 1px rgba(var(--ar),.34),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px -8px rgba(var(--ar),.6);transition:transform .45s var(--ease)}
 .tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 8px;color:var(--mu2);font:600 10.5px var(--fb);letter-spacing:.03em;transition:color .25s}
 .tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab svg{transition:transform .35s var(--ease)}
 .tab.on{color:var(--gold2)}
+.tab.on svg{transform:translateY(-1px) scale(1.1)}
+.tab:active svg{transform:scale(.86)}
+/* o conteúdo some em degradê atrás da barra (em vez de aparecer cortado entre a barra e o botão +) */
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom,0px) + 112px);background:linear-gradient(to top,var(--bg) 22%,rgba(0,0,0,0));pointer-events:none;z-index:19}
+html.kbd body::after,body.sfull::after,body.so::after,html.lgon body::after{display:none}
 .fab{position:fixed;right:max(20px,calc(50% - 270px));bottom:calc(env(safe-area-inset-bottom,0px) + 94px);width:62px;height:62px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),var(--gold) 60%,var(--gold3));color:var(--on);box-shadow:0 16px 34px -8px rgba(var(--ar),.65),inset 0 1px 0 rgba(255,255,255,.5);z-index:21;transition:transform .3s var(--ease)}
 .fab:active{transform:scale(.9) rotate(90deg)}
 .fab svg{width:26px;height:26px;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;fill:none}
-.fab::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--gold);animation:ping 3s 1.5s ease-out infinite;pointer-events:none}
-@keyframes ping{0%{transform:scale(1);opacity:.5}70%,100%{transform:scale(1.5);opacity:0}}
+.fab::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--gold);animation:ping 3.6s 1.2s ease-out infinite;pointer-events:none}
+.fab svg{animation:fgir 7.2s 2.4s cubic-bezier(.5,0,.2,1) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.55}42%,100%{transform:scale(1.55);opacity:0}}
+@keyframes fgir{0%,78%{transform:rotate(0)}94%,100%{transform:rotate(90deg)}}
 .page[hidden]{display:none}
 .page{animation:pgin .5s var(--ease)}
 @keyframes pgin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -637,8 +645,7 @@ img{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 body.dragging{-webkit-user-select:none;user-select:none}
 body.dragging #sheet .panel{overflow:hidden;touch-action:none}
 /* com uma janela aberta, as animações decorativas da tela de trás param (a GPU fica livre para a janela) */
-body.so .hero::before,body.so .fab::before,body.so .cc-fx::after,body.so .cc::after{animation-play-state:paused}
-.fab::before{animation-iteration-count:4}
+body.so .hero::before,body.so .fab::before,body.so .fab svg,body.so .cc-fx::after,body.so .cc::after{animation-play-state:paused}
 /* desfoques só quando visíveis (o desfoque é refeito a cada quadro de rolagem) */
 body.so .tabs{backdrop-filter:none;-webkit-backdrop-filter:none}
 /* janela aberta por completo: a tela de trás deixa de ser desenhada (libera memória e GPU); volta antes da janela descer */
@@ -668,6 +675,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 .nofx .cards.cf .cw:not(.ctr) .cc-num,.nofx .cpk .cpi:not(.ctr) .cc-num{visibility:visible}
 .nofx .cw .meta,.nofx .cw .lim{transition:none}
 .nofx .tabs{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--card)}
+.nofx .fab svg{animation:none}
 .nofx .toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#232941f5}
 .nofx .ring .pr{filter:none}
 .nofx .pv.logo img{opacity:1;transition:none}
@@ -702,7 +710,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.176</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.177</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -814,7 +822,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.176';
+const VERSION='13.177';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1117,7 +1125,7 @@ let EV=6;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.__sync)window.__sync()}
 const now0=new Date();
 let V={y:now0.getFullYear(),m:now0.getMonth()}; /* mês em exibição */
-let TAB='home', ANIM=true;
+let TAB='home', ANIM=true, NAVM=false;
 
 function occ(b,y,m){
   const s=fromISO(b.due), idx=y*12+m, diff=idx-(s.getFullYear()*12+s.getMonth());
@@ -1438,19 +1446,18 @@ function renderHome(){
   const up=mo.filter(o=>!o.paid&&o.date>=t), pd=mo.filter(o=>o.paid);
   const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?(rest>0?Math.min(99,Math.round(paid/total*100)):Math.round(paid/total*100)):0; /* só mostra 100% quando não falta nada (antes arredondava 99,6% para 100%) */
   const R=47,C=2*Math.PI*R;
-  const nxt=up[0], hk=V.y+'-'+V.m, same=!ANIM&&hk===HKEY&&HPREV; /* mesma tela: totais animam do valor anterior, não do zero */
+  const nxt=up[0], hk=V.y+'-'+V.m, same=(!ANIM||NAVM)&&HPREV&&(NAVM||hk===HKEY); /* mesma tela: totais animam do valor anterior, não do zero */
   const r0=same?HPREV.rest:0,p0=same?HPREV.pct:0;
   $('#hero').innerHTML=
    '<div class="mnav"><button class="rb" data-nav="-1" aria-label="Mês anterior"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eef0f7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>'+
-   '<div class="mn">'+MES[V.m]+'<small>'+V.y+'</small></div>'+
+   '<div class="mn">'+MES[V.m]+'<small>'+(isCur?V.y:'<button class="todaybtn" data-nav="today">'+V.y+' · voltar a hoje</button>')+'</small></div>'+
    '<button class="rb" data-nav="1" aria-label="Próximo mês"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eef0f7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>'+
    '<div class="hrow"><div class="hnum"><div class="lb">Falta pagar</div><div class="big num" id="hbig" data-v="'+r0+'">'+brl(r0)+'</div>'+
    '<div class="sub">'+(nxt?'Próxima: <b>'+esc(nxt.b.name)+'</b> · '+whenText(nxt).replace('vence ',''):(total?'Nada pendente neste mês':'Sem contas neste mês'))+'</div></div>'+
    '<div class="ring"><svg viewBox="0 0 104 104"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--gold2)"/><stop offset="1" style="stop-color:var(--gold)"/></linearGradient></defs>'+
    '<circle class="tr" cx="52" cy="52" r="'+R+'" fill="none" stroke-width="9"/><circle class="pr" id="rpr" cx="52" cy="52" r="'+R+'" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-p0/100)).toFixed(1)+'"/></svg>'+
    '<div class="ct"><div><span id="rpc" data-v="'+p0+'">'+p0+'%</span><small>pago</small></div></div></div></div>'+
-   '<div class="stats"><div class="st"><span>Total</span><b class="num">'+brl(total)+'</b></div><div class="st ok"><span>Pago</span><b class="num">'+brl(paid)+'</b></div><div class="st'+(od.length?' bad':'')+'"><span>Atrasadas</span><b class="num">'+(od.length?brl(sum(od)):'—')+'</b></div></div>'+
-   '<button class="todaybtn'+(isCur?'':' show')+'" data-nav="today">Voltar para este mês</button>';
+   '<div class="stats"><div class="st"><span>Total</span><b class="num">'+brl(total)+'</b></div><div class="st ok"><span>Pago</span><b class="num">'+brl(paid)+'</b></div><div class="st'+(od.length?' bad':'')+'"><span>Atrasadas</span><b class="num">'+(od.length?brl(sum(od)):'—')+'</b></div></div>';
   const ch=cardsHTML(cardGroups(mo));
   let h='';
   if(!mo.length&&!od.length){
@@ -1462,7 +1469,7 @@ function renderHome(){
     h+=section('done','Pagas',pd,od.length+up.length);
   }
   const L=$('#list'),oldSec=L.querySelector('.sec.cardsec'),oc=oldSec&&oldSec.querySelector('.cards'),osl=(oc&&hk===HKEY)?oc.scrollLeft:0;
-  L.className=ANIM?'':'noanim';
+  L.className=(ANIM&&!NAVM)?'':'noanim';
   if(ch&&oldSec&&ch===LCH&&hk===HKEY&&!ANIM){
     /* carrossel igual ao anterior: fica no lugar e troca só as listas abaixo dele. Antes ele era tirado e devolvido à
        tela, e o iPhone refazia o 3D e redesenhava os cartões a cada conta marcada como paga */
@@ -1473,10 +1480,11 @@ function renderHome(){
     cfInit();
   }
   LCH=ch;HKEY=hk;ODC=null;HPREV={rest:rest,pct:pct};
-  tween($('#hbig'),rest,brl,ANIM?900:500);
-  tween($('#rpc'),pct,v=>Math.round(v)+'%',ANIM?900:500);
+  if(NAVM&&L.animate){try{L.animate([{opacity:.4},{opacity:1}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}
+  tween($('#hbig'),rest,brl,NAVM?550:ANIM?900:500);
+  tween($('#rpc'),pct,v=>Math.round(v)+'%',NAVM?550:ANIM?900:500);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const r=$('#rpr');if(r)r.style.strokeDashoffset=(C*(1-pct/100)).toFixed(1)}));
-  ANIM=false;
+  ANIM=false;NAVM=false;
 }
 
 /* ---------- panorama ---------- */
@@ -1612,7 +1620,7 @@ document.addEventListener('click',e=>{
   if(n){
     const v=n.dataset.nav,t=today0();
     if(v==='today'){V={y:t.getFullYear(),m:t.getMonth()}} else {const d=new Date(V.y,V.m+Number(v),1);V={y:d.getFullYear(),m:d.getMonth()}}
-    ANIM=true;renderHome();return;
+    ANIM=true;NAVM=true;renderHome();return;
   }
   if(e.target.closest('[data-add]')){openSheet(null);return}
   const cw=e.target.closest('.cw');
