@@ -54,3 +54,23 @@ self.addEventListener('fetch',e=>{
     e.respondWith(caches.open(IMG).then(c=>c.match(r).then(h=>h||fetch(new Request(r,{cache:'no-cache'})).then(n=>{if(n.ok)c.put(r,n.clone());return n}))));
   }
 });
+
+/* v13.164: o app manda a lista de fotos dos cartões; aqui (fora da tela do app) elas são baixadas uma por vez, só as que ainda não estão guardadas. */
+self.addEventListener('message',e=>{
+  const d=e.data;if(!d||d.t!=='pre'||!Array.isArray(d.l))return;
+  const src=e.source;
+  e.waitUntil(caches.open(IMG).then(async c=>{
+    let ok=true;
+    for(const u of d.l.slice(0,200)){
+      try{
+        if(new URL(u).origin!==location.origin||!/\/c-[a-z0-9_-]+\.webp/.test(u)){continue}
+        const r=new Request(u);
+        if(await c.match(r))continue;
+        const n=await fetch(new Request(r,{cache:'no-cache'}));
+        if(n.ok)await c.put(r,n);else ok=false;
+      }catch(_){ok=false}
+      await new Promise(f=>setTimeout(f,150));
+    }
+    if(ok&&src)try{src.postMessage({t:'pre-ok'})}catch(_){}
+  }));
+});
