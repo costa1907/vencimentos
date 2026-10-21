@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.175 · 21/10/2026 · cartões: removido o spinner de carregamento e o fundo colorido antigo (sobra só a miniatura borrada da própria arte, que já aparece no 1º quadro); código/CSS mais enxutos; até 10 fotos preparadas ao mesmo tempo (antes 6) para a fila não atrasar os cartões do Itaú/Santander
+  v13.174 · 21/10/2026 · Cartões: enquanto a foto não chega, o cartão mostra uma miniatura borrada da própria arte (embutida no app, ~0,5 KB cada) em vez do fundo de cor lisa; some o "fundo colorido" mesmo no pior caso
   v13.173 · 21/10/2026 · Diagnóstico das fotos de cartão corrigido: mede o tempo de CADA foto (antes o relógio zerava a cada atualização do carrossel e nunca passava do limite); anota acima de 0,25 s com o nome do cartão e se veio do cache do app ou da rede
   v13.172 · 21/10/2026 · Fotos dos cartões: até 6 por vez (antes 4), as demais do banco começam a preparar em 100 ms (antes 300) e 4 fotos preparadas ao encostar no banco (antes 3); diagnóstico anota quando uma foto demora mais de 0,6 s
   v13.171 · 21/10/2026 · Logo (abertura, login e cabeçalho) agora na cor EXATA do destaque do tema (10 imagens i-sobrou-mark-0..9.webp pré-coloridas; o filtro antigo deixava o Lima neon oliva); fundo da abertura = cor de fundo do tema (Preto puro fica preto) e a página já nasce com essa cor
