@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.179';
+(function(){var V='13.180';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -157,8 +157,7 @@ body.so .pill::after{animation-play-state:paused}
 .st span{display:block;font:600 10px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .st b{display:block;margin-top:7px;font:700 14px/1.1 var(--fd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st.bad b{color:var(--bad)} .st.ok b{color:var(--ok)}
-.todaybtn{display:inline-block;margin:0;padding:2px 9px;border-radius:99px;background:rgba(var(--ar),.14);color:var(--gold2);font:600 10.5px/13px var(--fb);letter-spacing:.02em;text-transform:none;border:1px solid rgba(var(--ar),.28);animation:tbin .25s var(--ease) both}
-@keyframes tbin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.todaybtn{display:inline-block;margin:0;padding:2px 9px;border-radius:99px;background:rgba(var(--ar),.14);color:var(--gold2);font:600 10.5px/13px var(--fb);letter-spacing:.02em;text-transform:none;border:1px solid rgba(var(--ar),.28)}
 
 /* lista */
 .sec{margin-top:24px}
@@ -567,7 +566,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .cc.w.tpl.rd .cc-bg{opacity:1}
 .cc.w.tpl:not(.rd) .cc-num{opacity:0}
 /* v13.175: antes de a foto chegar, o cartão mostra uma versão minúscula (borrada) da PRÓPRIA arte, embutida no app (~0,5 KB por cartão), em vez de um fundo de cor lisa */
-.cc.w.tpl:not(.rd){background:var(--lq)}
+.cc.w.tpl{background:var(--lq)} /* v13.180: a miniatura fica SEMPRE por baixo da foto: se o iPhone descartar a foto decodificada (voltar do segundo plano), aparece a arte borrada em vez de um cartão escuro */
 /* sumir sem mexer no layout: display:none aqui refazia o layout dentro do carrossel quando a imagem terminava de carregar, no meio do deslize, e o iPhone abandonava o encaixe */
 .cw:active .cc{transform:none}
 .pbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0 8px;flex-wrap:wrap}
@@ -722,7 +721,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.179</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.180</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -834,7 +833,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.179';
+const VERSION='13.180';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1459,7 +1458,7 @@ function renderHome(){
   const total=sum(mo), paid=sum(pd), rest=total-paid, pct=total?(rest>0?Math.min(99,Math.round(paid/total*100)):Math.round(paid/total*100)):0; /* só mostra 100% quando não falta nada (antes arredondava 99,6% para 100%) */
   const R=47,C=2*Math.PI*R;
   const nxt=up[0], hk=V.y+'-'+V.m, same=(!ANIM||NAVM)&&HPREV&&(NAVM||hk===HKEY); /* mesma tela: totais animam do valor anterior, não do zero */
-  const r0=same?HPREV.rest:0,p0=same?HPREV.pct:0;
+  const r0=NAVM?rest:same?HPREV.rest:0,p0=NAVM?pct:same?HPREV.pct:0; /* v13.180: trocar de mês NÃO conta nem varre o anel (virava piscada ao passar vários meses): o valor e o anel já entram no valor final */
   $('#hero').innerHTML=
    '<div class="mnav"><button class="rb" data-nav="-1" aria-label="Mês anterior"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eef0f7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>'+
    '<div class="mn">'+MES[V.m]+'<small>'+(isCur?V.y:'<button class="todaybtn" data-nav="today">'+V.y+' · voltar a hoje</button>')+'</small></div>'+
@@ -1501,7 +1500,6 @@ function renderHome(){
     cfInit();
   }
   LCH=ch;HKEY=hk;ODC=null;HPREV={rest:rest,pct:pct};
-  if(NAVM){[].slice.call(L.children).forEach(x=>{if(kept&&x===oldSec)return;if(x.animate){try{x.animate([{opacity:.4},{opacity:1}],{duration:220,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(e){}}})}
   tween($('#hbig'),rest,brl,NAVM?550:ANIM?900:500);
   tween($('#rpc'),pct,v=>Math.round(v)+'%',NAVM?550:ANIM?900:500);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const r=$('#rpr');if(r)r.style.strokeDashoffset=(C*(1-pct/100)).toFixed(1)}));
@@ -2042,6 +2040,7 @@ function reviverCarrosseis(){
 }
 function acordar(){
   ACORDT.forEach(clearTimeout);ACORDN=0;
+  try{document.querySelectorAll('#list img.cc-bg,#cm img.cc-bg:not([data-src])').forEach(i=>{if(i.decode)i.decode().catch(()=>{})})}catch(e){} /* v13.180: as fotos dos cartões visíveis voltam na hora, antes de qualquer outro serviço */
   ACORDT=[setTimeout(()=>quandoLivre(()=>{acordarRolagem();redecodificar();reviverCarrosseis()}),120),setTimeout(()=>quandoLivre(()=>{acordarRolagem();redecodificar()}),1500)];
   /* mede a taxa de quadros logo depois de voltar (para saber se o iPhone está mesmo mais lento) */
   setTimeout(()=>{let n=0;const t0=performance.now();const f=()=>{n++;if(n<40)requestAnimationFrame(f);else{const ms=(performance.now()-t0)/n;window.__diagNote&&window.__diagNote('depois de voltar: '+ms.toFixed(1)+' ms por quadro (~'+Math.round(1000/ms)+' quadros/s)','info')}};requestAnimationFrame(f)},400);
