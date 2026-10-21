@@ -63,7 +63,7 @@ self.addEventListener('message',e=>{
     let ok=true;
     for(const u of d.l.slice(0,200)){
       try{
-        if(new URL(u).origin!==location.origin||!/\/c-[a-z0-9_-]+\.webp/.test(u)){continue}
+        if(new URL(u).origin!==location.origin||!/\/(c-[a-z0-9_-]+|i-sobrou-mark-\d)\.webp/.test(u)){continue}
         const r=new Request(u);
         if(await c.match(r))continue;
         const n=await fetch(new Request(r,{cache:'no-cache'}));

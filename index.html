@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.170';
+(function(){var V='13.171';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -45,8 +45,8 @@
 <link rel="apple-touch-startup-image" href="splash-750x1334.png" media="(device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)">
 <link rel="preload" as="font" type="font/woff2" href="f-figtree.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="f-bricolage.woff2" crossorigin>
-<link rel="preload" as="image" href="i-sobrou-mark.webp">
-<script>window.MARK="i-sobrou-mark.webp";</script>
+<script>/* v13.171: o logo vem PRÉ-COLORIDO na cor de destaque do tema (i-sobrou-mark-0..9.webp; antes um filtro de cor deixava o Lima neon amarelo-oliva) */
+window.MARKS=function(i){return "i-sobrou-mark-"+i+".webp"};(function(){var i=9;try{var t=JSON.parse(localStorage.getItem("vencimentos.theme"));if(t&&t.length===2&&t[1]>=0&&t[1]<10)i=t[1]}catch(e){}window.MARK=window.MARKS(i);try{var pl=document.createElement("link");pl.rel="preload";pl.as="image";pl.href=window.MARK;document.head.appendChild(pl)}catch(e){}})();</script>
 <script>
 /* Manifesto do app (nome e ícones em arquivo: icon-192.png / icon-512.png) */
 (function(){
@@ -75,11 +75,11 @@
     r.setProperty('--bg',c(0));r.setProperty('--bg2',c(1));r.setProperty('--card',c(2));r.setProperty('--card2',c(3));
     r.setProperty('--p1',c(4));r.setProperty('--p2',c(5));r.setProperty('--h1',c(6));r.setProperty('--h2',c(7));
     r.setProperty('--gold',A[1]);r.setProperty('--gold2',mix(A[1],1,.38));r.setProperty('--gold3',mix(A[1],0,.34));
-    r.setProperty('--ar',rgb(A[1]).join(','));var q=rgb(A[1]).map(function(v){return v/255}),mx=Math.max.apply(0,q),mn=Math.min.apply(0,q),dl=mx-mn,hh=dl?(mx===q[0]?((q[1]-q[2])/dl%6):mx===q[1]?(q[2]-q[0])/dl+2:(q[0]-q[1])/dl+4)*60:0;if(hh<0)hh+=360;var ss=mx?dl/mx:0;r.setProperty('--mf','hue-rotate('+Math.round(hh-134)+'deg) saturate('+Math.max(.08,Math.min(1.5,ss/.72)).toFixed(2)+')');r.setProperty('--on','#14110a');
-    var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=c(0);
+    r.setProperty('--ar',rgb(A[1]).join(','));var q=rgb(A[1]).map(function(v){return v/255}),mx=Math.max.apply(0,q),mn=Math.min.apply(0,q),dl=mx-mn,hh=dl?(mx===q[0]?((q[1]-q[2])/dl%6):mx===q[1]?(q[2]-q[0])/dl+2:(q[0]-q[1])/dl+4)*60:0;if(hh<0)hh+=360;var ss=mx?dl/mx:0;r.setProperty('--mf','brightness(1)');r.setProperty('--on','#14110a');
+    var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=c(0);document.documentElement.style.background=c(0);
   }
   var cur=[4,9];try{var t=JSON.parse(localStorage.getItem('vencimentos.theme'));if(t&&t.length===2)cur=t}catch(e){}
-  window.THEME={BG:BG,AC:AC,PR:PR,cur:cur,hsl:hsl,apply:apply,set:function(b,a){cur=[b,a];this.cur=cur;apply(b,a);try{localStorage.setItem('vencimentos.theme',JSON.stringify(cur))}catch(e){}}};
+  window.THEME={BG:BG,AC:AC,PR:PR,cur:cur,hsl:hsl,apply:apply,set:function(b,a){cur=[b,a];this.cur=cur;apply(b,a);try{localStorage.setItem('vencimentos.theme',JSON.stringify(cur))}catch(e){}window.MARK=window.MARKS(a);document.querySelectorAll('img[data-mk],.lgm>img,.spl-mw>img').forEach(function(i){i.src=window.MARK})}};
   apply(cur[0],cur[1]);
 })();
 </script>
@@ -600,7 +600,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .swc.on{border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 3px rgba(var(--ar),.55)}
 
 /* Abertura (splash) */
-.spl{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#0a0c13;transition:opacity .4s ease,visibility .4s;overflow:hidden}
+.spl{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--bg);transition:opacity .4s ease,visibility .4s;overflow:hidden}
 .spl.out{opacity:0;visibility:hidden}
 .spl::after{content:"";position:absolute;left:50%;top:42%;width:120vmin;height:120vmin;margin:-60vmin 0 0 -60vmin;background:radial-gradient(circle,rgba(var(--ar),.26),transparent 62%);opacity:0;transform:scale(.7);animation:splg 2s .1s cubic-bezier(.22,1,.36,1) forwards}
 .spl-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-top:-5vh;text-align:center}
@@ -609,7 +609,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb}
 .spl-n i,.spl-n span{display:inline-block;font-style:normal;opacity:0;transform:translateY(14px) scale(.96);animation:spll .55s calc(.6s + var(--i)*.05s) cubic-bezier(.22,1,.36,1) forwards}
 @keyframes spll{to{opacity:1;transform:none}}
-/* v13.170: reflexo de luz que atravessa o logo (só opacidade/posição, recortado no formato do logo) */
+/* v13.171: reflexo de luz que atravessa o logo (só opacidade/posição, recortado no formato do logo) */
 .spl-mw{position:relative}
 .spl-mw::after{content:"";position:absolute;inset:0;pointer-events:none;-webkit-mask:url(i-sobrou-mark.webp) center/contain no-repeat;mask:url(i-sobrou-mark.webp) center/contain no-repeat;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.7) 50%,transparent 62%) -120% 0/250% 100% no-repeat;opacity:0;animation:spls .75s 1.05s ease-out forwards}
 @keyframes spls{0%{opacity:1;background-position:-120% 0}100%{opacity:1;background-position:120% 0}}
@@ -705,7 +705,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.170</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.171</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -817,7 +817,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.170';
+const VERSION='13.171';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2119,14 +2119,14 @@ function cpLoad(c){
   /* depois do cartão escolhido, as fotos de todos os outros cartões do banco (todas as bandeiras) ficam prontas em segundo plano */
   clearTimeout(cpLoad._t);cpLoad._t=setTimeout(()=>{try{MF(F.prov).forEach(x=>{const t=TPLS.find(y=>y.m===x.id&&y.p===F.prov);if(t&&t.s)cpWarm(imgU(t.s))})}catch(e){}},300);
 }
-/* v13.170: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
+/* v13.171: fotos dos cartões prontas ANTES de você precisar, SEM trabalho na tela: o app só entrega a lista ao sw.js (que roda em outra "thread") e ele baixa as ~58 fotos (~3,4 MB, uma vez só), uma por vez, pulando as que já estão guardadas.
    Ao encostar o dedo no ícone do banco, já começa a preparar as 3 primeiras fotos daquele banco (antes só começava depois do toque terminar). */
 function imgPre(){
   try{
     if(localStorage.getItem('imgpre')===IMGCACHE)return;
     const sh=$('#sheet');
     if(document.hidden||(sh&&!sh.hidden)||performance.now()-AWTouch<1500||(navigator.connection&&navigator.connection.saveData)||!navigator.serviceWorker||!navigator.serviceWorker.controller){setTimeout(imgPre,5000);return}
-    const seen={},l=[];TPLS.forEach(t=>{if(t.s&&!seen[t.s]){seen[t.s]=1;l.push(new URL(imgU(t.s),location.href).href)}});
+    const seen={},l=[new URL(window.MARK,location.href).href];TPLS.forEach(t=>{if(t.s&&!seen[t.s]){seen[t.s]=1;l.push(new URL(imgU(t.s),location.href).href)}});
     navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.t==='pre-ok'){try{localStorage.setItem('imgpre',IMGCACHE)}catch(_){}}});
     navigator.serviceWorker.controller.postMessage({t:'pre',l:l});
   }catch(e){}
@@ -2174,7 +2174,7 @@ function syncForm(){
      $('#cml').hidden=!has;$('#cm').hidden=!has;$('#cpt').hidden=!has;
      $('#cbf').hidden=!(has&&brs.length>1);
      $('#cgen').hidden=has;
-     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.170: kch = trocou de banco/bandeira de verdade */
+     const key=F.prov+'|'+CF,kch=key!==CK; /* v13.171: kch = trocou de banco/bandeira de verdade */
      if(!has){$('#cm').innerHTML='';$('#cbf').innerHTML='';CK='';CSEL=''}
      else{
        if(key!==CK){
@@ -2199,7 +2199,7 @@ function syncForm(){
        cpNums();
        if(F.model!==CSEL){CSEL=F.model;if(F.model)cpCenter(F.model,key===CKS?'smooth':'auto');CKS=key;cpLayout(true);window.cpSettle&&window.cpSettle()}
        cpLabel();if(CSC){cp3dQ();setTimeout(cp3dQ,120)}
-       /* v13.170: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
+       /* v13.171: o esmaecer/aparecer só roda quando o carrossel MUDOU (banco/bandeira). Antes rodava em TODO toque do formulário (Hoje/Amanhã, Única/Parcelada, +/−, texto…) e o cartão piscava */
        if(kch){const g=CGH;CGH=null;CFI=0;cpSwap(g)}else{CGH=null}
      }
      $('#ccprev').hidden=has&&!!F.model;
@@ -2245,7 +2245,7 @@ function openSheet(id,key){
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
-  /* v13.170: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
+  /* v13.171: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
 /* executa depois que a janela terminou de descer (evita refazer a tela no meio da animação) */
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
@@ -2279,7 +2279,7 @@ $('#fa').addEventListener('beforeinput',e=>{
   panel.addEventListener('touchend',e=>{
     const k=tp;tp=null;if(!k||performance.now()-k.t>600||!e.cancelable)return;
     const el=pick(e.target);if(!el)return;
-    /* v13.170: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
+    /* v13.171: campo já focado, mas SEM teclado na tela (foco automático): trata como 1º toque (preventScroll); com o teclado aberto, o toque segue normal para mexer no cursor */
     if(el===document.activeElement){const vv=window.visualViewport;if(!(vv&&window.innerHeight-vv.height<120))return;try{el.blur()}catch(_){}}
     e.preventDefault(); /* cancela o foco nativo (que rola a tela) */
     try{el.focus({preventScroll:true});const n=el.value.length;try{el.setSelectionRange(n,n)}catch(_){}}catch(_){try{el.focus()}catch(_2){}}
@@ -3488,11 +3488,11 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   const el=document.getElementById('spl');if(!el)return;
   if(document.documentElement.classList.contains('nofx')){el.remove();return}
   /* v13.77: quem ainda não entrou (primeiro acesso ou saiu da conta) vai direto para a tela de login/cadastro, sem a abertura */
-  /* v13.170: a abertura aparece em TODA abertura do app (logado ou não) e depois vem o login ou as Contas; depois de fazer login não repete (só um fade) */
+  /* v13.171: a abertura aparece em TODA abertura do app (logado ou não) e depois vem o login ou as Contas; depois de fazer login não repete (só um fade) */
   let seen=0;try{seen=sessionStorage.getItem('spl')}catch(_){}
   if(seen){el.remove();return}
   try{sessionStorage.setItem('spl','1')}catch(_){}
-  /* v13.170: a imagem de início do iPhone agora é só o fundo liso (#0a0c13), igual ao fundo desta abertura: a troca é invisível e o logo anima sobre o mesmo fundo (como no app do Porto). Sem 2ª tela, sem deslocamento. */
+  /* v13.171: a imagem de início do iPhone agora é só o fundo liso (#0a0c13), igual ao fundo desta abertura: a troca é invisível e o logo anima sobre o mesmo fundo (como no app do Porto). Sem 2ª tela, sem deslocamento. */
   run(el,2300);
 })();
 

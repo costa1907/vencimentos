@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.171 · 21/10/2026 · Logo (abertura, login e cabeçalho) agora na cor EXATA do destaque do tema (10 imagens i-sobrou-mark-0..9.webp pré-coloridas; o filtro antigo deixava o Lima neon oliva); fundo da abertura = cor de fundo do tema (Preto puro fica preto) e a página já nasce com essa cor
   v13.170 · 21/10/2026 · A abertura aparece em toda abertura do app (também antes do login); depois do login só um fade curto (sem repetir a abertura). Tela de login refeita premium: card de vidro, ícones nos campos, olho para ver a senha, foco com brilho, autopreenchimento escuro (sem amarelo), entrada em cascata e botão com relevo
   v13.169 · 21/10/2026 · Abertura mais luxuosa: reflexo de luz atravessando o logo, "Sobrou!" entrando letra por letra, logo com mais profundidade e halo de luz que respira (só movimento/opacidade; some do app depois de ~2,3 s)
   v13.168 · 20/10/2026 · Abertura refeita (como app nativo): imagem do iPhone = só o fundo liso; o logo anima no app sobre o mesmo fundo (~1,7 s) e some com fade; acabou a repetição de telas e o "Sobrou!" duplicado. Trocar os splash-*.png pelos lisos (Sobrou_splash_lisos.zip)
