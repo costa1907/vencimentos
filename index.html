@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.185';
+(function(){var V='13.187';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -204,7 +204,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.paid .amt{color:var(--mu)}
 
 .empty{margin-top:28px;text-align:center;padding:34px 20px;border-radius:26px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
-/* v13.185: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
+/* v13.187: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
 .wel{margin-top:22px;padding:28px 18px 22px;text-align:center;border-radius:28px;border:1px solid transparent;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 55%) padding-box,linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(150deg,rgba(var(--ar),.55),rgba(255,255,255,.07) 40%,rgba(255,255,255,.04) 62%,rgba(var(--ar),.25)) border-box;box-shadow:0 24px 50px -28px rgba(0,0,0,.85),0 0 40px -22px rgba(var(--ar),.5),inset 0 1px 0 rgba(255,255,255,.07)}
 .wel-ic{width:84px;height:84px;margin:0 auto 18px;border-radius:28px;display:grid;place-items:center;color:var(--gold2);background:linear-gradient(160deg,rgba(var(--ar),.3),rgba(var(--ar),.08));border:1px solid rgba(var(--ar),.38);box-shadow:0 18px 40px -14px rgba(var(--ar),.6),inset 0 1px 0 rgba(255,255,255,.16)}
 .wel-ic svg{width:42px;height:42px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -234,7 +234,7 @@ body.so .pill::after{animation-play-state:paused}
 .tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:calc(100% - 32px);max-width:420px;display:grid;grid-template-columns:repeat(3,1fr);padding:6px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.018) 60%),var(--card);border:1px solid var(--line2);box-shadow:0 18px 40px -10px rgba(0,0,0,.85),0 0 34px -16px rgba(var(--ar),.45),inset 0 1px 0 rgba(255,255,255,.1);z-index:20}
 /* v13.161: com o teclado aberto, as abas e o botão + ficam escondidos (menos coisa para o iPhone redesenhar enquanto a tela sobe e desce) */
 html.kbd .tabs,html.kbd .fab{visibility:hidden}
-.tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:linear-gradient(180deg,rgba(var(--ar),.24),rgba(var(--ar),.1));box-shadow:inset 0 0 0 1px rgba(var(--ar),.34),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px -8px rgba(var(--ar),.6);transition:transform .45s var(--ease)}
+.tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/3);border-radius:20px;background:linear-gradient(180deg,rgba(var(--ar),.24),rgba(var(--ar),.1));box-shadow:inset 0 0 0 1px rgba(var(--ar),.34),inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px -8px rgba(var(--ar),.6);transition:transform .28s var(--ease)}
 .tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 8px;color:var(--mu2);font:600 10.5px var(--fb);letter-spacing:.03em;transition:color .25s}
 .tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tab svg{transition:transform .35s var(--ease)}
@@ -617,6 +617,9 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
+/* v13.187: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
+.panel .cc::after,.panel .cc-fx::after{animation:none!important;display:none}
+.cpi{contain:layout style}
 .pt{transition:border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
 .pt.ghost,.cat.ghost{background-color:var(--card2);background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04));border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
@@ -751,7 +754,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.185</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.187</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -863,7 +866,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.185';
+const VERSION='13.187';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -3259,6 +3262,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
 
   /* ----- cartão em Ajustes ----- */
   window.__acc={
+    adlHtml(){return LST.length?LST.map(c=>'<div class="adl" data-e="'+esc(c.e)+'" style="display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px"><span style="word-break:break-all">'+esc(c.e)+'</span><b style="color:'+(c.a>Date.now()?'var(--ok)':'var(--bad)')+';white-space:nowrap">'+(c.a>Date.now()?dt(c.a):'vencido')+'</b></div>').join(''):'<p class="hint">Nenhum cliente liberado ainda.</p>'},
     card(){
       if(!A)return '';
       const s=status();
@@ -3270,7 +3274,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
       if(isAdmin())h+='<div class="card"><h3>Clientes</h3><div class="cap">Digite o e-mail do cliente que pagou e toque em +30 dias.</div>'+
         '<input class="fld" id="adm" type="email" autocapitalize="off" autocorrect="off" placeholder="E-mail do cliente" style="margin-top:12px;font-size:16px">'+
         '<button class="act" id="adp" type="button">+30 dias</button><button class="act danger" id="adb" type="button">Bloquear</button>'+
-        '<div id="adl" style="margin-top:12px"></div></div>';
+        '<div id="adl" style="margin-top:12px;min-height:'+(LST.length?0:36)+'px">'+(LST.length?window.__acc.adlHtml():'<p class="hint">Carregando…</p>')+'</div></div>';
       return h;
     },
     bind(){
@@ -3281,7 +3285,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
         try{
           const j=await fs('GET','/licencas?pageSize=300');const d=(j&&j.documents)||[];
           LST=d.map(x=>({e:decodeURIComponent(x.name.split('/').pop()),a:num(x.fields&&x.fields.ate)})).sort((a,b)=>b.a-a.a);
-          $('#adl').innerHTML=LST.length?LST.map(c=>'<div class="adl" data-e="'+esc(c.e)+'" style="display:flex;justify-content:space-between;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13px"><span style="word-break:break-all">'+esc(c.e)+'</span><b style="color:'+(c.a>Date.now()?'var(--ok)':'var(--bad)')+';white-space:nowrap">'+(c.a>Date.now()?dt(c.a):'vencido')+'</b></div>').join(''):'<p class="hint">Nenhum cliente liberado ainda.</p>';
+          $('#adl').innerHTML=window.__acc.adlHtml();
           $('#adl').querySelectorAll('.adl').forEach(r=>r.onclick=()=>{$('#adm').value=r.dataset.e});
         }catch(e){$('#adl').innerHTML='<p class="hint">Não consegui listar (verifique as regras do Firestore).</p>'}
       };
