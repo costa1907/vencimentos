@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.201 · 22/10/2026 · Cadastro em passos: o traço de arrastar no topo da janela some nos passos 2 e 3 e a janela parece subir (o traço era espremido a 0 px quando o conteúdo era maior que a janela); agora fica sempre com 5 px; o carrossel de cartões ocupa a largura toda (mesmas margens da janela) para o dedo nas bordas também rolar o carrossel
   v13.200 · 22/10/2026 · Cadastro em passos: corrigido o 'torto' (a janela usava por engano o estilo do contador de parcelas, que a deixava com 6 px de margem e itens espremidos/deslocados); margens laterais maiores (24 px); tocar num tipo NÃO avança mais sozinho (só pelo botão Continuar); troca de passo só com esmaecer, sem deslizar para o lado
   v13.199 · 22/10/2026 · Cadastro em passos: tocar num tipo já avança para o passo 2; escolher um banco de cartão rola até os cartões dele; troca de passo com deslize curto para o lado (só opacidade e deslocamento); passo 3 mostra no topo o resumo do que foi escolhido (tipo, banco, cartão)
   v13.198 · 22/10/2026 · Cadastro em passos: a janela não anda mais para os lados (sobrava 4 px de largura e o iPhone deixava arrastar na horizontal); agora só rola para cima e para baixo
