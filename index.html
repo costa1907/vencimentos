@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.187';
+(function(){var V='13.188';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -162,7 +162,7 @@ body.so .pill::after{animation-play-state:paused}
 .sec{margin-top:24px}
 /* quadros do Panorama fora da tela só são desenhados quando chegam perto. A lista de contas é desenhada inteira de uma vez:
    montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
-#pan>.card{content-visibility:auto;contain-intrinsic-size:auto 420px}
+/* v13.188: removido o content-visibility dos quadros do Panorama: o iPhone só desenhava cada quadro quando ele entrava na tela e recalculava a altura da página durante a rolagem (pulos e rolagem lenta) */
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .sec h3::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--gold);box-shadow:0 0 9px rgba(var(--ar),.65);flex:none}
 .sec.late h3::before{background:var(--bad);box-shadow:0 0 9px rgba(251,111,111,.6)}
@@ -204,7 +204,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.paid .amt{color:var(--mu)}
 
 .empty{margin-top:28px;text-align:center;padding:34px 20px;border-radius:26px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
-/* v13.187: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
+/* v13.188: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
 .wel{margin-top:22px;padding:28px 18px 22px;text-align:center;border-radius:28px;border:1px solid transparent;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 55%) padding-box,linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(150deg,rgba(var(--ar),.55),rgba(255,255,255,.07) 40%,rgba(255,255,255,.04) 62%,rgba(var(--ar),.25)) border-box;box-shadow:0 24px 50px -28px rgba(0,0,0,.85),0 0 40px -22px rgba(var(--ar),.5),inset 0 1px 0 rgba(255,255,255,.07)}
 .wel-ic{width:84px;height:84px;margin:0 auto 18px;border-radius:28px;display:grid;place-items:center;color:var(--gold2);background:linear-gradient(160deg,rgba(var(--ar),.3),rgba(var(--ar),.08));border:1px solid rgba(var(--ar),.38);box-shadow:0 18px 40px -14px rgba(var(--ar),.6),inset 0 1px 0 rgba(255,255,255,.16)}
 .wel-ic svg{width:42px;height:42px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -617,7 +617,7 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
-/* v13.187: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
+/* v13.188: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
 .panel .cc::after,.panel .cc-fx::after{animation:none!important;display:none}
 .cpi{contain:layout style}
 .pt{transition:border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
@@ -754,7 +754,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.187</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.188</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -866,7 +866,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.187';
+const VERSION='13.188';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
