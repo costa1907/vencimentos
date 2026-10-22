@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.209 · 22/10/2026 · Adicionar conta estando no Panorama (ou Ajustes): a tela vai direto para Contas, atrás da janela que fecha; antes mostrava o Panorama de novo e só ~0,5 s depois trocava para Contas
+  v13.208 · 22/10/2026 · Passo 2 da Nova conta: 'Quem é?' e 'Como você paga' (forma + banco, ou 'Nenhum') agora são obrigatórios: o Continuar não avança sem escolher, mostra o aviso e destaca/rola até o que falta (o texto 'Opcional' saiu)
   v13.207 · 22/10/2026 · Voltar do segundo plano com a janela Nova conta aberta não pisca mais: o app deixa de esconder/mostrar a rolagem da janela e o carrossel de cartões (era o que causava o pisca); botão 'Ver todos' do passo 2 removido (volta a lista completa de ícones); botão 'Usar minha foto ou logo' alinhado
   v13.206 · 22/10/2026 · Passo 2: mostra os 24 primeiros ícones (na ordem do usuário) e o botão 'Ver todos (N)' quando a lista tem mais de 28 (Cartão 45, Assinatura 39, Financiamento 34, Boleto 30); busca, modo Minha ordem e o ícone já escolhido mostram tudo; o diagnóstico mostrou 22% de quadros lentos e ~52 ms para abrir o passo 2 com 45 ícones
   v13.205 · 22/10/2026 · Cadastro em passos: a troca de passo não esmaece mais (o esmaecer promovia os itens a camadas e, ao acabar, o iPhone redesenhava texto e bordas, e o campo de busca do passo 2 parecia se mexer); a troca é imediata
