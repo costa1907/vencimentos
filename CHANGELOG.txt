@@ -1,6 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
-  v13.195 · 22/10/2026 · TESTE de fluidez na janela do cartão: a lista de cartões não usa mais transparência por item nem sombra difusa (dezenas de camadas separadas no iPhone); o cartão escolhido continua com o contorno dourado
+  v13.197 · 22/10/2026 · NOVO cadastro em 3 passos dentro da janela do + (Tipo · Quem é/cartão · Detalhes): cada passo mostra só o seu pedaço, barra de progresso, botão Continuar/Salvar fixo embaixo e seta de voltar; editar conta abre direto nos Detalhes; diagnóstico separa a rolagem e o tempo de cada passo; Ajustes > Cadastro em passos desliga e volta ao formulário único
+  v13.196 · 22/10/2026 · Volta ao visual da v13.194 na lista de cartões da janela (cartões não escolhidos apagados, com sombra): o teste da v13.195 sem transparência/sombra não melhorou a rolagem (26,3% contra 28,4% de quadros lentos), então o visual original foi mantido
   v13.194 · 21/10/2026 · Tocar na aba que já está aberta não reconstrói mais a tela (ela piscava e refazia a entrada dos cartões/contas); agora só sobe suavemente ao topo
   v13.193 · 21/10/2026 · Panorama: as trilhas dos medidores (por tipo, metas, 6 meses) não recortam mais o preenchimento (ele já tem a mesma curvatura), tirando dezenas de recortes arredondados da rolagem; visual igual
   v13.192 · 21/10/2026 · Panorama (e metas): as barras e os medidores paravam de animar mas continuavam como camadas separadas com recorte arredondado (o iPhone mantinha dezenas delas ativas durante a rolagem: 27,7% de quadros lentos no Panorama); agora a animação termina e solta a camada, com o mesmo visual

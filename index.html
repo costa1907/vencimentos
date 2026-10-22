@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.195';
+(function(){var V='13.197';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -100,7 +100,7 @@ html,body{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px;-webkit-text-size-adjust:100%}
 body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action:manipulation;-webkit-font-smoothing:antialiased;
   background:var(--bg)}
-/* v13.195: o fundo (brilho do tema + faixa do topo) saiu de 'background-attachment:fixed' (o iPhone redesenha esse fundo a cada quadro da rolagem, pesando só nas telas longas: Panorama e Ajustes) e virou uma camada fixa própria, desenhada uma vez */
+/* v13.197: o fundo (brilho do tema + faixa do topo) saiu de 'background-attachment:fixed' (o iPhone redesenha esse fundo a cada quadro da rolagem, pesando só nas telas longas: Panorama e Ajustes) e virou uma camada fixa própria, desenhada uma vez */
 body::before{content:"";position:fixed;left:0;right:0;top:0;height:100lvh;z-index:-1;pointer-events:none;
   background:linear-gradient(var(--bg) var(--st),transparent calc(var(--st) + 48px)) top/100% calc(var(--st) + 48px) no-repeat,
    radial-gradient(900px 420px at 80% -8%,rgba(var(--ar),.10),transparent 60%)}
@@ -162,7 +162,7 @@ body.so .pill::after{animation-play-state:paused}
 .sec{margin-top:24px}
 /* quadros do Panorama fora da tela só são desenhados quando chegam perto. A lista de contas é desenhada inteira de uma vez:
    montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
-/* v13.195: removido o content-visibility dos quadros do Panorama: o iPhone só desenhava cada quadro quando ele entrava na tela e recalculava a altura da página durante a rolagem (pulos e rolagem lenta) */
+/* v13.197: removido o content-visibility dos quadros do Panorama: o iPhone só desenhava cada quadro quando ele entrava na tela e recalculava a altura da página durante a rolagem (pulos e rolagem lenta) */
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .sec h3::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--gold);box-shadow:0 0 9px rgba(var(--ar),.65);flex:none}
 .sec.late h3::before{background:var(--bad);box-shadow:0 0 9px rgba(251,111,111,.6)}
@@ -204,7 +204,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.paid .amt{color:var(--mu)}
 
 .empty{margin-top:28px;text-align:center;padding:34px 20px;border-radius:26px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
-/* v13.195: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
+/* v13.197: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
 .wel{margin-top:22px;padding:28px 18px 22px;text-align:center;border-radius:28px;border:1px solid transparent;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 55%) padding-box,linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(150deg,rgba(var(--ar),.55),rgba(255,255,255,.07) 40%,rgba(255,255,255,.04) 62%,rgba(var(--ar),.25)) border-box;box-shadow:0 24px 50px -28px rgba(0,0,0,.85),0 0 40px -22px rgba(var(--ar),.5),inset 0 1px 0 rgba(255,255,255,.07)}
 .wel-ic{width:84px;height:84px;margin:0 auto 18px;border-radius:28px;display:grid;place-items:center;color:var(--gold2);background:linear-gradient(160deg,rgba(var(--ar),.3),rgba(var(--ar),.08));border:1px solid rgba(var(--ar),.38);box-shadow:0 18px 40px -14px rgba(var(--ar),.6),inset 0 1px 0 rgba(255,255,255,.16)}
 .wel-ic svg{width:42px;height:42px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -440,12 +440,12 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
 .cpk .cc-num{display:none!important}
 /* v13.26: seletor em grade de 2 colunas — nada rola na horizontal dentro da janela; o cartão escolhido ganha um contorno dourado */
 .cgrid .cpk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;overflow:visible;scroll-snap-type:none;margin:0 0 6px;padding:6px 2px 8px;contain:none;touch-action:auto}
-.cgrid .cpi{width:auto;min-width:0;scroll-snap-align:none;border-radius:16px;touch-action:manipulation;cursor:pointer}
-/* v13.195: lista de cartões da janela mais leve: sem transparência por item (cada um virava uma camada do iPhone) e sem sombra difusa; o escolhido segue com o contorno dourado */
+.cgrid .cpi{width:auto;min-width:0;scroll-snap-align:none;border-radius:16px;touch-action:manipulation;cursor:pointer;opacity:.6;transition:opacity .15s}
+.cgrid .cpi.on{opacity:1}
 .cgrid .cpi::after{display:none}
 .cgrid .cpa{transform:none!important;animation:none!important;will-change:auto;backface-visibility:visible}
-.cgrid .cpa .cc{border-radius:14px;padding:10px 12px 9px;box-shadow:none}
-.cgrid .cpi.on .cpa .cc{box-shadow:0 0 0 2px var(--gold2)}
+.cgrid .cpa .cc{border-radius:14px;padding:10px 12px 9px;box-shadow:0 6px 14px -8px rgba(0,0,0,.7)}
+.cgrid .cpi.on .cpa .cc{box-shadow:0 0 0 2px var(--gold2),0 8px 16px -8px rgba(0,0,0,.7)}
 .cgrid .cpk .cpi .cc-num{visibility:visible!important}
 .cgrid .cpg{display:none}
 .cgrid .cbf{flex-wrap:wrap;overflow:visible}
@@ -617,9 +617,29 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .cc .ccr,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
-/* v13.195: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
+/* v13.197: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
 .panel .cc::after,.panel .cc-fx::after{animation:none!important;display:none}
 .cpi{contain:layout style}
+
+/* v13.197: cadastro em 3 passos (Tipo · Quem é · Detalhes) dentro da mesma janela. Cada passo mostra só o seu pedaço (o resto fica sem desenho, display:none), botão fixo embaixo e barra de progresso. Desligar: Ajustes > Cadastro em passos (volta ao formulário único de antes) */
+.sprog,.sst,.sq,.sbk,.snx{display:none}
+.sfoot{display:contents}
+.panel.stp{height:min(92dvh,calc(100dvh - env(safe-area-inset-top,0px) - 66px));display:flex;flex-direction:column;padding-bottom:0}
+.panel.stp{align-items:stretch}
+.panel.stp>*:not(.grab){flex:none;width:100%;align-self:stretch}
+.panel.stp .sprog{display:flex;gap:6px;margin:12px 0 2px}
+.sprog b{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.1);transition:background .25s,box-shadow .25s}
+.sprog b.on{background:var(--gold);box-shadow:0 0 10px rgba(var(--ar),.55)}
+.panel.stp .sst{display:block;font:600 11px var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin:12px 0 4px}
+.panel.stp .sq{display:block;font:800 24px/1.15 var(--fd);letter-spacing:-.02em;margin:0 0 10px}
+.panel.stp #pl{display:none}
+.panel.stp[data-step="1"] :is(.s2,.s3,.s23),.panel.stp[data-step="2"] :is(.s1,.s3),.panel.stp[data-step="3"] :is(.s1,.s2){display:none!important}
+.panel.stp .sfoot{display:flex;gap:10px;position:sticky;bottom:0;margin-top:auto;padding:16px 0 calc(env(safe-area-inset-bottom,0px) + 14px);background:linear-gradient(0deg,var(--p2) 72%,rgba(0,0,0,0));z-index:5}
+.panel.stp .save{margin-top:0;flex:1;height:54px;border-radius:18px}
+.panel.stp .snx{display:block}
+.panel.stp[data-step="3"] .snx{display:none}
+.panel.stp .sbk{display:grid;place-items:center;flex:none;width:54px;height:54px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line2);color:var(--tx);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.panel.stp[data-step="1"] .sbk{display:none}
 .pt{transition:border-color .08s,background .08s;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .pt .pv,.pt .pv.logo{box-shadow:none}
 .pt.ghost,.cat.ghost{background-color:var(--card2);background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04));border-color:rgba(var(--ar),.7);box-shadow:0 12px 24px -8px rgba(0,0,0,.55),0 0 0 1px rgba(var(--ar),.25);transition:none;opacity:1;scale:1.1;animation:gpop .18s var(--ease) both;will-change:translate,scale}
@@ -754,7 +774,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.195</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.197</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -794,21 +814,22 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
   <form class="panel" id="panel" autocomplete="off" novalidate>
     <div class="grab"></div>
     <div class="stitle"><h2 id="st">Nova conta</h2><button type="button" class="x" id="sx" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="seg" id="fm" style="grid-template-columns:1fr 1fr;margin:4px 0 2px"><button type="button" data-m="bill" class="on">Conta a pagar</button><button type="button" data-m="spent">Gasto já feito</button></div>
-    <label class="amtbox" id="amtbox"><span>Valor</span><input id="fa" autocorrect="off" spellcheck="false" autocomplete="off" type="text" inputmode="numeric" value="R$ 0,00" aria-label="Valor"></label>
-    <div id="scopebox" hidden><div class="lbl">Aplicar o valor a</div><div class="seg" id="fs2" style="grid-template-columns:1fr 1fr"><button type="button" data-sc="one">Só este mês</button><button type="button" data-sc="all">Todos os meses</button></div></div>
-    <input class="fld" id="fn" autocorrect="off" spellcheck="false" autocomplete="off" autocapitalize="words" type="text" placeholder="Nome (opcional)" maxlength="60" style="margin-top:6px">
-    <div class="lbl tbar"><span>Tipo</span><div class="segP" id="tm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
-    <div class="phint" id="thint" hidden>Segure um tipo e arraste para onde quiser.</div>
-    <div class="cats" id="fc"></div>
-    <div class="lbl" id="pl">Quem é?</div>
-    <input class="fld sm" id="ps" autocorrect="off" spellcheck="false" type="search" placeholder="Buscar banco, streaming, empresa..." autocomplete="off">
-    <div class="pbar"><div class="segP" id="pm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
-    <div class="phint" id="phint" hidden></div>
-    <div class="pgrid" id="pg"></div>
-    <div class="imgrow"><span class="pprev" id="pprev"></span><button type="button" class="act" id="pimg">Usar minha foto ou logo</button><button type="button" class="act danger" id="pdel" hidden style="flex:none;width:auto;padding:0 14px">Remover</button></div>
+    <div class="sprog" id="sprog"><b></b><b></b><b></b></div><div class="sst" id="sst"></div><div class="sq" id="sq"></div>
+    <div class="seg s1" id="fm" style="grid-template-columns:1fr 1fr;margin:4px 0 2px"><button type="button" data-m="bill" class="on">Conta a pagar</button><button type="button" data-m="spent">Gasto já feito</button></div>
+    <label class="amtbox s3" id="amtbox"><span>Valor</span><input id="fa" autocorrect="off" spellcheck="false" autocomplete="off" type="text" inputmode="numeric" value="R$ 0,00" aria-label="Valor"></label>
+    <div id="scopebox" class="s3" hidden><div class="lbl">Aplicar o valor a</div><div class="seg" id="fs2" style="grid-template-columns:1fr 1fr"><button type="button" data-sc="one">Só este mês</button><button type="button" data-sc="all">Todos os meses</button></div></div>
+    <input class="fld s3" id="fn" autocorrect="off" spellcheck="false" autocomplete="off" autocapitalize="words" type="text" placeholder="Nome (opcional)" maxlength="60" style="margin-top:6px">
+    <div class="lbl tbar s1"><span>Tipo</span><div class="segP" id="tm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
+    <div class="phint s1" id="thint" hidden>Segure um tipo e arraste para onde quiser.</div>
+    <div class="cats s1" id="fc"></div>
+    <div class="lbl s2" id="pl">Quem é?</div>
+    <input class="fld sm s2" id="ps" autocorrect="off" spellcheck="false" type="search" placeholder="Buscar banco, streaming, empresa..." autocomplete="off">
+    <div class="pbar s2"><div class="segP" id="pm"><button type="button" data-o="az">A–Z</button><button type="button" data-o="custom">Minha ordem</button></div></div>
+    <div class="phint s2" id="phint" hidden></div>
+    <div class="pgrid s2" id="pg"></div>
+    <div class="imgrow s2"><span class="pprev" id="pprev"></span><button type="button" class="act" id="pimg">Usar minha foto ou logo</button><button type="button" class="act danger" id="pdel" hidden style="flex:none;width:auto;padding:0 14px">Remover</button></div>
     <input type="file" id="pfile" accept="image/*" hidden>
-    <div id="bkx" hidden>
+    <div id="bkx" class="s2" hidden>
       <div class="lbl">Como você paga</div>
       <p class="phint" style="margin-bottom:8px">Opcional. Escolha a forma e o banco; o ícone do banco aparece na conta quando ela não tem um logo próprio.</p>
       <div class="seg" id="fv" style="grid-template-columns:repeat(3,1fr);margin-bottom:10px"><button type="button" data-v="boleto">Boleto</button><button type="button" data-v="pix">PIX</button><button type="button" data-v="transf">Transf.</button><button type="button" data-v="debito">Débito</button><button type="button" data-v="credito">Crédito</button><button type="button" data-v="dinheiro">Dinheiro</button></div>
@@ -818,32 +839,34 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
         <div class="pgrid" id="bkg" hidden style="margin-top:8px"></div>
       </div>
     </div>
-    <div id="ccx" hidden>
+    <div id="ccx" class="s23" hidden>
       <div class="ccprev" id="ccprev"></div>
-      <div class="lbl" id="cml" hidden>Escolha o cartão</div>
-      <div class="cbf" id="cbf" hidden></div>
-      <div class="cpk" id="cm" hidden></div>
-      <div class="cpt" id="cpt" hidden><div class="cpn" id="cpn"></div><div class="cps" id="cps"></div><div class="cpg" id="cpg"></div></div>
-      <div id="cgen"><div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
+      <div class="lbl s2" id="cml" hidden>Escolha o cartão</div>
+      <div class="cbf s2" id="cbf" hidden></div>
+      <div class="cpk s2" id="cm" hidden></div>
+      <div class="cpt s2" id="cpt" hidden><div class="cpn" id="cpn"></div><div class="cps" id="cps"></div><div class="cpg" id="cpg"></div></div>
+      <div id="cgen" class="s2"><div class="lbl">Bandeira</div><div class="dates" id="cb"></div>
       <div class="lbl">Nível do cartão</div><div class="dates" id="ct"></div></div>
+      <div class="ccd s3">
       <div class="lbl">Final do cartão</div><input class="fld" id="cl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" maxlength="4" placeholder="Últimos 4 números (opcional)" autocomplete="off">
       <div class="lbl">Limite do cartão</div><input class="fld" id="cli" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" placeholder="R$ 0,00 (opcional)" autocomplete="off">
       <div class="lbl">Dia do fechamento da fatura</div><input class="fld" id="ccl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 25 (opcional)" autocomplete="off">
+      </div>
     </div>
-    <div id="bolx" hidden>
+    <div id="bolx" class="s3" hidden>
       <div class="lbl">Linha digitável do boleto</div>
       <div style="display:flex;gap:8px"><input class="fld" id="bl" autocorrect="off" spellcheck="false" type="text" inputmode="numeric" placeholder="Cole o código do boleto" autocomplete="off"><button type="button" class="act" id="blp" style="flex:none;width:auto;padding:0 16px;margin:0">Colar</button></div>
       <div class="bolm" id="blm" hidden></div>
     </div>
-    <div class="lbl" id="fdl">Vencimento</div>
-    <div class="dates" id="fdates">
+    <div class="lbl s3" id="fdl">Vencimento</div>
+    <div class="dates s3" id="fdates">
       <button type="button" class="chip" data-d="-1" id="cyest" hidden>Ontem</button>
       <button type="button" class="chip" data-d="0">Hoje</button>
       <button type="button" class="chip" data-d="1">Amanhã</button>
       <button type="button" class="chip" data-d="7">+7 dias</button>
       <input type="date" id="fd" aria-label="Data de vencimento">
     </div>
-    <div id="repbox"><div class="lbl">Repetição</div>
+    <div id="repbox" class="s3"><div class="lbl">Repetição</div>
     <div class="seg" id="fr">
       <button type="button" data-r="once" class="on">Única</button>
       <button type="button" data-r="monthly">Todo mês</button>
@@ -854,19 +877,19 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="stp" id="curbox"><div><small>Parcela atual</small><div class="v num" id="vc">1</div></div><div class="bt"><button type="button" data-s="c-">−</button><button type="button" data-s="c+">+</button></div></div>
     </div>
     </div>
-    <p class="hint" id="hint"></p>
-    <div class="lbl">Observação (opcional)</div>
-    <textarea class="fld" id="fo" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Código de barras, número do contrato, lembrete..."></textarea>
-    <button type="button" class="act" id="fcopy" hidden>Copiar observação</button>
-    <button type="submit" class="save" id="fs">Adicionar conta</button>
-    <div id="extra"></div>
+    <p class="hint s3" id="hint"></p>
+    <div class="lbl s3">Observação (opcional)</div>
+    <textarea class="fld s3" id="fo" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Código de barras, número do contrato, lembrete..."></textarea>
+    <button type="button" class="act s3" id="fcopy" hidden>Copiar observação</button>
+    <div id="extra" class="s3"></div>
+    <div class="sfoot" id="sfoot"><button type="button" class="sbk" id="sbk" aria-label="Voltar"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="save snx" id="snx">Continuar</button><button type="submit" class="save s3" id="fs">Adicionar conta</button></div>
   </form>
 </div>
 
 <script>
 (function(){
 'use strict';
-const VERSION='13.195';
+const VERSION='13.197';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1610,6 +1633,7 @@ function renderSet(){
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
    '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
+   '<div class="card"><h3>Cadastro em passos</h3><div class="cap">O botão + abre o cadastro em 3 passos curtos (Tipo, Quem é, Detalhes), com botão fixo embaixo. Desligue para voltar ao formulário único de antes.</div><div class="fxrow"><b>'+(STEPS()?'Ligado':'Desligado')+'</b><button type="button" class="swt" id="bst" role="switch" aria-checked="'+(STEPS()?'true':'false')+'" aria-label="Cadastro em passos"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
    '<div class="card"><h3>Atualização</h3><div class="cap">O app confere sozinho se há versão nova ao abrir. Seus dados não são apagados.</div><button class="act" id="bupd">Verificar atualização</button></div>'+
@@ -1622,6 +1646,7 @@ function renderSet(){
   if(window.__acc)window.__acc.bind();
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
+  $('#bst').onclick=()=>{const on=!STEPS();try{if(on)localStorage.removeItem('sobrou.steps');else localStorage.setItem('sobrou.steps','0')}catch(e){}renderSet();toast(on?'Cadastro em passos ligado':'Cadastro em passos desligado')};
   $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
@@ -1674,7 +1699,7 @@ function setTab(t){
   if(t==='home'){ANIM=true;if(t!==prev)NAVM=true} /* v13.184: voltar para Contas não recria os cartões (a foto piscava borrada) nem refaz a entrada das contas */
   renderAll();scrollTo(0,t!==prev?(SCR[t]||0):0);
 }
-/* v13.195: tocar na aba que já está aberta não reconstrói a tela (piscava): só volta ao topo, como no iPhone */
+/* v13.197: tocar na aba que já está aberta não reconstrói a tela (piscava): só volta ao topo, como no iPhone */
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;if(b.dataset.tab===TAB){try{window.scrollTo({top:0,behavior:'smooth'})}catch(_){scrollTo(0,0)}return}setTab(b.dataset.tab)});
 $('#fab').onclick=()=>openSheet(null);
 document.addEventListener('click',e=>{
@@ -2322,6 +2347,7 @@ function openSheet(id,key){
   /* monta tudo com a janela ainda fora da tela e só depois começa a subida: o trabalho pesado não cai no meio da animação */
   /* v13.87: um layout só: antes o scrollTop=0 aqui obrigava o iPhone a medir a janela com o conteúdo ANTIGO e logo depois tudo era trocado e medido de novo; agora volta ao topo depois de montar o conteúdo novo */
   sh.hidden=false;document.body.style.overflow='hidden';
+  pn.classList.toggle('stp',STEPS());if(STEPS())setStep(EDIT?3:1);
   PGK='';renderProv();syncForm();pn.scrollTop=0;
   void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480);
@@ -2337,6 +2363,22 @@ function closeSheet(){
   $('#panel').style.transform='';
 }
 $('#scrim').onclick=closeSheet;$('#sx').onclick=closeSheet;
+/* v13.197: cadastro em passos */
+let SSTEP=1;
+function STEPS(){try{return localStorage.getItem('sobrou.steps')!=='0'}catch(e){return true}}
+function setStep(n,keep){
+  const pn=$('#panel');if(!pn.classList.contains('stp'))return;
+  const t0=performance.now(),prev=SSTEP;SSTEP=n;pn.dataset.step=n;
+  $$('#sprog b').forEach((b,i)=>b.classList.toggle('on',i<n));
+  $('#sst').textContent='Passo '+n+' de 3 · '+['Tipo','Quem é','Detalhes'][n-1];
+  $('#sq').textContent=n===1?'Que tipo de conta?':n===2?($('#pl').textContent||'Quem é?'):(F.mode==='spent'?'Quanto foi o gasto?':'Confirme os detalhes');
+  if(n===2){try{const tr=$('#cm');if(tr)tr._k=null;if(F.cat==='cartao'&&n===2){CK='';}syncForm()}catch(e){}}
+  if(!keep)pn.scrollTop=0;
+  try{requestAnimationFrame(()=>requestAnimationFrame(()=>{const d=performance.now()-t0;if(window.__diagNote&&d>45)window.__diagNote('passo '+prev+' → '+n+' demorou '+Math.round(d)+' ms para aparecer','passo')}))}catch(e){}
+}
+$('#snx').onclick=()=>setStep(Math.min(3,SSTEP+1));
+$('#sbk').onclick=()=>setStep(Math.max(1,SSTEP-1));
+
 /* o valor é uma máscara de centavos: cada dígito entra SEMPRE no fim (5 → R$ 0,05), onde quer que o cursor esteja. Antes o app lia o texto
    inteiro depois de o iPhone inserir o dígito no cursor — com o cursor fora do fim (ou o app ocupado) o dígito caía no meio e o valor errava */
 $('#fa').addEventListener('beforeinput',e=>{
@@ -2810,6 +2852,7 @@ function putExtra(b){
 }
 $('#panel').addEventListener('submit',e=>{
   e.preventDefault();
+  if($('#panel').classList.contains('stp')&&SSTEP<3){setStep(SSTEP+1);return}
   if(!F.cents){
     const a=$('#amtbox'),pn=$('#panel'),y=Math.round(pn.scrollTop);
     window.__diagAct&&window.__diagAct('adicionar conta sem valor');
@@ -3333,7 +3376,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   function scr(){
     const sh=$('#sheet');
     if(sh&&!sh.hidden&&sh.classList.contains('open')){
-      const cat=(window.__diagF&&window.__diagF())||'';return 'Janela'+(cat?' · '+cat:'');
+      const cat=(window.__diagF&&window.__diagF())||'',pq=$('#panel'),ps=pq&&pq.classList.contains('stp')?' · passo '+pq.dataset.step:'';return 'Janela'+ps+(cat?' · '+cat:'');
     }
     const t=document.querySelector('.tab.on');return t?t.textContent.trim():'?';
   }
