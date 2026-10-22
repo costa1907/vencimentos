@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.198 · 22/10/2026 · Cadastro em passos: a janela não anda mais para os lados (sobrava 4 px de largura e o iPhone deixava arrastar na horizontal); agora só rola para cima e para baixo
   v13.197 · 22/10/2026 · NOVO cadastro em 3 passos dentro da janela do + (Tipo · Quem é/cartão · Detalhes): cada passo mostra só o seu pedaço, barra de progresso, botão Continuar/Salvar fixo embaixo e seta de voltar; editar conta abre direto nos Detalhes; diagnóstico separa a rolagem e o tempo de cada passo; Ajustes > Cadastro em passos desliga e volta ao formulário único
   v13.196 · 22/10/2026 · Volta ao visual da v13.194 na lista de cartões da janela (cartões não escolhidos apagados, com sombra): o teste da v13.195 sem transparência/sombra não melhorou a rolagem (26,3% contra 28,4% de quadros lentos), então o visual original foi mantido
   v13.194 · 21/10/2026 · Tocar na aba que já está aberta não reconstrói mais a tela (ela piscava e refazia a entrada dos cartões/contas); agora só sobe suavemente ao topo
