@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.220 · 22/10/2026 · Diagnóstico: depois de cada giro o relatório ganha uma linha 'giro: ...' com os eventos do iPhone (resize, visibilidade, foco…) e, quadro a quadro por 1,5 s, a posição e a visibilidade do cabeçalho, para achar o que apaga o cabeçalho ao voltar em pé
   v13.219 · 22/10/2026 · Voltar da horizontal: no vídeo só o cabeçalho (logo, versão, PREMIUM) apagava por 3 quadros ~0,1 s depois da volta. O iOS esconde/mostra a página a cada giro e o app rodava a rotina de 'voltar do segundo plano' (redecodificar imagens, refazer carrosséis) bem nessa hora; agora ela não roda por 3,5 s depois de um giro
   v13.218 · 22/10/2026 · Voltar da horizontal: cobertura levemente transparente (opaca, o iPhone descartava o desenho do app embaixo e ele voltava preto por ~3 quadros, visto quadro a quadro no vídeo) e o congelamento da v13.217 saiu (não mudou nada)
   v13.217 · 22/10/2026 · Voltar da horizontal: a página é congelada no lugar enquanto o celular está deitado (o vídeo mostrou o conteúdo da parte de cima andando ~15 px logo depois do giro, quando o iPhone reajusta a rolagem pelo novo tamanho) e é solta, já na posição, quando volta em pé
