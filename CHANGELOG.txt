@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.210 · 22/10/2026 · Aviso de campo obrigatório no passo 2 agora aparece NO LUGAR, logo acima do campo que falta (antes era uma faixa flutuante por cima dos botões, com contorno vermelho); some ao escolher
   v13.209 · 22/10/2026 · Adicionar conta estando no Panorama (ou Ajustes): a tela vai direto para Contas, atrás da janela que fecha; antes mostrava o Panorama de novo e só ~0,5 s depois trocava para Contas
   v13.208 · 22/10/2026 · Passo 2 da Nova conta: 'Quem é?' e 'Como você paga' (forma + banco, ou 'Nenhum') agora são obrigatórios: o Continuar não avança sem escolher, mostra o aviso e destaca/rola até o que falta (o texto 'Opcional' saiu)
   v13.207 · 22/10/2026 · Voltar do segundo plano com a janela Nova conta aberta não pisca mais: o app deixa de esconder/mostrar a rolagem da janela e o carrossel de cartões (era o que causava o pisca); botão 'Ver todos' do passo 2 removido (volta a lista completa de ícones); botão 'Usar minha foto ou logo' alinhado
