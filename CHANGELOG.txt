@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.214 · 22/10/2026 · Voltar da horizontal: depois do giro o iPhone deixa a tela deslocada por alguns décimos de segundo e o app só corrigia aos 120/450 ms (a tela 'pulava' para o lugar); agora confere a cada quadro durante 1 s e devolve a posição na hora
   v13.213 · 22/10/2026 · Voltar da horizontal: sem a cobertura de ~0,7 s (aparecia um fundo azul antes do app); o app aparece direto e só devolve a posição da rolagem; a tela de aviso da horizontal usa a cor do tema (antes azul fixo)
   v13.212 · 22/10/2026 · Voltar da horizontal sem tranco: a posição da rolagem é guardada e devolvida, e o fundo liso cobre ~0,7 s (a animação de giro do iPhone não aparece mais) antes de sumir suavemente
   v13.211 · 22/10/2026 · Celular sempre em pé: manifesto com orientation portrait + trava de orientação; se o iPhone girar de lado mesmo assim, uma tela cobre o app pedindo para voltar à vertical (em vez do app esticado)
