@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.218 · 22/10/2026 · Voltar da horizontal: cobertura levemente transparente (opaca, o iPhone descartava o desenho do app embaixo e ele voltava preto por ~3 quadros, visto quadro a quadro no vídeo) e o congelamento da v13.217 saiu (não mudou nada)
   v13.217 · 22/10/2026 · Voltar da horizontal: a página é congelada no lugar enquanto o celular está deitado (o vídeo mostrou o conteúdo da parte de cima andando ~15 px logo depois do giro, quando o iPhone reajusta a rolagem pelo novo tamanho) e é solta, já na posição, quando volta em pé
   v13.216 · 22/10/2026 · Voltar da horizontal: as animações contínuas do cabeçalho (brilho do PREMIUM, brilho do cartão-resumo) e do botão + ficam paradas durante o giro e por 1,3 s depois (o iPhone descarta e redesenha essas camadas ao girar, e o cabeçalho piscava)
   v13.215 · 22/10/2026 · Voltar da horizontal: o cabeçalho (logo, versão e PREMIUM) piscava porque a correção refazia a camada da tela; agora só a rolagem é corrigida, sem mexer na camada, e a correção antiga fica em pausa durante 1 s
