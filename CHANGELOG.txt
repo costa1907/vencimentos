@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.211 · 22/10/2026 · Celular sempre em pé: manifesto com orientation portrait + trava de orientação; se o iPhone girar de lado mesmo assim, uma tela cobre o app pedindo para voltar à vertical (em vez do app esticado)
   v13.210 · 22/10/2026 · Aviso de campo obrigatório no passo 2 agora aparece NO LUGAR, logo acima do campo que falta (antes era uma faixa flutuante por cima dos botões, com contorno vermelho); some ao escolher
   v13.209 · 22/10/2026 · Adicionar conta estando no Panorama (ou Ajustes): a tela vai direto para Contas, atrás da janela que fecha; antes mostrava o Panorama de novo e só ~0,5 s depois trocava para Contas
   v13.208 · 22/10/2026 · Passo 2 da Nova conta: 'Quem é?' e 'Como você paga' (forma + banco, ou 'Nenhum') agora são obrigatórios: o Continuar não avança sem escolher, mostra o aviso e destaca/rola até o que falta (o texto 'Opcional' saiu)
