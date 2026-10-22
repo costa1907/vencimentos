@@ -1,6 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
-  v13.189 · 21/10/2026 · Panorama e Ajustes: quadros isolados (contain) e sem a sombra externa difusa (mantido o relevo interno), para a rolagem desenhar menos por quadro
+  v13.190 · 21/10/2026 · Rolagem do Panorama e Ajustes: o fundo (brilho do tema) deixou de ser 'fixo' no corpo da página (redesenhado a cada quadro no iPhone) e virou uma camada fixa própria, desenhada uma vez; visual idêntico
   v13.188 · 21/10/2026 · Rolagem do Panorama mais fluida: removido o content-visibility dos quadros (o iPhone desenhava cada quadro só ao entrar na tela e recalculava a altura da página enquanto rolava, causando lentidão e pulos)
   v13.187 · 21/10/2026 · Janela de cadastro (+) e escolha de cartão mais leves na rolagem: os cartões dentro da janela deixam de rodar o brilho infinito (dezenas de animações ao mesmo tempo) e cada item do carrossel de modelos é isolado para o iPhone recalcular menos; visual idêntico
   v13.186 · 21/10/2026 · Ajustes (conta administradora): o cartão Clientes agora já aparece com a altura final ao abrir a aba (antes a linha da lista entrava depois e empurrava o cartão Aparência para baixo, parecendo que o menu ainda crescia); lista guardada da última vez aparece na hora; indicador da barra inferior desliza mais rápido
