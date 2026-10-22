@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.200 · 22/10/2026 · Cadastro em passos: corrigido o 'torto' (a janela usava por engano o estilo do contador de parcelas, que a deixava com 6 px de margem e itens espremidos/deslocados); margens laterais maiores (24 px); tocar num tipo NÃO avança mais sozinho (só pelo botão Continuar); troca de passo só com esmaecer, sem deslizar para o lado
   v13.199 · 22/10/2026 · Cadastro em passos: tocar num tipo já avança para o passo 2; escolher um banco de cartão rola até os cartões dele; troca de passo com deslize curto para o lado (só opacidade e deslocamento); passo 3 mostra no topo o resumo do que foi escolhido (tipo, banco, cartão)
   v13.198 · 22/10/2026 · Cadastro em passos: a janela não anda mais para os lados (sobrava 4 px de largura e o iPhone deixava arrastar na horizontal); agora só rola para cima e para baixo
   v13.197 · 22/10/2026 · NOVO cadastro em 3 passos dentro da janela do + (Tipo · Quem é/cartão · Detalhes): cada passo mostra só o seu pedaço, barra de progresso, botão Continuar/Salvar fixo embaixo e seta de voltar; editar conta abre direto nos Detalhes; diagnóstico separa a rolagem e o tempo de cada passo; Ajustes > Cadastro em passos desliga e volta ao formulário único
