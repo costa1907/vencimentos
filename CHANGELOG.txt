@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.231 · 22/10/2026 · Abertura: tocar para pular agora também faz o logo voar até o cabeçalho; mais poeira dourada (150) com estrelinhas de 4 pontas que cintilam; e uma onda de luz no cabeçalho quando o logo pousa
+  v13.230 · 22/10/2026 · Abertura: o selo ✦ PREMIUM agora aparece também para o administrador (antes só aparecia para quem tinha assinatura paga registrada)
   v13.229 · 22/10/2026 · Abertura premium (sempre completa, 4,6 s, toque pula): rastro de luz nas partículas, poeira dourada, reflexo de lente, 2 ondas de luz, brilho metálico no nome, selo ✦ PREMIUM (só assinantes) e saída em que o logo voa até o cabeçalho do app (sem cabeçalho visível, só some em fade)
   v13.228 · 22/10/2026 · Abertura: corrigido o dobro de partículas nas aberturas seguintes (7202 em vez de 3601) e o 1 quadro lento no início (as partículas agora são preparadas antes da animação começar). Medição no iPhone: 201 quadros, 1 lento, desenho 0,9 ms/quadro
   v13.227 · 22/10/2026 · Nova abertura (TESTE): partículas se juntam e formam o logo, onda de luz, reflexo, nome e frase (3,6 s, toque pula); o diagnóstico mostra a linha 'Abertura (animação nova)' com quadros lentos, pior quadro e custo das partículas
