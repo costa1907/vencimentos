@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.194 · 21/10/2026 · Tocar na aba que já está aberta não reconstrói mais a tela (ela piscava e refazia a entrada dos cartões/contas); agora só sobe suavemente ao topo
   v13.193 · 21/10/2026 · Panorama: as trilhas dos medidores (por tipo, metas, 6 meses) não recortam mais o preenchimento (ele já tem a mesma curvatura), tirando dezenas de recortes arredondados da rolagem; visual igual
   v13.192 · 21/10/2026 · Panorama (e metas): as barras e os medidores paravam de animar mas continuavam como camadas separadas com recorte arredondado (o iPhone mantinha dezenas delas ativas durante a rolagem: 27,7% de quadros lentos no Panorama); agora a animação termina e solta a camada, com o mesmo visual
   v13.191 · 21/10/2026 · Diagnóstico de fluidez: o ritmo da rolagem da página agora é separado por tela (Contas, Panorama, Ajustes), para achar qual tela está lenta
