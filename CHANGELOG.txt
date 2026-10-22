@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.226 · 22/10/2026 · Tocar na aba em que você já está (Contas/Panorama/Ajustes) volta ao topo em uma subida única e rápida; antes, vários toques reiniciavam a rolagem lenta do iPhone e a tela subia aos poucos
   v13.225 · 22/10/2026 · Limpeza: removidos estilos e variáveis que não eram mais usados (brilho antigo do cartão, anel, modo organizar, splash antigo e variáveis soltas); sem mudança visual
   v13.224 · 22/10/2026 · Passo 2: sai o ícone 'Outro' (cadastro em passos) e a pergunta 'Quem é?' vira uma frase que faz sentido para o tipo (Qual é o cartão? / Qual é o banco? / Qual é o serviço? / Qual é a empresa? / Para qual banco?); etapa 2 passa a se chamar 'Escolha'
   v13.223 · 22/10/2026 · Voltar da horizontal: a página travada (v13.222) não impediu o pulo de 62 px do iPhone (visto no relatório: rolagem 0 → 62 → 0 ~0,3 s depois da volta, mesmo com o body fixo); volta a cobertura na cor do tema, mais curta: desde a volta até 80 ms depois do último aviso do iPhone (mín. 0,4 s), com fade de 0,18 s
