@@ -1,5 +1,7 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.205 · 22/10/2026 · Cadastro em passos: a troca de passo não esmaece mais (o esmaecer promovia os itens a camadas e, ao acabar, o iPhone redesenhava texto e bordas, e o campo de busca do passo 2 parecia se mexer); a troca é imediata
+  v13.204 · 22/10/2026 · Passo 2 (grade de ícones) mais leve na rolagem: o diagnóstico mostrou 18,7% de quadros lentos nele (contra 2,8% no passo 3); tirada a sombra difusa de cada um dos mais de 100 ícones e o recorte arredondado por ícone (o arredondamento passou para a imagem); visual praticamente igual
   v13.203 · 22/10/2026 · Diagnóstico: o ritmo da rolagem da janela agora é separado por passo (1 Tipo, 2 Quem é com ícones ou com cartões, 3 Detalhes) para achar qual passo pesa
   v13.202 · 22/10/2026 · Cadastro em passos: passar para o passo 2 em tipos que não são Cartão não refaz mais o formulário (syncForm ~17 ms a cada troca); só o tipo Cartão refaz o seletor de cartões
   v13.201 · 22/10/2026 · Cadastro em passos: o traço de arrastar no topo da janela some nos passos 2 e 3 e a janela parece subir (o traço era espremido a 0 px quando o conteúdo era maior que a janela); agora fica sempre com 5 px; o carrossel de cartões ocupa a largura toda (mesmas margens da janela) para o dedo nas bordas também rolar o carrossel
