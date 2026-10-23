@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.234 · 22/10/2026 · Diagnóstico 'subida da janela' mais completo: a cada 2 aberturas registra também a posição do topo da janela quadro a quadro, voltas para baixo, mudanças de rolagem da página e da área visível do iPhone; nada muda na tela
   v13.233 · 22/10/2026 · Diagnóstico: nova linha 'subida da janela' (quadros lentos e o instante em que ocorrem) para achar o tremor no fim da subida da janela Nova conta; nada muda na tela
   v13.232 · 22/10/2026 · Janela Nova conta: subida/descida mais suave. A janela agora fica numa camada própria da placa de vídeo (sem redesenho no fim da subida, que causava o tremor no topo), curva com cauda menos longa e o app de trás só é escondido 160 ms depois da janela parar
   v13.231 · 22/10/2026 · Abertura: tocar para pular agora também faz o logo voar até o cabeçalho; mais poeira dourada (150) com estrelinhas de 4 pontas que cintilam; e uma onda de luz no cabeçalho quando o logo pousa
