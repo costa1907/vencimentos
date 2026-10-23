@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.261';
+(function(){var V='13.262';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -198,6 +198,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.unpaying .chk{background:transparent;border-color:rgba(251,111,111,.6);color:transparent;box-shadow:none;transform:scale(.94)}
 .row.unpaying .chk svg{stroke-dashoffset:24}
 .row.paying,.row.unpaying{pointer-events:none;will-change:transform,opacity}
+.group .row{contain:layout style}
 #fxp{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:80}
 #fxp i{position:absolute;left:0;top:0;display:block;opacity:0;pointer-events:none;will-change:transform,opacity}
 #fxp .fg{width:100px;height:100px;margin:-50px 0 0 -50px;border-radius:50%;background:radial-gradient(circle,rgba(94,233,181,.5),rgba(94,233,181,0) 65%)}
@@ -857,7 +858,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.261</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.262</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -972,7 +973,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.261';
+const VERSION='13.262';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1905,7 +1906,7 @@ function payAviso(rec){
   if(rec.paying){const b=S.bills.find(v=>v.id===rec.id);toast('Marcada como paga'+(d==='Pagas'?' · foi para Pagas':''),()=>{if(b){delete b.paid[rec.key];save();renderAll()}})}
   else toast('Pagamento desfeito'+(d?' · voltou para '+d:''));
 }
-function flushPay(){PAYQ.forEach(rec=>{if(rec.phase==='done')return;clearTimeout(rec.t);paySwap(rec,true)})}
+function flushPay(){PAYQ.forEach(rec=>{if(rec.phase==='done'||rec.phase==='troca')return;clearTimeout(rec.t);paySwap(rec,false)})} /* toque seguido: a anterior conclui JÁ, mas deslizando (antes era um salto) */
 function payFinish(rec){ /* fim da espera: a conta sai do lugar */
   rec.phase='saida';rec.tSaida=performance.now();
   const r=rec.row;
@@ -1918,7 +1919,7 @@ function payFinish(rec){ /* fim da espera: a conta sai do lugar */
 function paySwap(rec,fast){ /* refaz a lista e desliza tudo para o lugar novo */
   if(rec.phase==='done')return;rec.phase='troca';rec.tTroca=performance.now();
   const T={};let t=performance.now();
-  const pre=(fast||RMq())?null:payMedir();T.med=performance.now()-t;
+  const pre=RMq()?null:(rec.pre||payMedir());T.med=rec.pre?0:performance.now()-t;
   t=performance.now();renderAll();T.ren=performance.now()-t;
   const aviso=()=>payAviso(rec);
   const fim=()=>{rec.phase='done';PAYQ.delete(rec.k);PD.fim(rec,T)};
@@ -1946,7 +1947,7 @@ function paySwap(rec,fast){ /* refaz a lista e desliza tudo para o lugar novo */
         const a=pre.rows[kk],b=post.rows[kk];if(!a||!b||!p||!q)return;
         const dy=(a.top-p.top)-(b.top-q.top);
         if(Math.abs(dy)>.5){try{w.animate([{transform:'translateY('+dy+'px)'},{transform:'translateY(0)'}],op)}catch(_){}}})});
-    if(nr){nr.style.opacity='0';setTimeout(()=>{if(!nr.isConnected)return;nr.style.opacity='';try{nr.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:260,easing:PAYE,fill:'backwards'})}catch(_){}},PAYD-40)}
+    if(nr){nr.style.opacity='0';setTimeout(()=>{if(!nr.isConnected)return;nr.style.opacity='';try{nr.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:250,easing:PAYE,fill:'backwards'})}catch(_){}},90)}
   }
   T.prep=performance.now()-t;
   requestAnimationFrame(aviso); /* o aviso entra no quadro seguinte: não soma ao trabalho da troca */
@@ -1975,6 +1976,7 @@ function togglePaid(id,key,x,y,direto){
   rec.ef=performance.now()-te;
   PD.ini(rec);
   rec.t=setTimeout(()=>payFinish(rec),PAYH);
+  rec.tm=setTimeout(()=>{if(rec.phase==='espera'){try{rec.pre=payMedir()}catch(_){}}},420); /* mede antes, enquanto nada se mexe: tira esse trabalho do quadro da troca */
 }
 
 /* ---------- cadastro ---------- */
