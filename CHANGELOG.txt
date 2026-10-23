@@ -1,5 +1,9 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.254 · 23/10/2026 · Corrigido: AliExpress, Centauro, Netshoes, íon Itaú, Shopee, Smiles e Mercado Livre saem da escolha SÓ no tipo Cartão (na v13.253 tinham saído de todos os tipos). Nos outros tipos (Compras, Viagem, Boleto etc.) voltam a aparecer; também na busca.
+  v13.253 · 23/10/2026 · Removidos da escolha de ícones: AliExpress, Centauro, Netshoes, íon Itaú, Shopee, Smiles (ícone) e Mercado Livre (também da busca), em todos os tipos de conta (corrigido na v13.254: era só para o tipo Cartão).
+  v13.252 · 23/10/2026 · Bandeiras: a marca da Mastercard ficou bem maior dentro da pílula (altura de 52% para 74%), pois estava pequena demais para ver.
+  v13.251 · 23/10/2026 · Bandeiras dos cartões: todas do MESMO tamanho em qualquer banco (antes a pílula crescia quando o banco tinha só 1 ou 2 bandeiras). Tamanho fixo = 1/4 da linha (cabem 4 lado a lado); com mais de 4 bandeiras elas se dividem para continuar na mesma linha.
   v13.250 · 23/10/2026 · Bandeiras dos cartões em pílula com as proporções da pílula GOL/Smiles enviada (mais alta e redonda, círculo de 89% da altura à esquerda): escolhida = círculo branco com ✓, as outras = círculo vazio; degradê e brilho no padrão dos bancos. Todas ficam na MESMA linha, sem rolar (a pílula se ajusta ao número de bandeiras do banco). Toque com leve efeito de pressão.
   v13.249 · 23/10/2026 · Smiles ganhou o seu azulejo na escolha de bandeira, com a marca (traçada a partir da imagem enviada) em branco sobre o laranja da Smiles, no mesmo estilo das outras. Bancos cujos cartões são todos Smiles também passam a mostrar a bandeira.
   v13.248 · 23/10/2026 · Bandeira também nos bancos com cartões de uma bandeira só (ex.: Caixa mostra Elo, Bradesco mostra Visa): antes a fileira só aparecia quando o banco tinha mais de uma. Bancos sem cartões próprios (genéricos) continuam sem a fileira.
