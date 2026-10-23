@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.235';
+(function(){var V='13.236';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -84,12 +84,12 @@ window.MARKS=function(i){return "i-sobrou-mark-"+i+".webp"};(function(){var i=9;
 })();
 </script>
 <style>
-/* v13.235: celular sempre em pé. O iPhone nem sempre respeita o bloqueio do manifesto; se o aparelho girar de lado, uma tela cobre tudo pedindo para voltar à vertical */
+/* v13.236: celular sempre em pé. O iPhone nem sempre respeita o bloqueio do manifesto; se o aparelho girar de lado, uma tela cobre tudo pedindo para voltar à vertical */
 #rot{display:none;position:fixed;inset:0;z-index:99999;background:var(--bg,#0a0c13);color:#eef0f7;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;font:700 16px var(--fb,system-ui)}
 #rot svg{width:54px;height:54px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 #rot small{display:block;font:500 13px var(--fb,system-ui);color:#8c93aa;margin-top:4px}
 @media (orientation:landscape) and (max-height:520px) and (pointer:coarse){#rot{display:flex}}
-/* v13.235: durante o giro (e 1,3 s depois) as animações contínuas do cabeçalho e do botão + ficam paradas: o iPhone descarta as camadas delas ao girar e as redesenha uma a uma (o cabeçalho piscava) */
+/* v13.236: durante o giro (e 1,3 s depois) as animações contínuas do cabeçalho e do botão + ficam paradas: o iPhone descarta as camadas delas ao girar e as redesenha uma a uma (o cabeçalho piscava) */
 html.rotq .pill::after,html.rotq .fab::before,html.rotq .fab svg,html.rotq .hero::before,html.rotq .hero::after{animation:none!important}
 #rot.hold{display:flex;background:var(--bg,#0a0c13)}#rot.hold>*{opacity:0}#rot.fade{opacity:0;transition:opacity .18s ease}
 /* Layout: cabeçalho + cartão-resumo no topo, lista por situação, barra flutuante embaixo e botão + */
@@ -108,7 +108,7 @@ html,body{overscroll-behavior-y:none}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:15px;-webkit-text-size-adjust:100%}
 body{min-height:100dvh;overflow-x:hidden;overscroll-behavior-x:none;touch-action:manipulation;-webkit-font-smoothing:antialiased;
   background:var(--bg)}
-/* v13.235: o fundo (brilho do tema + faixa do topo) saiu de 'background-attachment:fixed' (o iPhone redesenha esse fundo a cada quadro da rolagem, pesando só nas telas longas: Panorama e Ajustes) e virou uma camada fixa própria, desenhada uma vez */
+/* v13.236: o fundo (brilho do tema + faixa do topo) saiu de 'background-attachment:fixed' (o iPhone redesenha esse fundo a cada quadro da rolagem, pesando só nas telas longas: Panorama e Ajustes) e virou uma camada fixa própria, desenhada uma vez */
 body::before{content:"";position:fixed;left:0;right:0;top:0;height:100lvh;z-index:-1;pointer-events:none;
   background:linear-gradient(var(--bg) var(--st),transparent calc(var(--st) + 48px)) top/100% calc(var(--st) + 48px) no-repeat,
    radial-gradient(900px 420px at 80% -8%,rgba(var(--ar),.10),transparent 60%)}
@@ -170,7 +170,7 @@ body.so .pill::after{animation-play-state:paused}
 .sec{margin-top:24px}
 /* quadros do Panorama fora da tela só são desenhados quando chegam perto. A lista de contas é desenhada inteira de uma vez:
    montar uma seção no meio da rolagem (com os ícones) é justamente o que dá o tranco */
-/* v13.235: removido o content-visibility dos quadros do Panorama: o iPhone só desenhava cada quadro quando ele entrava na tela e recalculava a altura da página durante a rolagem (pulos e rolagem lenta) */
+/* v13.236: removido o content-visibility dos quadros do Panorama: o iPhone só desenhava cada quadro quando ele entrava na tela e recalculava a altura da página durante a rolagem (pulos e rolagem lenta) */
 .sec h3{display:flex;align-items:center;gap:8px;margin:0 4px 10px;font:700 13px/1 var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
 .sec h3::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--gold);box-shadow:0 0 9px rgba(var(--ar),.65);flex:none}
 .sec.late h3::before{background:var(--bad);box-shadow:0 0 9px rgba(251,111,111,.6)}
@@ -212,7 +212,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.paid .amt{color:var(--mu)}
 
 .empty{margin-top:28px;text-align:center;padding:34px 20px;border-radius:26px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:0 16px 30px -22px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05)}
-/* v13.235: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
+/* v13.236: 1ª tela de quem acabou de entrar (nenhuma conta cadastrada ainda): boas-vindas premium com atalhos direto para o tipo de conta */
 .wel{margin-top:22px;padding:28px 18px 22px;text-align:center;border-radius:28px;border:1px solid transparent;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 55%) padding-box,linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(150deg,rgba(var(--ar),.55),rgba(255,255,255,.07) 40%,rgba(255,255,255,.04) 62%,rgba(var(--ar),.25)) border-box;box-shadow:0 24px 50px -28px rgba(0,0,0,.85),0 0 40px -22px rgba(var(--ar),.5),inset 0 1px 0 rgba(255,255,255,.07)}
 .wel-ic{width:84px;height:84px;margin:0 auto 18px;border-radius:28px;display:grid;place-items:center;color:var(--gold2);background:linear-gradient(160deg,rgba(var(--ar),.3),rgba(var(--ar),.08));border:1px solid rgba(var(--ar),.38);box-shadow:0 18px 40px -14px rgba(var(--ar),.6),inset 0 1px 0 rgba(255,255,255,.16)}
 .wel-ic svg{width:42px;height:42px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -269,7 +269,7 @@ html.kbd body::after,body.sfull::after,body.so::after,html.lgon body::after{disp
 .scrim{position:absolute;inset:0;background:rgba(3,4,8,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .35s}
 .panel{position:absolute;left:0;right:0;margin:0 auto;bottom:0;width:100%;max-width:560px;max-height:min(94dvh,calc(100dvh - env(safe-area-inset-top,0px) - 66px));overflow-y:auto;overscroll-behavior-y:none;transform:translateY(102%);transition:transform .45s cubic-bezier(.24,.92,.32,1);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
 .sheet.open .scrim{opacity:1} .sheet.open .panel{transform:var(--snp,none)}
-/* v13.235: a janela fica numa camada própria da placa de vídeo enquanto estiver na tela: sem isso o iPhone a redesenhava no fim da subida (o 'tremor' lá no topo) e a cauda longa da curva andava 1 px por quadro */
+/* v13.236: a janela fica numa camada própria da placa de vídeo enquanto estiver na tela: sem isso o iPhone a redesenhava no fim da subida (o 'tremor' lá no topo) e a cauda longa da curva andava 1 px por quadro */
 .sheet:not([hidden]) .panel{will-change:transform}
 .grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px}
 .stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
@@ -390,16 +390,16 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 /* sem "encolher" ao encostar o dedo: no iPhone isso virava uma camada separada e redesenhava a grade no começo de cada
    rolagem feita com o dedo sobre os ícones. O ícone segue acendendo (.pre) quando o dedo fica parado, e marca ao tocar */
 .pt:active{transform:none}
-/* v13.235: grade de ícones (passo 2) mais leve de desenhar: sem sombra difusa embaixo de cada ícone (mais de 100 sombras com desfoque) e sem recorte arredondado por ícone (o arredondamento passa para a própria imagem); o visual fica praticamente igual */
+/* v13.236: grade de ícones (passo 2) mais leve de desenhar: sem sombra difusa embaixo de cada ícone (mais de 100 sombras com desfoque) e sem recorte arredondado por ícone (o arredondamento passa para a própria imagem); o visual fica praticamente igual */
 .pgrid .pt .pv{box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
 .pgrid .pt .pv.logo{box-shadow:none;overflow:visible}
 .pgrid .pt .pv.logo img{border-radius:inherit}
 .panel.stps .imgrow .pprev:empty{display:none}
 .panel.stps .imgrow{gap:10px}
 .panel.stps #pimg{height:48px;font-size:14px}
-/* v13.235: no cadastro em passos não existe o ícone 'Outro' (sempre se escolhe uma opção da lista ou a própria foto/logo) */
+/* v13.236: no cadastro em passos não existe o ícone 'Outro' (sempre se escolhe uma opção da lista ou a própria foto/logo) */
 .panel.stps #pg .pt[data-p=""]{display:none}
-/* v13.235: no passo 2 'Quem é?' e 'Como você paga' são obrigatórios: sem escolher, o Continuar não avança, avisa e destaca o que falta */
+/* v13.236: no passo 2 'Quem é?' e 'Como você paga' são obrigatórios: sem escolher, o Continuar não avança, avisa e destaca o que falta */
 .serr{display:flex;align-items:center;gap:9px;margin:10px 2px 12px;padding:10px 12px;border-radius:14px;background:rgba(251,111,111,.10);border:1px solid rgba(251,111,111,.32);color:#ffb4b4;font:600 13px/1.3 var(--fb)}
 .serr::before{content:"!";flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(251,111,111,.9);color:#2a0a0a;font:800 12px/1 var(--fb)}
 .pt .hz{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;clip-path:inset(0 round 16px);touch-action:pan-y;-webkit-tap-highlight-color:transparent}
@@ -629,11 +629,11 @@ html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
    qualquer janela fazia o iPhone recalcular o estilo da tela inteira. Animação nova na tela de trás: incluir aqui */
 body.so .page .cw,body.so .page .cc,body.so .cc .cc-net,body.so .cc .cc-tier,body.so .cc .cc-prod,body.so .fab::before{animation-play-state:paused!important}
 body.so .panel .cc-fx::after{animation:none}
-/* v13.235: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
+/* v13.236: dentro da janela os cartões (escolha de modelo e prévia) não têm mais o brilho infinito: eram dezenas de animações rodando durante a rolagem */
 .panel .cc::after,.panel .cc-fx::after{animation:none!important;display:none}
 .cpi{contain:layout style}
 
-/* v13.235: cadastro em 3 passos (Tipo · Quem é · Detalhes) dentro da mesma janela. Cada passo mostra só o seu pedaço (o resto fica sem desenho, display:none), botão fixo embaixo e barra de progresso. Desligar: Ajustes > Cadastro em passos (volta ao formulário único de antes) */
+/* v13.236: cadastro em 3 passos (Tipo · Quem é · Detalhes) dentro da mesma janela. Cada passo mostra só o seu pedaço (o resto fica sem desenho, display:none), botão fixo embaixo e barra de progresso. Desligar: Ajustes > Cadastro em passos (volta ao formulário único de antes) */
 .sprog,.sst,.sq,.sbk,.snx{display:none}
 .sfoot{display:contents}
 .panel.stps{height:min(92dvh,calc(100dvh - env(safe-area-inset-top,0px) - 66px));display:flex;flex-direction:column;padding:10px 24px 0}
@@ -697,7 +697,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .spl-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-top:-5vh;text-align:center}
 .spl-mw{width:min(62vw,270px);aspect-ratio:270/240}
 .spl-mw>img{display:block;width:100%;height:auto;filter:var(--mf);opacity:0}
-/* v13.235: abertura nova: partículas (canvas) se juntam e formam o logo; o logo real surge nítido, onda de luz, reflexo, nome e frase */
+/* v13.236: abertura nova: partículas (canvas) se juntam e formam o logo; o logo real surge nítido, onda de luz, reflexo, nome e frase */
 .spl.go .spl-mw>img{animation:splm2 .45s 1.05s cubic-bezier(.65,0,.2,1) forwards,splj 1.2s 1.1s ease forwards}
 @keyframes splm2{to{opacity:1}}
 .spl-n{margin-top:26px;font:800 50px/1 var(--fd,system-ui);letter-spacing:-.025em;color:#f4f6fb}
@@ -705,7 +705,7 @@ body.dragging .pt:active,body.dragging .pt.on{transform:none}
 .spl-n span{background-image:linear-gradient(105deg,var(--gold) 38%,#fff 50%,var(--gold) 62%)}
 .spl.go .spl-n i,.spl.go .spl-n span{animation:spll .55s calc(1.4s + var(--i)*.06s) cubic-bezier(.22,1,.36,1) forwards,spsh .8s calc(2s + var(--i)*.05s) ease-in-out forwards}
 @keyframes spsh{to{background-position:0% 0}}
-/* v13.235: selo Premium (só assinantes), saída do logo voando até o cabeçalho */
+/* v13.236: selo Premium (só assinantes), saída do logo voando até o cabeçalho */
 .spl-pm{display:none;position:absolute;left:50%;top:100%;margin-top:24px;transform:translateX(-50%);padding:8px 18px 8px 16px;border-radius:99px;font:800 11px/1 var(--fb,system-ui);letter-spacing:.3em;white-space:nowrap;color:var(--gold);border:1px solid rgba(var(--ar),.55);background:linear-gradient(180deg,rgba(var(--ar),.16),rgba(var(--ar),.05));opacity:0;overflow:hidden}
 .spl.prem .spl-pm{display:block}
 .spl-pm::after{content:"";position:absolute;top:0;bottom:0;left:-50%;width:40%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent)}
@@ -811,7 +811,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.235</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.236</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -926,7 +926,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.235';
+const VERSION='13.236';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1736,8 +1736,8 @@ function setTab(t){
   if(t==='home'){ANIM=true;if(t!==prev)NAVM=true} /* v13.184: voltar para Contas não recria os cartões (a foto piscava borrada) nem refaz a entrada das contas */
   renderAll();scrollTo(0,t!==prev?(SCR[t]||0):0);
 }
-/* v13.235: tocar na aba que já está aberta não reconstrói a tela (piscava): só volta ao topo, como no iPhone */
-/* v13.235: tocar na aba em que você já está volta ao topo. Antes cada toque reiniciava a rolagem suave do iPhone (que é lenta) e, tocando várias vezes, a tela subia aos poucos. Agora é uma subida única e rápida; toques durante a subida são ignorados */
+/* v13.236: tocar na aba que já está aberta não reconstrói a tela (piscava): só volta ao topo, como no iPhone */
+/* v13.236: tocar na aba em que você já está volta ao topo. Antes cada toque reiniciava a rolagem suave do iPhone (que é lenta) e, tocando várias vezes, a tela subia aos poucos. Agora é uma subida única e rápida; toques durante a subida são ignorados */
 let TOPO=0;
 function topo(){const y0=window.scrollY;if(TOPO||y0<=0)return;TOPO=1;const d=Math.max(180,Math.min(380,y0*0.22)),t0=performance.now();
   const f=n=>{const p=Math.min(1,(n-t0)/d),e=1-Math.pow(1-p,3);window.scrollTo(0,Math.round(y0*(1-e)));if(p<1&&window.scrollY>0)requestAnimationFrame(f);else{TOPO=0;window.scrollTo(0,0)}};requestAnimationFrame(f)}
@@ -1778,7 +1778,7 @@ function togglePaid(id,key,x,y){
 /* ---------- cadastro ---------- */
 let F=null, EDIT=null;
 const AUTOM=['cartao','assinatura','servicos','telecom','moradia','saude','seguro','educacao','transferencia','tag'];
-/* v13.235: pergunta do passo 2 conforme o tipo (antes era sempre 'Quem é?') */
+/* v13.236: pergunta do passo 2 conforme o tipo (antes era sempre 'Quem é?') */
 function PQ(c){return c==='cartao'?'Qual é o cartão?':c==='transferencia'?'Para qual banco?':(BANKPROV.indexOf(c)>-1)?'Qual é o banco?':(['assinatura','telecom','servicos','tag'].indexOf(c)>-1)?'Qual é o serviço?':'Qual é a empresa?'}
 const BANKPROV=['boleto','financ','consorcio'];   /* nesses tipos o "Quem é?" já é o banco: não repete a lista de bancos */
 const bankPick=cat=>bankOk(cat)&&BANKPROV.indexOf(cat)<0;
@@ -2134,7 +2134,7 @@ function redecodificar(){
   }catch(e){}
 }
 function acordarRolagem(){
-  /* v13.235: com a janela de Nova conta aberta NÃO refaz a rolagem (esconder/mostrar a rolagem piscava a tela ao voltar do segundo plano) */
+  /* v13.236: com a janela de Nova conta aberta NÃO refaz a rolagem (esconder/mostrar a rolagem piscava a tela ao voltar do segundo plano) */
 }
 /* v13.77: depois de ficar em segundo plano o iPhone descarta as camadas/telas desenhadas dos cartões: apareciam pretos, pequenos sem crescer e com o 1º cartão preso grande. Ao voltar, o carrossel que está na tela é "refeito" (sai e volta do layout no mesmo quadro, mantendo a posição) e o cartão do centro é remarcado */
 function reviverCarrosseis(){
@@ -2144,14 +2144,14 @@ function reviverCarrosseis(){
     if(!tr||!tr.children.length||(aberta&&CGRID))return;
     if(Date.now()-(aberta?CPLS:HCLS)<400)return; /* o dedo acabou de mexer nele: não mexe */
     const sl=tr.scrollLeft;
-    if(!aberta){tr.classList.add('cpnt','rv');tr.style.display='none';void tr.offsetWidth;tr.style.display='';tr.scrollLeft=sl}else tr.classList.add('cpnt'); /* v13.235: na janela aberta o carrossel não sai do layout (era isso que piscava) */
+    if(!aberta){tr.classList.add('cpnt','rv');tr.style.display='none';void tr.offsetWidth;tr.style.display='';tr.scrollLeft=sl}else tr.classList.add('cpnt'); /* v13.236: na janela aberta o carrossel não sai do layout (era isso que piscava) */
     tr._k='';tr._c=-1;
     if(aberta){tr._vb=-1;const bi=cpLayout(true);cpLabel(bi)}else cfLayout(tr,true);
     requestAnimationFrame(()=>requestAnimationFrame(()=>tr.classList.remove('cpnt')));
   }catch(e){}
 }
 function acordar(){
-  if(window.__rzT&&Date.now()-window.__rzT<3500)return; /* v13.235: girar o celular o iOS esconde e mostra a página (o diagnóstico anota 'saiu/voltou ao app' a cada giro) e as rotinas de 'voltar do segundo plano' (redecodificar imagens, refazer carrosséis, recalcular tudo) rodavam ~0,1 s depois da volta, bem na hora em que o cabeçalho apagava por 3 quadros. Depois de um giro elas não rodam: nada foi descartado */
+  if(window.__rzT&&Date.now()-window.__rzT<3500)return; /* v13.236: girar o celular o iOS esconde e mostra a página (o diagnóstico anota 'saiu/voltou ao app' a cada giro) e as rotinas de 'voltar do segundo plano' (redecodificar imagens, refazer carrosséis, recalcular tudo) rodavam ~0,1 s depois da volta, bem na hora em que o cabeçalho apagava por 3 quadros. Depois de um giro elas não rodam: nada foi descartado */
   ACORDT.forEach(clearTimeout);ACORDN=0;
   try{document.querySelectorAll('#list img.cc-bg,#cm img.cc-bg:not([data-src])').forEach(i=>{if(i.decode)i.decode().catch(()=>{})})}catch(e){} /* v13.180: as fotos dos cartões visíveis voltam na hora, antes de qualquer outro serviço */
   ACORDT=[setTimeout(()=>quandoLivre(()=>{acordarRolagem();redecodificar();reviverCarrosseis()}),120),setTimeout(()=>quandoLivre(()=>{acordarRolagem();redecodificar()}),1500)];
@@ -2368,29 +2368,27 @@ function syncForm(){
   $('#hint').textContent=h;$('#hint').style.display=h?'':'none';
   $('#fcopy').hidden=!$('#fo').value.trim();
 }
-/* v13.235/234: mede a subida da janela só para o diagnóstico (não muda nada na tela). Aberturas ímpares: só o ritmo dos quadros (sem leitura de layout). Pares: também a posição da janela, a rolagem da página e a área visível do iPhone em cada quadro, para achar o tremor */
-let OPN=0;
-function traceAbrir(pn){try{const modo=(++OPN)%2===0,t0=performance.now(),vv=window.visualViewport;let last=t0,n=0,te=0;const g=[],pos=[],ev=[];let pT=null,py=0,vo=0,vh=0;
-  const fim=()=>{te=Math.round(performance.now()-t0)};
-  pn.addEventListener('transitionend',function h(e){if(e.target===pn&&e.propertyName==='transform'){fim();pn.removeEventListener('transitionend',h)}});
-  if(vv){vo=vv.offsetTop;vh=vv.height}
-  const f=now=>{const d=now-last;last=now;n++;const ms=Math.round(now-t0);
-    if(n>1&&d>20)g.push(ms+' ms (+'+Math.round(d)+')');
-    if(modo){const top=pn.getBoundingClientRect().top,sy=Math.round(scrollY*10)/10;pos.push([ms,Math.round(top*10)/10]);
-      if(sy!==py){ev.push(ms+' ms: rolagem da página '+py+'→'+sy);py=sy}
-      if(vv&&(vv.offsetTop!==vo||Math.abs(vv.height-vh)>0.5)){ev.push(ms+' ms: área visível '+Math.round(vo)+'/'+Math.round(vh)+'→'+Math.round(vv.offsetTop)+'/'+Math.round(vv.height));vo=vv.offsetTop;vh=vv.height}}
-    if(now-t0<1000)requestAnimationFrame(f);else{
-      let tx='subida da janela ('+(modo?'com posição':'só ritmo')+') · '+n+' quadros em 1 s · quadros lentos (instante, duração): '+(g.length?g.join(', '):'nenhum')+' · fim da animação (transitionend) aos '+(te||'—')+' ms';
-      if(modo){let fimI=pos.findIndex(p=>p[1]<=pos[pos.length-1][1]+0.5);if(fimI<0)fimI=pos.length-1;
-        const tail=pos.slice(Math.max(0,fimI-12),fimI+4).map(p=>p[0]+':'+p[1]).join(' ');
-        let inv=0;for(let i=2;i<=fimI;i++){const a=pos[i-1][1]-pos[i-2][1],b2=pos[i][1]-pos[i-1][1];if(a<-0.3&&b2>0.3)inv++}
-        tx+=' · posição do topo da janela (ms:px), últimos quadros da subida: '+tail+' · voltas para baixo durante a subida: '+inv+' · mudanças de rolagem/área visível: '+(ev.length?ev.join('; '):'nenhuma')}
-      window.__diagNote&&window.__diagNote(tx,'jan')}};
+/* v13.233/236: mede a subida da janela só para o diagnóstico (ritmo dos quadros + posições da própria animação; sem leitura de layout para não atrapalhar) */
+function traceAbrir(pn){try{const t0=performance.now();let last=t0,n=0;const g=[];
+  const f=now=>{const d=now-last;last=now;n++;if(n>1&&d>20)g.push(Math.round(now-t0)+' ms (+'+Math.round(d)+')');
+    if(now-t0<1000)requestAnimationFrame(f);else{const P=pn._pos||[],te=pn._fim?Math.round(pn._fim-t0):'—';
+      const tail=P.slice(-14).map(p=>Math.round(p[0])+':'+p[1]).join(' ');
+      window.__diagNote&&window.__diagNote('subida da janela · '+n+' quadros em 1 s · quadros lentos (instante, duração): '+(g.length?g.join(', '):'nenhum')+' · animação própria terminou aos '+te+' ms · últimas posições (ms:px): '+tail,'jan')}};
   requestAnimationFrame(f)}catch(_){}}
-/* v13.235: o diagnóstico mostrou a janela parando em 71,5 px (meio pixel): o iPhone redesenhava o texto e dava um 'estalo' ao fim da subida. Aqui a posição final é ajustada para cair exatamente num pixel da tela (até 0,17 px, invisível) */
+/* v13.236: o diagnóstico mostrou a janela parando em 71,5 px (meio pixel): o iPhone redesenhava o texto e dava um 'estalo' ao fim da subida. Aqui a posição final é ajustada para cair exatamente num pixel da tela (até 0,17 px, invisível) */
 function snapPanel(){try{const sh=$('#sheet'),pn=$('#panel');if(!sh||!pn||sh.hidden)return;pn.style.removeProperty('--snp');
   const dpr=window.devicePixelRatio||1,f=(sh.getBoundingClientRect().height-pn.getBoundingClientRect().height)*dpr,d=(Math.round(f)-f)/dpr;
   if(Math.abs(d)>.01)pn.style.setProperty('--snp','translateY('+d.toFixed(3)+'px)')}catch(_){}}
+/* v13.236: a subida da janela passou a ser animada pelo próprio app (antes era uma transição do navegador). O vídeo mostrou que o iPhone cortava o fim da transição: a janela parava ainda em movimento (~2,7 px no último quadro), e dava a sensação de 'bater em algo'. Agora o app controla cada quadro: curva que chega a zero sem corte, posição sempre em pixel inteiro da tela e o quadro final exato */
+let OPA=0;
+function abrirAnim(pn){
+  const dpr=window.devicePixelRatio||1,h=pn.getBoundingClientRect().height,y0=h*1.02,m=/translateY\((-?[\d.]+)px\)/.exec(pn.style.getPropertyValue('--snp')||''),fin=m?+m[1]:0,id=++OPA,D=440;
+  pn.style.transition='none';pn.style.transform='translate3d(0,'+y0+'px,0)';pn._pos=[];pn._fim=0;
+  let t0=0;
+  const tk=now=>{if(OPA!==id)return;if(!t0)t0=now;const p=Math.min(1,(now-t0)/D),e=1-Math.pow(1-p,4);
+    if(p>=1){pn.style.transform='';void pn.offsetHeight;pn.style.transition='';pn._fim=performance.now();pn._pos.push([D,fin]);return}
+    const y=Math.round((y0+(fin-y0)*e)*dpr)/dpr;pn.style.transform='translate3d(0,'+y+'px,0)';pn._pos.push([now-t0,Math.round(y*10)/10]);requestAnimationFrame(tk)};
+  requestAnimationFrame(tk)}
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
@@ -2416,7 +2414,7 @@ function openSheet(id,key){
   sh.hidden=false;document.body.style.overflow='hidden';
   pn.classList.toggle('stps',STEPS());if(STEPS())setStep(EDIT?3:1);
   PGK='';renderProv();syncForm();pn.scrollTop=0;
-  snapPanel();void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();traceAbrir(pn);
+  snapPanel();abrirAnim(pn);void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();traceAbrir(pn);
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},640);
   /* v13.175: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
@@ -2424,13 +2422,13 @@ function openSheet(id,key){
 /* espera a janela terminar de descer antes de redesenhar a tela (a descida continua animada mesmo com efeitos desligados) */
 function afterClose(fn){let r=false;try{r=matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){}setTimeout(fn,r?0:460)}
 function closeSheet(){
-  CPC.clear();
+  CPC.clear();OPA++;$('#panel').style.transition='';
   const sh=$('#sheet');clearTimeout(window.__sft);document.body.classList.remove('sfull');sh.classList.remove('open');document.body.classList.remove('so');document.body.style.overflow='';
   $('#fa').blur();setTimeout(()=>{if(!sh.classList.contains('open'))sh.hidden=true},430);
   $('#panel').style.transform='';
 }
 $('#scrim').onclick=closeSheet;$('#sx').onclick=closeSheet;
-/* v13.235: cadastro em passos */
+/* v13.236: cadastro em passos */
 let SSTEP=1;
 function STEPS(){try{return localStorage.getItem('sobrou.steps')!=='0'}catch(e){return true}}
 function setStep(n,keep){
@@ -2440,17 +2438,17 @@ function setStep(n,keep){
   $$('#sprog b').forEach((b,i)=>b.classList.toggle('on',i<n));
   $('#sst').textContent='Passo '+n+' de 3 · '+['Tipo','Escolha','Detalhes'][n-1];
   $('#sq').textContent=n===1?'Que tipo de conta?':n===2?PQ(F.cat):(F.mode==='spent'?'Quanto foi o gasto?':'Confirme os detalhes');
-  if(n===2&&F.cat==='cartao'){try{const tr=$('#cm');if(tr)tr._k=null;CK='';syncForm()}catch(e){}} /* v13.235: só refaz o seletor quando o tipo é Cartão (nos outros tipos não há seletor, e o syncForm custava ~17 ms a cada troca de passo) */
+  if(n===2&&F.cat==='cartao'){try{const tr=$('#cm');if(tr)tr._k=null;CK='';syncForm()}catch(e){}} /* v13.236: só refaz o seletor quando o tipo é Cartão (nos outros tipos não há seletor, e o syncForm custava ~17 ms a cada troca de passo) */
   stErr('');try{const h=$('#bkh');if(h)h.textContent='Obrigatório. Escolha a forma e o banco; o ícone do banco aparece na conta quando ela não tem um logo próprio.'}catch(e){}
   if(!keep)pn.scrollTop=0;
   try{const sm=$('#ssum');if(n===3){const parts=String((window.__diagF&&window.__diagF())||'').split(' · ').filter(Boolean);sm.innerHTML=parts.map(x=>'<span>'+esc(x)+'</span>').join('')}else sm.innerHTML=''}catch(e){}
-  /* v13.235: sem esmaecer na troca de passo: o esmaecer promovia os itens a camadas e, ao terminar, o iPhone redesenhava o texto e as bordas (o campo de busca parecia mexer um pouco) */
+  /* v13.236: sem esmaecer na troca de passo: o esmaecer promovia os itens a camadas e, ao terminar, o iPhone redesenhava o texto e as bordas (o campo de busca parecia mexer um pouco) */
   try{requestAnimationFrame(()=>requestAnimationFrame(()=>{const d=performance.now()-t0;if(window.__diagNote&&d>45)window.__diagNote('passo '+prev+' → '+n+' demorou '+Math.round(d)+' ms para aparecer','passo')}))}catch(e){}
 }
-/* v13.235: tocar num tipo já avança para o passo 2; escolher um banco de cartão rola até os cartões dele */
+/* v13.236: tocar num tipo já avança para o passo 2; escolher um banco de cartão rola até os cartões dele */
 function stScroll(){const pn=$('#panel');if(!pn.classList.contains('stps')||SSTEP!==2)return;clearTimeout(stScroll._t);stScroll._t=setTimeout(()=>{try{const c=$('#cml');if(SSTEP===2&&F.cat==='cartao'&&c&&!c.hidden){pn.scrollTo({top:Math.max(0,c.getBoundingClientRect().top-pn.getBoundingClientRect().top+pn.scrollTop-70),behavior:NOFX()?'auto':'smooth'})}}catch(e){}},150)}
 {const o=pgClick;pgClick=function(e){if(e&&e.target&&e.target.closest&&e.target.closest('.pt')&&Date.now()-LASTDRAG>=500){F.pvs=1;stErr('')}const r=o.apply(this,arguments);stScroll();return r}}
-/* v13.235: o que falta no passo 2 (Quem é? e Como você paga são obrigatórios) */
+/* v13.236: o que falta no passo 2 (Quem é? e Como você paga são obrigatórios) */
 function stErr(m,el){let e=$('#serr');if(!m){if(e)e.remove();return}
   if(!e){e=document.createElement('div');e.id='serr';e.className='serr';e.setAttribute('role','alert')}
   e.textContent=m;el.parentNode.insertBefore(e,el);
@@ -2524,7 +2522,7 @@ document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.
   ['touchend','touchcancel'].forEach(n=>addEventListener(n,e=>{if(!e.touches||!e.touches.length)toque=0},{passive:true,capture:true}));
   function fix(){
     try{
-      if(document.body.classList.contains('so')||toque||window.__rotRet)return; /* v13.235: durante a volta da horizontal quem corrige é a rotina da rotação (sem refazer a camada da tela, que fazia o cabeçalho piscar) */
+      if(document.body.classList.contains('so')||toque||window.__rotRet)return; /* v13.236: durante a volta da horizontal quem corrige é a rotina da rotação (sem refazer a camada da tela, que fazia o cabeçalho piscar) */
       /* v13.79: com um campo de texto em foco (teclado / Face ID de preencher senha) o iPhone mexe sozinho na área visível; corrigir a posição agora brigava com ele e a tela tremia sem parar */
       {const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return}
       const off=vv&&(vv.offsetTop>0.5||vv.pageTop<-0.5);
@@ -2984,7 +2982,7 @@ $('#panel').addEventListener('submit',e=>{
   const o=fromISO(due);V={y:o.getFullYear(),m:o.getMonth()};
   if(F.rep==='inst'&&F.cur>1){const t=today0();V={y:t.getFullYear(),m:t.getMonth()}}
   const msg=F.mode==='spent'?'Gasto registrado':'Conta adicionada';
-  /* v13.235: a troca para Contas acontece JÁ, atrás da janela que está fechando (antes esperava a janela sumir: aparecia o Panorama e só depois as Contas) */
+  /* v13.236: a troca para Contas acontece JÁ, atrás da janela que está fechando (antes esperava a janela sumir: aparecia o Panorama e só depois as Contas) */
   if(TAB!=='home')setTab('home');else{ANIM=true;renderHome()}
   closeSheet();
   afterClose(()=>toast(msg));
@@ -3023,7 +3021,7 @@ $('#extra').addEventListener('click',function(e){
   sh0.addEventListener('touchmove',e=>{
     if(y0===null)return;const yy=e.touches[0].clientY,d=yy-y0,n=performance.now();
     if(n>lt){vy=(yy-ly)/(n-lt);lt=n;ly=yy}
-    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;pn.style.transition='none';document.body.classList.remove('sfull')}
+    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;OPA++;pn.style.transition='none';document.body.classList.remove('sfull')}
     dy=Math.max(0,d);pn.style.transform='translateY('+dy+'px)';
   },{passive:true});
   const solta=()=>{
@@ -3793,7 +3791,7 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
 </script>
 <div id="rot" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M11 18.5h2"/></svg><div>Use o celular na vertical<small>Gire o aparelho para continuar</small></div></div>
 <script>try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(function(){})}catch(e){}
-/* v13.235: ao voltar da horizontal o app voltava com a tela deslocada (a rolagem mudava durante a rotação do iPhone). Guarda a posição enquanto está em pé, cobre a volta com o fundo liso por ~0,7 s (a animação de giro do iPhone fica escondida) e devolve a posição antes de mostrar o app */
+/* v13.236: ao voltar da horizontal o app voltava com a tela deslocada (a rolagem mudava durante a rotação do iPhone). Guarda a posição enquanto está em pé, cobre a volta com o fundo liso por ~0,7 s (a animação de giro do iPhone fica escondida) e devolve a posição antes de mostrar o app */
 (function(){var r=document.getElementById('rot'),PY=0,PX=0,T=0,T2=0,mq=matchMedia('(orientation:landscape) and (max-height:520px) and (pointer:coarse)');
   function port(){return innerHeight>innerWidth}
   var RZ=0;addEventListener('resize',function(){RZ=window.__rzT=Date.now()});addEventListener('orientationchange',function(){RZ=window.__rzT=Date.now()});
@@ -3801,14 +3799,14 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
   function back(){try{scrollTo(PX,PY)}catch(e){}}
   var LK=0,TQ=0;function ch(e){window.__rzT=Date.now();clearTimeout(T);clearTimeout(T2);var h=document.documentElement;h.classList.add('rotq');clearTimeout(TQ);TQ=setTimeout(function(){h.classList.remove('rotq')},1300);
     if(e.matches){r.className='';return}
-    /* v13.235: o relatório da v13.235 mostrou que a página travada NÃO impede o pulo: ~0,3 s depois da volta (orientationchange → vvscroll 62 → 0) o iPhone desloca a tela 62 px por 1 quadro (rolagem 0 → 62 → 0, cabeçalho 14 → -48 → 14) mesmo com o body fixo. Só uma cobertura esconde esse quadro. Ela cobre desde a volta até 80 ms depois do último aviso do iPhone (mín. 0,4 s, máx. 1,2 s) e some em 0,18 s */
+    /* v13.236: o relatório da v13.236 mostrou que a página travada NÃO impede o pulo: ~0,3 s depois da volta (orientationchange → vvscroll 62 → 0) o iPhone desloca a tela 62 px por 1 quadro (rolagem 0 → 62 → 0, cabeçalho 14 → -48 → 14) mesmo com o body fixo. Só uma cobertura esconde esse quadro. Ela cobre desde a volta até 80 ms depois do último aviso do iPhone (mín. 0,4 s, máx. 1,2 s) e some em 0,18 s */
     r.className='hold';var H0=performance.now();LE=H0;
     (function esp(){var n=performance.now();if((n-LE>80&&n-H0>400)||n-H0>1200){back();r.className='hold fade';T2=setTimeout(function(){r.className=''},200)}else T=setTimeout(esp,40)})();
     var t0=Date.now(),vv=window.visualViewport;(function tk(){
       try{var off=vv&&(vv.offsetTop>0.5||vv.pageTop<-0.5||vv.offsetLeft>0.5);
         if(off||Math.abs(window.scrollY-PY)>1||Math.abs(window.scrollX-PX)>1)back()}catch(x){}
       if(Date.now()-t0<1000&&!mq.matches)requestAnimationFrame(tk);else window.__rotRet=0})();window.__rotRet=1}
-  /* v13.235: gravação do giro para o diagnóstico: eventos com a hora (ms desde o início do giro) e, a cada quadro por 1,5 s depois da volta, a posição/visibilidade do cabeçalho, a rolagem e o tamanho da tela. Sai UMA linha no relatório ('giro: ...') */
+  /* v13.236: gravação do giro para o diagnóstico: eventos com a hora (ms desde o início do giro) e, a cada quadro por 1,5 s depois da volta, a posição/visibilidade do cabeçalho, a rolagem e o tamanho da tela. Sai UMA linha no relatório ('giro: ...') */
   var GL=[],G0=0;var LE=0;function gl(n){LE=performance.now();if(G0)GL.push(Math.round(performance.now()-G0)+' '+n)}
   ['resize','orientationchange','pageshow','pagehide','focus','blur'].forEach(function(n){addEventListener(n,function(){gl(n)})});
   document.addEventListener('visibilitychange',function(){gl('vis:'+document.visibilityState)});
