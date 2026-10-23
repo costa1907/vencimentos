@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.275';
+(function(){var V='13.276';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -855,7 +855,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.275</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.276</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -970,7 +970,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.275';
+const VERSION='13.276';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1399,13 +1399,9 @@ function row(o,i){
 /* v13.270: "remendo" da lista ao pagar/desfazer. Em vez de apagar e recriar todas as linhas, mantém as que não mudaram (já desenhadas)
    e mexe só no que mudou: a linha tocada, os títulos/contagens e as seções que aparecem/somem. Se algo fugir do esperado, devolve false e a lista é refeita como antes. */
 let PAYPATCH=false,PAYST=null;
-const PVON=()=>{try{return localStorage.getItem('sobrou.pv')!=='0'}catch(e){return true}};
-window.__pvOn=PVON;
-const PWON=()=>{try{return localStorage.getItem('sobrou.pw')!=='0'}catch(e){return true}};
-window.__pwOn=PWON;
 /* v13.270: no relatório, o MESMO trabalho levou 1–2 ms em toques rápidos e 5–6 ms quando o app ficava parado durante a espera (e o quadro de ~40 ms só aparecia nesse caso): o iPhone baixa a velocidade do processador quando não há nada para fazer. Durante a espera e a saída (~0,7 s) o app mantém um trabalho leve de ~4 ms por quadro para o processador chegar à troca já acelerado. Dá para desligar no Diagnóstico para comparar. */
 function payWarm(){ /* um só trabalho leve de ~4 ms por quadro, enquanto houver conta esperando ou saindo */
-  if(!PWON()||payWarm.on)return;payWarm.on=1;
+  if(payWarm.on)return;payWarm.on=1;
   const f=()=>{let any=false;PAYQ.forEach(r=>{if(r.phase==='espera'||r.phase==='saida')any=true});if(!any||PAYB&&PAYB.sw){payWarm.on=0;return}const t=performance.now();let x=1;while(performance.now()-t<4){x=Math.sqrt(x+t)*1.0001}requestAnimationFrame(f)};
   requestAnimationFrame(f);
 } /* o painel do Diagnóstico (outro bloco de código) lê por aqui */
@@ -1913,7 +1909,7 @@ document.addEventListener('click',e=>{
    para achar PULOS (linha que anda para um lado e volta, ou salta de uma vez) e SOBREPOSIÇÃO de linhas. Ler posições a cada quadro pode somar um pouco de custo: só no modo diagnóstico. */
 const PD={
   on(){try{return !!(window.__diagOn&&window.__diagOn())}catch(e){return false}},
-  A:{n:0,np:0,nu:0,fast:0,fade:0,fr:0,s25:0,s33:0,s50:0,w:0,wf:'',j:0,jm:0,o:0,om:0,ph:{},rp:0,rf:0,ru:0,rn:0,rt:0,sn:0,st:0,pvoff:0,pwoff:0,pm:0,pl:0,bp:{}},
+  A:{n:0,np:0,nu:0,fast:0,fade:0,fr:0,s25:0,s33:0,s50:0,w:0,wf:'',j:0,jm:0,o:0,om:0,ph:{},rp:0,rf:0,ru:0,rn:0,rt:0,sn:0,st:0,pm:0,pl:0,bp:{}},
   ph(n,v){const o=this.A.ph[n]||(this.A.ph[n]={n:0,max:0,sum:0});o.n++;o.sum+=v;if(v>o.max)o.max=v},
   ini(rec){
     if(!this.on())return;
@@ -1926,10 +1922,11 @@ const PD={
       if(rec.phase==='troca'||rec.phase==='saida'||(rec.phase==='done'&&S.stop&&now<S.stop)){
         try{
           const rs=[...document.querySelectorAll('#list .row')].slice(0,14);let prev=null;const el=now-S.t0;
+          const own=kk=>kk===rec.k||(rec.bk&&rec.bk.has(kk)); /* as contas do mesmo lote mudam de seção de propósito: não contam como pulo */
           rs.forEach(w=>{if(!w.dataset.id)return;const kk=w.dataset.id+'|'+w.dataset.key,r=w.getBoundingClientRect();
-            if(kk!==rec.k&&r.bottom>0&&r.top<innerHeight)(S.pos[kk]||(S.pos[kk]=[])).push(r.top);
-            if(prev&&kk!==rec.k&&r.top<prev.bottom-2&&w.style.opacity!=='0')S.ov=Math.max(S.ov||0,prev.bottom-r.top);
-            if(kk!==rec.k)prev=r});
+            if(!own(kk)&&r.bottom>0&&r.top<innerHeight)(S.pos[kk]||(S.pos[kk]=[])).push(r.top);
+            if(prev&&!own(kk)&&r.top<prev.bottom-2&&w.style.opacity!=='0')S.ov=Math.max(S.ov||0,prev.bottom-r.top);
+            if(!own(kk))prev=r});
         }catch(_){}
       }
       if(rec.phase==='done'&&!S.stop)S.stop=now+PAYD+360;
@@ -1953,20 +1950,19 @@ const PD={
     A.j+=j;if(jm>A.jm)A.jm=jm;if(om>2){A.o++;if(om>A.om)A.om=om}
     S.fr.forEach(x=>{const d=x[1],f=x[2];const o=A.bp[f]||(A.bp[f]={n:0,s33:0,s50:0,w:0});o.n++;if(d>=33)o.s33++;if(d>=50)o.s50++;if(d>o.w)o.w=d});
     if(T.st){A.rp++;A.ru+=T.st.reuso;A.rn+=T.st.novas;A.rt+=T.st.tiradas;A.sn+=T.st.secN;A.st+=T.st.secT;this.ph('remendo da lista (dentro de refazer)',T.st.ms)}else if(!T.fast){A.rf++}
-    if(T.nb>1)A.pm++;if(T.pv===false)A.pvoff++;if(!T.pw&&!T.fast)A.pwoff++;
+    if(T.nb>1)A.pm++;
     if(T.pos!=null)this.ph('medir depois (layout forçado)',T.pos);
     this.ph('efeito (disparar)',rec.ef||0);if(T.med!=null)this.ph('medir antes',T.med);if(T.ren!=null)this.ph('refazer a lista',T.ren);if(T.prep!=null)this.ph('preparar deslize',T.prep);
     let nome='';try{const b=S_find(rec.id);nome=b?b.name:''}catch(_){}
-    window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · aquecimento: '+(T.pw?'sim':'não')+' · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px)':'')+' · sobreposição: '+(om>2?Math.round(om)+' px':'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
+    window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px)':'')+' · sobreposição: '+(om>2?Math.round(om)+' px':'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.275 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.276 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
     t+='- pulos de linha detectados: '+A.j+(A.jm?' (maior '+Math.round(A.jm)+' px)':'')+' · ações com linhas sobrepostas: '+A.o+(A.om?' (maior '+Math.round(A.om)+' px)':'')+'\n';
-    t+='- lista: remendo em '+A.rp+' · refeita inteira em '+A.rf+(A.pvoff?' ('+A.pvoff+' com o remendo desligado de propósito)':'')+(A.rp?' · linhas mantidas '+A.ru+', criadas '+A.rn+', tiradas '+A.rt+' · seções criadas '+A.sn+', removidas '+A.st:'')+'\n';
-    t+='- aquecimento do processador na espera: '+(A.n-A.pwoff)+' ações com · '+A.pwoff+' sem\n';
+    t+='- lista: remendo em '+A.rp+' · refeita inteira em '+A.rf+(A.rp?' · linhas mantidas '+A.ru+', criadas '+A.rn+', tiradas '+A.rt+' · seções criadas '+A.sn+', removidas '+A.st:'')+'\n';
     t+='- lotes com mais de 1 conta (toques juntos agrupados numa troca só): '+A.pm+' de '+A.n+' ações\n';
     t+='- quadros lentos por fase (quadros · ≥33 · ≥50 · pior): '+['espera','saida','troca','entrada'].filter(f=>A.bp[f]).map(f=>{const o=A.bp[f];return f+' '+o.n+'·'+o.s33+'·'+o.s50+'·'+Math.round(o.w)+' ms'}).join(' | ')+'\n';
     Object.keys(A.ph).forEach(k=>{const o=A.ph[k];t+='- código · '+k+': '+o.n+'× · pior '+o.max.toFixed(1)+' ms · média '+(o.sum/o.n).toFixed(1)+' ms\n'});
@@ -2009,7 +2005,7 @@ function payStart(){ /* fim da espera: as contas pendentes saem juntas */
   if(PAYB)return;
   const rs=[...PAYQ.values()].filter(r=>r.phase==='espera');if(!rs.length)return;
   const B={rs:rs,keys:new Set(rs.map(r=>r.k)),sw:0,tf:0};PAYB=B;
-  const t=performance.now();rs.forEach(r=>{r.phase='saida';r.tSaida=t});
+  const t=performance.now();rs.forEach(r=>{r.phase='saida';r.tSaida=t;r.bk=B.keys});
   let pre=null;if(!RMq()){try{pre=payMedir()}catch(_){}}B.pre=pre;
   if(!rs.some(r=>r.s)){try{PD.ini(rs[0])}catch(_){}}
   const go=()=>{if(B.sw)return;B.sw=1;clearTimeout(B.tf);paySwap(B)};
@@ -2028,8 +2024,8 @@ function paySwap(B){ /* refaz a lista UMA vez para o lote e desliza tudo para o 
     try{document.querySelectorAll('#list .row,#list .group,#list .sec,#list .cheer').forEach(e=>{e.getAnimations().forEach(a=>a.cancel());if(e.style.opacity==='0')e.style.opacity=''});
       document.querySelectorAll('#list > [aria-hidden="true"]').forEach(e=>e.remove())}catch(_){}
   }
-  PAYST=null;PAYPATCH=!!pre&&PVON()&&TAB==='home';
-  t=performance.now();try{renderAll()}finally{PAYPATCH=false}T.ren=performance.now()-t;T.st=PAYST;T.pv=PVON();T.pw=lead.warm?1:0;
+  PAYST=null;PAYPATCH=!!pre&&TAB==='home';
+  t=performance.now();try{renderAll()}finally{PAYPATCH=false}T.ren=performance.now()-t;T.st=PAYST;
   const aviso=()=>payAviso(rs);
   const fim=()=>{rs.forEach(r=>{r.phase='done';PAYQ.delete(r.k);PD.fim(r,T)})};
   const livre=()=>{PAYB=null;paySched()};
@@ -2096,7 +2092,7 @@ function togglePaid(id,key,x,y,direto){
   /* o efeito acompanha a bolinha a cada quadro enquanto dura (~0,65 s): se a linha deslizar por causa de outro lote, o brilho vai junto */
   if(rec.fx&&c){const S2=rec.fx,tf=performance.now();(function seg(){if(performance.now()-tf>650||!row.isConnected)return;try{const q=c.getBoundingClientRect();S2.box.style.transform='translate('+Math.round(q.left+q.width/2)+'px,'+Math.round(q.top+q.height/2)+'px)'}catch(_){return}requestAnimationFrame(seg)})()}
   if(!PD.live)PD.ini(rec);
-  rec.warm=PWON()?1:0;payWarm();
+  payWarm();
   paySched();
 }
 
@@ -3980,15 +3976,13 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     let o=$('#dgo');if(o)o.remove();
     o=document.createElement('div');o.id='dgo';o.className='dgo';
     const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc5')==='on'?'ligado → desligar (só observar)':'desligado (só observa) → ligar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('hybw')?'híbrido → nativo':document.documentElement.classList.contains('jsnapw')?'por JS → híbrido':'nativo → por JS')+'</button>'+'<button type="button" data-a="pv">Pagar/desfazer · remendo da lista: '+((window.__pvOn?window.__pvOn():true)?'ligado → desligar (para comparar)':'desligado → ligar')+'</button><button type="button" data-a="pw">Pagar/desfazer · aquecer o processador na espera: '+((window.__pwOn?window.__pwOn():true)?'ligado → desligar (para comparar)':'desligado → ligar')+'</button>'+'<button type="button" data-a="x">Fechar</button></div></div>';
+    o.innerHTML='<div class="dgp"><h3>Diagnóstico de fluidez</h3><pre>'+esc(report())+'</pre><div class="dga"><button type="button" data-a="c">Copiar relatório</button><button type="button" data-a="z">Zerar</button><button type="button" data-a="soc">Socorro: '+(localStorage.getItem('sobrou.soc5')==='on'?'ligado → desligar (só observar)':'desligado (só observa) → ligar')+'</button><button type="button" data-a="c3d">Cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado → desligar':'desligado → ligar')+'</button><button type="button" data-a="car">Carrossel: '+(document.documentElement.classList.contains('hybw')?'híbrido → nativo':document.documentElement.classList.contains('jsnapw')?'por JS → híbrido':'nativo → por JS')+'</button>'+''+'<button type="button" data-a="x">Fechar</button></div></div>';
     o.onclick=async e=>{const b=e.target.closest('button');if(!b){if(e.target===o)o.remove();return}
       const a=b.dataset.a;
       if(a==='x')o.remove();
       if(a==='soc'){try{localStorage.setItem('sobrou.soc5',localStorage.getItem('sobrou.soc5')==='on'?'off':'on')}catch(_){}o.remove();window.__app&&window.__app.toast(localStorage.getItem('sobrou.soc5')==='on'?'Socorro ligado':'Socorro desligado (só observa)');return}
       if(a==='c3d'){const on=document.documentElement.classList.contains('c3d');try{localStorage.setItem('sobrou.c3d3',on?'off':'on')}catch(_){}save();location.reload();return}
       if(a==='car'){const cl=document.documentElement.classList,nx=cl.contains('hybw')?'nat':cl.contains('jsnapw')?'hyb':'js';try{localStorage.setItem('sobrou.car2',nx)}catch(_){}save();location.reload();return}
-      if(a==='pw'){const v=(window.__pwOn?window.__pwOn():true)?'0':'1';try{localStorage.setItem('sobrou.pw',v)}catch(_){}b.textContent='Pagar/desfazer · aquecer o processador na espera: '+(v==='1'?'ligado → desligar (para comparar)':'desligado → ligar');window.__app&&window.__app.toast(v==='1'?'Aquecimento ligado (padrão)':'Aquecimento desligado');return}
-      if(a==='pv'){const v=(window.__pvOn?window.__pvOn():true)?'0':'1';try{localStorage.setItem('sobrou.pv',v)}catch(_){}b.textContent='Pagar/desfazer · remendo da lista: '+(v==='1'?'ligado → desligar (para comparar)':'desligado → ligar');window.__app&&window.__app.toast(v==='1'?'Remendo ligado (padrão)':'Remendo desligado: a lista volta a ser refeita inteira');return}
       if(a==='z'){for(const k in RS)delete RS[k];ev=[];for(const k in PST)delete PST[k];PHS.length=0;GV=[0,0];try{localStorage.removeItem(KV)}catch(_){}save();paint();o.remove();window.__app&&window.__app.toast('Diagnóstico zerado')}
       if(a==='c'){const txt=report();try{await navigator.clipboard.writeText(txt);window.__app&&window.__app.toast('Relatório copiado')}catch(_){const r=document.createRange();r.selectNodeContents(o.querySelector('pre'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
     };
@@ -3997,9 +3991,8 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
   window.__diagOn=()=>on;
   window.__diagNote=function(txt,k){if(!on)return;const e={h:new Date().toLocaleTimeString('pt-BR'),ms:0,tela:scr(),acao:txt};if(k)e.k=k;ev.push(e);if(ev.length>300)ev.shift();paint()};
   window.__diag={
-    card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button><button class="act" id="bpv">Pagar/desfazer · remendo da lista: '+((window.__pvOn?window.__pvOn():true)?'ligado':'desligado')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
+    card(){return '<div class="card"><h3>Diagnóstico de fluidez</h3><div class="cap">Liga um medidor que anota cada engasgo da tela no seu aparelho (em qual tela e fazendo o quê). Use o app normalmente, depois toque no selo do canto e copie o relatório. Desligue quando terminar.</div><button class="act" id="bdiag">'+(on?'Desligar diagnóstico':'Ligar diagnóstico')+'</button>'+(ev.length?'<button class="act" id="bdiagr">Ver relatório ('+ev.length+')</button>':'')+'</div>'},
     bind(){const b=$('#bdiag');if(b)b.onclick=()=>{on=!on;try{localStorage.setItem(K,on?'1':'0')}catch(e){}if(on)start();else stop();b.textContent=on?'Desligar diagnóstico':'Ligar diagnóstico';window.__app&&window.__app.toast(on?'Diagnóstico ligado: use o app normalmente':'Diagnóstico desligado')};
-      const pv=$('#bpv');if(pv)pv.onclick=()=>{const v=(window.__pvOn?window.__pvOn():true)?'0':'1';try{localStorage.setItem('sobrou.pv',v)}catch(e){}pv.textContent='Pagar/desfazer · remendo da lista: '+(v==='1'?'ligado':'desligado');window.__app&&window.__app.toast(v==='1'?'Remendo ligado (padrão)':'Remendo desligado: a lista volta a ser refeita inteira (para comparar)')};
       const r=$('#bdiagr');if(r)r.onclick=show}
   };
   if(on)start();
