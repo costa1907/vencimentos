@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.257 · 23/10/2026 · (1) Marcar como paga: nova "onda de brilho" (clarão + 2 anéis de luz + 12 estrelinhas de 4 pontas, cores do tema) no lugar da chuva de bolinhas. (2) Corrigido: ao voltar ao passo 1 e trocar o tipo (ex.: Boleto → Cartão de crédito), o banco/empresa escolhido no tipo anterior (ex.: Banco do Brasil) não vem mais marcado no passo 2; só vale em conta nova (na edição não muda).
   v13.256 · 23/10/2026 · Marcar conta como paga: a chuva de bolinhas dourada começa no quadro seguinte (antes era criada dentro do próprio toque, ~10% do custo dele). Visual igual; a linha troca de seção um pouco mais cedo.
   v13.255 · 23/10/2026 · "Como você paga" (Boleto, PIX, Transf., Débito, Crédito, Dinheiro) agora em pílulas no mesmo estilo das bandeiras: bolinha à esquerda com o ícone, 2 linhas de 3, cor do tema na selecionada (bolinha branca), demais no tom escuro do tema.
   v13.254 · 23/10/2026 · Corrigido: AliExpress, Centauro, Netshoes, íon Itaú, Shopee, Smiles e Mercado Livre saem da escolha SÓ no tipo Cartão (na v13.253 tinham saído de todos os tipos). Nos outros tipos (Compras, Viagem, Boleto etc.) voltam a aparecer; também na busca.
