@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.232 · 22/10/2026 · Janela Nova conta: subida/descida mais suave. A janela agora fica numa camada própria da placa de vídeo (sem redesenho no fim da subida, que causava o tremor no topo), curva com cauda menos longa e o app de trás só é escondido 160 ms depois da janela parar
   v13.231 · 22/10/2026 · Abertura: tocar para pular agora também faz o logo voar até o cabeçalho; mais poeira dourada (150) com estrelinhas de 4 pontas que cintilam; e uma onda de luz no cabeçalho quando o logo pousa
   v13.230 · 22/10/2026 · Abertura: o selo ✦ PREMIUM agora aparece também para o administrador (antes só aparecia para quem tinha assinatura paga registrada)
   v13.229 · 22/10/2026 · Abertura premium (sempre completa, 4,6 s, toque pula): rastro de luz nas partículas, poeira dourada, reflexo de lente, 2 ondas de luz, brilho metálico no nome, selo ✦ PREMIUM (só assinantes) e saída em que o logo voa até o cabeçalho do app (sem cabeçalho visível, só some em fade)
