@@ -1,5 +1,6 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.255 · 23/10/2026 · "Como você paga" (Boleto, PIX, Transf., Débito, Crédito, Dinheiro) agora em pílulas no mesmo estilo das bandeiras: bolinha à esquerda com o ícone, 2 linhas de 3, cor do tema na selecionada (bolinha branca), demais no tom escuro do tema.
   v13.254 · 23/10/2026 · Corrigido: AliExpress, Centauro, Netshoes, íon Itaú, Shopee, Smiles e Mercado Livre saem da escolha SÓ no tipo Cartão (na v13.253 tinham saído de todos os tipos). Nos outros tipos (Compras, Viagem, Boleto etc.) voltam a aparecer; também na busca.
   v13.253 · 23/10/2026 · Removidos da escolha de ícones: AliExpress, Centauro, Netshoes, íon Itaú, Shopee, Smiles (ícone) e Mercado Livre (também da busca), em todos os tipos de conta (corrigido na v13.254: era só para o tipo Cartão).
   v13.252 · 23/10/2026 · Bandeiras: a marca da Mastercard ficou bem maior dentro da pílula (altura de 52% para 74%), pois estava pequena demais para ver.
