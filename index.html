@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.237';
+(function(){var V='13.238';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -270,7 +270,7 @@ html.kbd body::after,body.sfull::after,body.so::after,html.lgon body::after{disp
 .panel{position:absolute;left:0;right:0;margin:0 auto;bottom:0;width:100%;max-width:560px;max-height:min(94dvh,calc(100dvh - env(safe-area-inset-top,0px) - 66px));overflow-y:auto;overscroll-behavior-y:none;transform:translateY(102%);transition:transform .45s cubic-bezier(.24,.92,.32,1);background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid var(--line2);border-bottom:0;border-radius:30px 30px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);box-shadow:0 -30px 60px rgba(0,0,0,.5)}
 .sheet.open .scrim{opacity:1} .sheet.open .panel{transform:var(--snp,none)}
 /* v13.237: a janela fica numa camada própria da placa de vídeo enquanto estiver na tela: sem isso o iPhone a redesenhava no fim da subida (o 'tremor' lá no topo) e a cauda longa da curva andava 1 px por quadro */
-.sheet:not([hidden]) .panel{will-change:transform}
+.sheet:not([hidden]) .panel{will-change:transform}.sheet:not([hidden]) .scrim,.sheet:not([hidden]) .sband{will-change:opacity}
 .grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px}
 .stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .stitle h2{margin:0;font:800 20px var(--fd);letter-spacing:-.02em}
@@ -811,7 +811,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.237</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.238</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -926,7 +926,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.237';
+const VERSION='13.238';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2387,7 +2387,7 @@ function abrirAnim(pn){
   pn.style.transition='none';pn.style.opacity='0.01';pn.style.transform='translate3d(0,0,0)';pn._pos=[];pn._fim=0;
   let t0=0;
   const tk=now=>{if(OPA!==id)return;if(!t0)t0=now;const p=Math.min(1,(now-t0)/D),e=1-Math.pow(1-p,4);
-    if(p>=1){pn.style.transform='';void pn.offsetHeight;pn.style.transition='';pn._fim=performance.now();pn._pos.push([D,fin]);return}
+    if(p>=1){pn.style.transform='';void pn.offsetHeight;pn.style.transition='';pn._fim=performance.now();pn._pos.push([D,fin]);if(pn.parentNode.classList.contains('open'))document.body.classList.add('so');return}
     const y=Math.round((y0+(fin-y0)*e)*dpr)/dpr;pn.style.transform='translate3d(0,'+y+'px,0)';pn._pos.push([now-t0,Math.round(y*10)/10]);requestAnimationFrame(tk)};
   requestAnimationFrame(()=>requestAnimationFrame(()=>{pn.style.opacity='';if(OPA!==id)return;pn.style.transform='translate3d(0,'+y0+'px,0)';requestAnimationFrame(tk)}))}
 function openSheet(id,key){
@@ -2415,7 +2415,7 @@ function openSheet(id,key){
   sh.hidden=false;document.body.style.overflow='hidden';
   pn.classList.toggle('stps',STEPS());if(STEPS())setStep(EDIT?3:1);
   PGK='';renderProv();syncForm();pn.scrollTop=0;
-  snapPanel();abrirAnim(pn);void sh.offsetWidth;sh.classList.add('open');document.body.classList.add('so');provWarm();traceAbrir(pn);
+  snapPanel();abrirAnim(pn);void sh.offsetWidth;sh.classList.add('open');provWarm();traceAbrir(pn);
   clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},640);
   /* v13.175: sem foco automático no Valor ao abrir (o iPhone não abre o teclado por foco automático; o campo ficava "já focado" e o toque seguia o caminho nativo, que desloca a tela ~7 pt quando o teclado aparece) */
 }
@@ -3022,7 +3022,7 @@ $('#extra').addEventListener('click',function(e){
   sh0.addEventListener('touchmove',e=>{
     if(y0===null)return;const yy=e.touches[0].clientY,d=yy-y0,n=performance.now();
     if(n>lt){vy=(yy-ly)/(n-lt);lt=n;ly=yy}
-    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;OPA++;pn.style.transition='none';document.body.classList.remove('sfull')}
+    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;OPA++;document.body.classList.add('so');pn.style.transition='none';document.body.classList.remove('sfull')}
     dy=Math.max(0,d);pn.style.transform='translateY('+dy+'px)';
   },{passive:true});
   const solta=()=>{
