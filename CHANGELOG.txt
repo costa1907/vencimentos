@@ -1,5 +1,8 @@
 # Histórico de versões — Vencimentos
 # (novas versões são registradas só aqui; o index.html não guarda mais histórico)
+  v13.246 · 23/10/2026 · Escolha da bandeira dos cartões (filtro acima do seletor de cartões do banco) com os logos de verdade: Visa, Mastercard, Elo, Amex e Hipercard (pacote payment-icons, licença MPL-2.0). A escolhida ganha aro dourado e brilho, as outras ficam mais apagadas. Logos embutidos no app, sem imagem para baixar.
+  v13.245 · 23/10/2026 · "Como você paga": os símbolos desenhados à mão deram lugar a ícones profissionais prontos (Phosphor Icons, estilo duotone com dois tons: Boleto, Transferência, Débito (banco), Crédito (cartão), Dinheiro (cédula) e a marca oficial do PIX). Embutidos no app, sem imagem para baixar.
+  v13.244 · 23/10/2026 · "Como você paga" (passo 2): cada forma de pagamento ganhou o seu símbolo (Boleto: código de barras · PIX: losango · Transferência: setas · Débito e Crédito: cartões · Dinheiro: cédula), desenhados no próprio app, sem imagem para baixar.
   v13.243 · 22/10/2026 · Abertura: os brilhinhos (poeira dourada e estrelas) agora aparecem na tela inteira, de cima a baixo, e não só numa faixa em volta do símbolo (150 → 230 pontos de luz).
   v13.242 · 22/10/2026 · Janela Nova conta: ao tocar e segurar a parte de cima (traço cinza, título ou topo), o traço fica branco e um pouco maior, como no iPhone, mostrando que dá para arrastar para fechar; volta ao cinza ao soltar ou se o gesto virar rolagem.
   v13.241 · 22/10/2026 · Janela Nova conta: a subida volta a ser a do sistema (escolhida no aparelho entre 4 estilos como a mais fluida). Saiu a animação própria; ficou o ajuste de pixel inteiro da posição final e a pausa da tela de trás só depois que a janela termina de subir.
