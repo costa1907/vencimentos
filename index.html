@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.239';
+(function(){var V='13.243';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -271,7 +271,9 @@ html.kbd body::after,body.sfull::after,body.so::after,html.lgon body::after{disp
 .sheet.open .scrim{opacity:1} .sheet.open .panel{transform:var(--snp,none)}
 /* v13.237: a janela fica numa camada própria da placa de vídeo enquanto estiver na tela: sem isso o iPhone a redesenhava no fim da subida (o 'tremor' lá no topo) e a cauda longa da curva andava 1 px por quadro */
 .sheet:not([hidden]) .panel{will-change:transform}.sheet:not([hidden]) .scrim,.sheet:not([hidden]) .sband{will-change:opacity}
-.grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px}
+.grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.18);margin:0 auto 12px;transition:background-color .16s,transform .16s}
+/* v13.242: ao tocar e segurar a parte de cima da janela, o traço fica branco e um pouco maior (como no iPhone), indicando que dá para arrastar para fechar */
+.grab.gp{background:rgba(255,255,255,.92);transform:scaleX(1.14)}
 .stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .stitle h2{margin:0;font:800 20px var(--fd);letter-spacing:-.02em}
 .x{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);display:grid;place-items:center}
@@ -811,7 +813,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.239</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.243</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -926,7 +928,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.239';
+const VERSION='13.243';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1364,7 +1366,6 @@ const CAR2=(()=>{try{return localStorage.getItem('sobrou.car2')||''}catch(e){ret
 const HYBW=CAR2==='hyb';
 const JSNAPW=CAR2==='js'||HYBW;
 /* efeitos especiais desligados em Ajustes (vale só para este aparelho) */
-function SUBST(){try{const v=localStorage.getItem('sobrou.sub');return v>='1'&&v<='4'&&v.length===1?v:'1'}catch(_){return '1'}}
 function NOFX(){return document.documentElement.classList.contains('nofx')}
 let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 /* iPhone com iOS 26+ (e navegadores novos): o giro 3D dos carrosséis roda direto na rolagem, sem JavaScript a cada quadro */
@@ -1671,7 +1672,6 @@ function renderSet(){
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
    '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
-   '<div class="card"><h3>Subida da janela (teste)</h3><div class="cap">Escolha como a janela Nova conta sobe e abra a janela para sentir. Fica salvo só neste aparelho.</div><div class="seg" id="sub" style="grid-template-columns:repeat(4,1fr);margin-top:12px">'+[['1','Atual'],['2','Sistema'],['3','Mola'],['4','Rápida']].map(a=>'<button type="button" data-sb="'+a[0]+'"'+(SUBST()===a[0]?' class="on"':'')+'>'+a[1]+'</button>').join('')+'</div></div>'+
    '<div class="card"><h3>Cadastro em passos</h3><div class="cap">O botão + abre o cadastro em 3 passos curtos (Tipo, Escolha, Detalhes), com botão fixo embaixo. Desligue para voltar ao formulário único de antes.</div><div class="fxrow"><b>'+(STEPS()?'Ligado':'Desligado')+'</b><button type="button" class="swt" id="bst" role="switch" aria-checked="'+(STEPS()?'true':'false')+'" aria-label="Cadastro em passos"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
@@ -1686,7 +1686,6 @@ function renderSet(){
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
   $('#bst').onclick=()=>{const on=!STEPS();try{if(on)localStorage.removeItem('sobrou.steps');else localStorage.setItem('sobrou.steps','0')}catch(e){}renderSet();toast(on?'Cadastro em passos ligado':'Cadastro em passos desligado')};
-  $('#sub').onclick=e=>{const b=e.target.closest('[data-sb]');if(!b)return;try{localStorage.setItem('sobrou.sub',b.dataset.sb)}catch(_){}renderSet();toast('Subida: '+b.textContent)};
   $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
   $('#swb').onclick=e=>{const b=e.target.closest('.swc');if(!b)return;TH.set(+b.dataset.b,TH.cur[1]);thSync()};
@@ -2376,7 +2375,7 @@ function traceAbrir(pn){try{const t0=performance.now();let last=t0,n=0;const g=[
   const f=now=>{const d=now-last;last=now;n++;if(n>1&&d>20)g.push(Math.round(now-t0)+' ms (+'+Math.round(d)+')');
     if(now-t0<1000)requestAnimationFrame(f);else{const P=pn._pos||[],te=pn._fim?Math.round(pn._fim-t0):'—';
       const tail=P.slice(-14).map(p=>Math.round(p[0])+':'+p[1]).join(' ');
-      window.__diagNote&&window.__diagNote('subida da janela · estilo '+({1:'Atual',2:'Sistema',3:'Mola',4:'Rápida'}[pn._sty]||'?')+' · '+n+' quadros em 1 s · quadros lentos (instante, duração): '+(g.length?g.join(', '):'nenhum')+' · animação própria terminou aos '+te+' ms · últimas posições (ms:px): '+tail,'jan')}};
+      window.__diagNote&&window.__diagNote('subida da janela (sistema) · '+n+' quadros em 1 s · quadros lentos (instante, duração): '+(g.length?g.join(', '):'nenhum')+' · animação própria terminou aos '+te+' ms · últimas posições (ms:px): '+tail,'jan')}};
   requestAnimationFrame(f)}catch(_){}}
 /* v13.237: o diagnóstico mostrou a janela parando em 71,5 px (meio pixel): o iPhone redesenhava o texto e dava um 'estalo' ao fim da subida. Aqui a posição final é ajustada para cair exatamente num pixel da tela (até 0,17 px, invisível) */
 function snapPanel(){try{const sh=$('#sheet'),pn=$('#panel');if(!sh||!pn||sh.hidden)return;pn.style.removeProperty('--snp');
@@ -2385,19 +2384,10 @@ function snapPanel(){try{const sh=$('#sheet'),pn=$('#panel');if(!sh||!pn||sh.hid
 /* v13.237: a subida da janela passou a ser animada pelo próprio app (antes era uma transição do navegador). O vídeo mostrou que o iPhone cortava o fim da transição: a janela parava ainda em movimento (~2,7 px no último quadro), e dava a sensação de 'bater em algo'. Agora o app controla cada quadro: curva que chega a zero sem corte, posição sempre em pixel inteiro da tela e o quadro final exato */
 let OPA=0;
 function abrirAnim(pn){
-  const dpr=window.devicePixelRatio||1,h=pn.getBoundingClientRect().height,y0=h*1.02,m=/translateY\((-?[\d.]+)px\)/.exec(pn.style.getPropertyValue('--snp')||''),fin=m?+m[1]:0,id=++OPA,ST=SUBST();
-  /* v13.239: 4 estilos de subida para comparar no aparelho (Ajustes): 1 curva do app (0,38 s) · 2 transição do sistema (CSS) · 3 mola (sem corte, parada natural) · 4 rápida e firme (0,30 s) */
-  pn._pos=[];pn._fim=0;pn._sty=ST;
-  const fim=()=>{if(OPA===id&&pn.parentNode.classList.contains('open'))document.body.classList.add('so')};
-  if(ST==='2'){setTimeout(fim,460);return}
-  pn.style.transition='none';pn.style.opacity='0.01';pn.style.transform='translate3d(0,0,0)';
-  let t0=0;
-  /* rem = quanto falta (1 → 0) */
-  const rem=ms=>ST==='3'?(1+22*ms/1000)*Math.exp(-22*ms/1000):ST==='4'?Math.pow(Math.max(0,1-ms/300),3):Math.pow(Math.max(0,1-ms/380),4);
-  const tk=now=>{if(OPA!==id)return;if(!t0)t0=now;const ms=now-t0,r=rem(ms);
-    if(ms>(ST==='4'?300:ST==='3'?700:380)||(ST==='3'&&r*(y0-fin)<.34)){pn.style.transform='';void pn.offsetHeight;pn.style.transition='';pn._fim=performance.now();pn._pos.push([Math.round(ms),fin]);fim();return}
-    const y=Math.round((fin+(y0-fin)*r)*dpr)/dpr;pn.style.transform='translate3d(0,'+y+'px,0)';pn._pos.push([Math.round(ms),Math.round(y*10)/10]);requestAnimationFrame(tk)};
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{pn.style.opacity='';if(OPA!==id)return;pn.style.transform='translate3d(0,'+y0+'px,0)';requestAnimationFrame(tk)}))}
+  const id=++OPA;
+  /* v13.241: a subida volta a ser a transição do sistema (CSS), escolhida pelo dono entre 4 estilos testados no aparelho ("a mais fluida"). Só falta marcar a janela como aberta (pausa a tela de trás) quando a subida termina */
+  pn._pos=[];pn._fim=0;pn._sty=2;
+  setTimeout(()=>{if(OPA===id&&pn.parentNode.classList.contains('open'))document.body.classList.add('so')},460)}
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
@@ -3017,7 +3007,7 @@ $('#extra').addEventListener('click',function(e){
 (function(){
   /* só vira "arrastar para fechar" quando o dedo começa DESCENDO a partir do título; subindo é rolagem normal.
      Antes, um toque cancelado pelo iPhone deixava o arrastar "armado" e o próximo gesto movia a janela em vez de rolar (parecia travada) */
-  const pn=$('#panel'),sh0=$('#sheet');let y0=null,dy=0,arr=false,lt=0,ly=0,vy=0;
+  const pn=$('#panel'),sh0=$('#sheet'),gr=pn.querySelector('.grab'),gp=on=>{if(gr)gr.classList.toggle('gp',on)};let y0=null,dy=0,arr=false,lt=0,ly=0,vy=0;
   /* v13.123: agora o "arrastar para fechar" também começa (1) nos primeiros ~96 px da janela, não só no título/alça, (2) no cabeçalho e no fundo acima da janela, e (3) fecha também com um arrasto curto mas RÁPIDO (antes só se passasse de 110 px) */
   sh0.addEventListener('touchstart',e=>{
     const t=e.target;let hot=false;
@@ -3025,16 +3015,16 @@ $('#extra').addEventListener('click',function(e){
       if(t.closest('#scrim,.sband'))hot=true;
       else if(pn.scrollTop<=0&&(t.closest('.grab,.stitle')||e.touches[0].clientY<pn.getBoundingClientRect().top+96))hot=true;
     }
-    if(hot){y0=e.touches[0].clientY;dy=0;arr=false;lt=performance.now();ly=y0;vy=0}else{y0=null;arr=false}
+    if(hot){y0=e.touches[0].clientY;dy=0;arr=false;lt=performance.now();ly=y0;vy=0;gp(true)}else{y0=null;arr=false;gp(false)}
   },{passive:true});
   sh0.addEventListener('touchmove',e=>{
     if(y0===null)return;const yy=e.touches[0].clientY,d=yy-y0,n=performance.now();
     if(n>lt){vy=(yy-ly)/(n-lt);lt=n;ly=yy}
-    if(!arr){if(d<-4){y0=null;return}if(d<6)return;arr=true;OPA++;document.body.classList.add('so');pn.style.transition='none';document.body.classList.remove('sfull')}
+    if(!arr){if(d<-4){y0=null;gp(false);return}if(d<6)return;arr=true;OPA++;document.body.classList.add('so');pn.style.transition='none';document.body.classList.remove('sfull')}
     dy=Math.max(0,d);pn.style.transform='translateY('+dy+'px)';
   },{passive:true});
   const solta=()=>{
-    const era=arr,c=arr&&(dy>110||(dy>40&&vy>0.6));y0=null;arr=false;if(!era)return;
+    const era=arr,c=arr&&(dy>110||(dy>40&&vy>0.6));y0=null;arr=false;gp(false);if(!era)return;
     pn.style.transition='';
     if(c)closeSheet();else{pn.style.transform='';const sh=$('#sheet');clearTimeout(window.__sft);window.__sft=setTimeout(()=>{if(sh.classList.contains('open'))document.body.classList.add('sfull')},480)}
   };
@@ -3723,7 +3713,8 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
         const a=R()*Math.PI*2,rr=(.45+R()*.9)*big;
         P.push({tx:r.left+x+R()*2,ty:r.top+y+R()*2,sx:cxm+Math.cos(a)*rr*.7,sy:cym+Math.sin(a)*rr,dl:R()*.38,du:.75+R()*.35,sw:(R()-.5)*2.2,c:'rgb('+d[k]+','+d[k+1]+','+d[k+2]+')',z:1.1+R()*1.5})}}
       const R2=(()=>{let q=99;return()=>(q=(q*1664525+1013904223)>>>0)/4294967296})();
-      for(let i=0;i<150;i++){const st=i%9===0;DU.push({x:R2()*W,y:H*.12+R2()*H*.62,s:st?1.6+R2()*1.4:.6+R2()*1.5,sp:5+R2()*18,ph:R2()*6.28,dl:1.1+R2()*1.6,st:st})}
+      /* v13.243: os brilhos e a poeira cobrem a tela inteira (antes só uma faixa de 12% a 74% da altura): mais partículas, espalhadas de ponta a ponta */
+      for(let i=0;i<230;i++){const st=i%9===0;DU.push({x:R2()*W,y:H*.03+R2()*H*1.0,s:st?1.6+R2()*1.4:.6+R2()*1.5,sp:5+R2()*18,ph:R2()*6.28,dl:1.1+R2()*1.6,st:st})}
       ini=1}
     function draw(t){
       cx.clearRect(0,0,W,H);const pf=1-cl((t-1.25)/.3);
