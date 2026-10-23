@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.260';
+(function(){var V='13.261';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -197,7 +197,7 @@ body.so .pill::after{animation-play-state:paused}
 .row.paying .chk svg{stroke-dashoffset:0}
 .row.unpaying .chk{background:transparent;border-color:rgba(251,111,111,.6);color:transparent;box-shadow:none;transform:scale(.94)}
 .row.unpaying .chk svg{stroke-dashoffset:24}
-.row.paying,.row.unpaying{pointer-events:none}
+.row.paying,.row.unpaying{pointer-events:none;will-change:transform,opacity}
 #fxp{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:80}
 #fxp i{position:absolute;left:0;top:0;display:block;opacity:0;pointer-events:none;will-change:transform,opacity}
 #fxp .fg{width:100px;height:100px;margin:-50px 0 0 -50px;border-radius:50%;background:radial-gradient(circle,rgba(94,233,181,.5),rgba(94,233,181,0) 65%)}
@@ -857,7 +857,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.260</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.261</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -972,7 +972,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.260';
+const VERSION='13.261';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1910,17 +1910,19 @@ function payFinish(rec){ /* fim da espera: a conta sai do lugar */
   rec.phase='saida';rec.tSaida=performance.now();
   const r=rec.row;
   if(!r||!r.isConnected){paySwap(rec,true);return}
-  try{r.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(30px)'}],{duration:PAYX,easing:'ease-in',fill:'forwards'})}catch(_){}
-  rec.t=setTimeout(()=>paySwap(rec,false),PAYX);
+  let an=null;try{an=r.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(30px)'}],{duration:PAYX,easing:'ease-in',fill:'forwards'})}catch(_){}
+  const go=()=>{if(rec.phase==='saida')paySwap(rec,false)};
+  if(an)an.onfinish=go;
+  rec.t=setTimeout(go,PAYX+60); /* reserva: se o fim da animação não avisar */
 }
 function paySwap(rec,fast){ /* refaz a lista e desliza tudo para o lugar novo */
   if(rec.phase==='done')return;rec.phase='troca';rec.tTroca=performance.now();
   const T={};let t=performance.now();
   const pre=(fast||RMq())?null:payMedir();T.med=performance.now()-t;
   t=performance.now();renderAll();T.ren=performance.now()-t;
-  payAviso(rec);
+  const aviso=()=>payAviso(rec);
   const fim=()=>{rec.phase='done';PAYQ.delete(rec.k);PD.fim(rec,T)};
-  if(!pre){T.fast=1;fim();return}
+  if(!pre){T.fast=1;aviso();fim();return}
   t=performance.now();
   const post=payMedir(),ks=o=>Object.keys(o).sort().join();
   const op={duration:PAYD,easing:PAYE,fill:'backwards'};
@@ -1947,6 +1949,7 @@ function paySwap(rec,fast){ /* refaz a lista e desliza tudo para o lugar novo */
     if(nr){nr.style.opacity='0';setTimeout(()=>{if(!nr.isConnected)return;nr.style.opacity='';try{nr.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:260,easing:PAYE,fill:'backwards'})}catch(_){}},PAYD-40)}
   }
   T.prep=performance.now()-t;
+  requestAnimationFrame(aviso); /* o aviso entra no quadro seguinte: não soma ao trabalho da troca */
   setTimeout(()=>{fim()},0);
   rec.tFlip=performance.now();
 }
