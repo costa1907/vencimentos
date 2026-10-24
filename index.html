@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.283';
+(function(){var V='13.284';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -140,7 +140,7 @@ svg{display:block}
 @keyframes sheen{from{left:-60%}to{left:140%}}
 .mnav{position:relative;display:flex;align-items:center;gap:6px;margin-bottom:14px}
 .mnav .mn{flex:1;text-align:center;font:700 15px/1 var(--fd);letter-spacing:.01em}
-.mnav .mn small{display:block;margin-top:4px;font:500 11px/1 var(--fb);color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.mnav .mn small{display:flex;align-items:center;justify-content:center;height:19px;margin-top:4px;font:500 11px/1 var(--fb);color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
 .rb{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.05);border:1px solid var(--line);transition:transform .25s var(--ease),background .2s}
 .rb:active{transform:scale(.9);background:rgba(255,255,255,.1)}
 .hrow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -855,7 +855,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.283</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.284</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -970,7 +970,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.283';
+const VERSION='13.284';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1957,7 +1957,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px)':'')+' · sobreposição: '+(om>2?Math.round(om)+' px':'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.283 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.284 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -2026,7 +2026,7 @@ function paySwap(B){ /* refaz a lista UMA vez para o lote e desliza tudo para o 
   { /* seções que aparecem abrem de 0 até a altura final; as que somem deixam um espaço que fecha: assim nada abaixo pula */
     const RK={late:0,up:1,cheer:2,done:3,empty:4},blks=[...document.querySelectorAll('#list > *')];
     const AP=Object.keys(post.blk).filter(k=>!pre.blk[k]),DP=Object.keys(pre.blk).filter(k=>!post.blk[k]);
-    /* v13.283: troca 1 por 1 (ex.: "A pagar" some e "Tudo pago" aparece): a caixa nova NÃO anima altura (antes: altura+bordas+sombra a cada quadro, e no vídeo o iPhone repetia 2 quadros); ela nasce no tamanho final só com fade e o espaço da que saiu fecha só a diferença */
+    /* v13.284: troca 1 por 1 (ex.: "A pagar" some e "Tudo pago" aparece): a caixa nova NÃO anima altura (antes: altura+bordas+sombra a cada quadro, e no vídeo o iPhone repetia 2 quadros); ela nasce no tamanho final só com fade e o espaço da que saiu fecha só a diferença */
     let PR=null;
     if(AP.length===1&&DP.length===1&&Object.keys(post.blk).some(kk=>RK[kk]>RK[AP[0]])){const dd=(pre.blk[DP[0]].h+pre.blk[DP[0]].mt)-(post.blk[AP[0]].h+post.blk[AP[0]].mt);if(dd>=0)PR={a:AP[0],d:DP[0],dd:dd}}
     Object.keys(post.blk).forEach(k=>{if(pre.blk[k])return;const q=post.blk[k],e=q.el;T.apar=(T.apar||0)+1;
@@ -2054,7 +2054,7 @@ function paySwap(B){ /* refaz a lista UMA vez para o lote e desliza tudo para o 
       g.querySelectorAll('.row').forEach(w=>{const kk=w.dataset.id+'|'+w.dataset.key;if(B.keys.has(kk))return;
         const a=pre.rows[kk],b=post.rows[kk];if(!a||!b||!p||!q)return;
         const dy=(a.top-p.top)-(b.top-q.top);
-        if(Math.abs(dy)>.5){try{w.animate([{top:dy+'px'},{top:'0px'}],op)}catch(_){}}})}); /* v13.283: as linhas deslizam por layout (top), no MESMO relógio da altura dos grupos: com transform (compositor) e altura (processador) em relógios diferentes, qualquer quadro atrasado do iPhone fazia as duas saírem de compasso e as linhas tremiam */
+        if(Math.abs(dy)>.5){try{w.animate([{top:dy+'px'},{top:'0px'}],op)}catch(_){}}})}); /* v13.284: as linhas deslizam por layout (top), no MESMO relógio da altura dos grupos: com transform (compositor) e altura (processador) em relógios diferentes, qualquer quadro atrasado do iPhone fazia as duas saírem de compasso e as linhas tremiam */
     B.rs.forEach(rr=>{const nr=document.querySelector('.row[data-id="'+rr.id+'"][data-key="'+rr.key+'"]');
       if(nr){nr.style.opacity='0';setTimeout(()=>{if(!nr.isConnected)return;nr.style.opacity='';try{nr.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:250,easing:PAYE,fill:'backwards'})}catch(_){}},90)}})
   }
@@ -2123,7 +2123,7 @@ function catIds(){
   return az.sort((a,b)=>((a in pos)?pos[a]:1e6)-((b in pos)?pos[b]:1e6));
 }
 function renderCats(){
-  let cur='';try{cur=F&&F.cat||''}catch(e){}
+  let cur='';try{cur=F&&F.tp?F.cat:''}catch(e){}
   $('#fc').innerHTML=catIds().map(k=>'<button type="button" class="cat'+(k===cur?' on':'')+'" data-c="'+k+'" style="--c:'+CAT[k].c+'">'+svg(k)+'<span>'+CAT[k].l+'</span></button>').join('');
   const cu=TCUS();$$('#tm button').forEach(b=>b.classList.toggle('on',b.dataset.o===(cu?'custom':'az')));$('#thint').hidden=!cu;
 }
@@ -2615,7 +2615,7 @@ function syncForm(){
   $('#cyest').hidden=!sp;
   $$('#fdates .chip').forEach(c=>{if(Number(c.dataset.d)>0)c.hidden=sp});
   if(!EDIT)$('#fs').textContent=sp?'Registrar gasto':'Adicionar conta';
-  $$('#fc .cat').forEach(b=>b.classList.toggle('on',b.dataset.c===F.cat));
+  $$('#fc .cat').forEach(b=>b.classList.toggle('on',!!F.tp&&b.dataset.c===F.cat));
   $$('#fr button').forEach(b=>b.classList.toggle('on',b.dataset.r===F.rep));
   $('#inst').hidden=F.rep!=='inst';
   $('#curbox').hidden=!!EDIT;
@@ -2709,13 +2709,14 @@ function abrirAnim(pn){
 function openSheet(id,key){
   EDIT=null;CPC.clear();$('#cm').innerHTML='';const sh=$('#sheet'),pn=$('#panel');
   const b=id?S.bills.find(v=>v.id===id):null;
-  BKOPEN=false;F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false};
+  BKOPEN=false;F={cents:0,cat:'boleto',rep:'once',total:12,cur:1,prov:'',bank:'',via:'',brand:'visa',tier:'standard',model:'',last4:'',limit:0,close:0,img:'',auto:'',scope:'all',touched:false,mode:'bill',modeTouched:false,tp:false};
   $('#fn').value='';$('#fo').value='';$('#fd').value=toISO(today0());CF='';CK='';CSEL='';CKS='';$('#cl').value='';$('#cli').value='';$('#ccl').value='';$('#bl').value='';$('#blm').hidden=true;$('#ps').value='';
   $('#extra').innerHTML='';
   if(b){
     const o=occ(b,...key.split('-').map((v,i)=>i?Number(v)-1:Number(v)));
     EDIT={id:b.id,key:key,orig:o?o.amt:b.amount};
     BKOPEN=false;F={cents:EDIT.orig,cat:b.cat,rep:b.repeat,total:b.total||12,cur:1,prov:b.prov||'',bank:b.bank||'',via:b.via||'',brand:b.brand||'visa',tier:b.tier||'standard',model:b.model||'',last4:b.last4||'',limit:b.limit||0,close:b.close||0,img:okImg(b.img)?b.img:'',auto:PROV[b.prov]?AN(PROV[b.prov],b.cat):'',scope:VARIAVEL.indexOf(b.cat)>-1?'one':'all',touched:true,mode:b.spent?'spent':'bill',modeTouched:true};
+    F.tp=true;
     $('#fn').value=b.name;$('#fo').value=b.note||'';$('#fd').value=b.due;$('#cl').value=F.last4;$('#cli').value=F.limit?brl(F.limit):'';$('#ccl').value=F.close||'';
     $('#st').textContent='Editar conta';$('#fs').textContent='Salvar alterações';
     let ex='';
@@ -2771,6 +2772,7 @@ function stErr(m,el){let e=$('#serr');if(!m){if(e)e.remove();return}
   e.textContent=m;el.parentNode.insertBefore(e,el);
   try{const pn=$('#panel');pn.scrollTo({top:Math.max(0,e.getBoundingClientRect().top-pn.getBoundingClientRect().top+pn.scrollTop-110),behavior:'smooth'})}catch(x){}}
 function stFalta(){
+  if(!EDIT&&!F.tp){stErr('Escolha o tipo da conta para continuar',$('#fc'));return true} /* v13.284: a conta nova não vem com tipo marcado */
   if(SSTEP!==2||EDIT)return false;
   if(!F.prov&&!F.pvs&&!okImg(F.img)){stErr('Escolha uma opção da lista para continuar',$('#pg'));return true}
   const bx=$('#bkx');
@@ -2817,7 +2819,7 @@ $('#fa').addEventListener('input',e=>{
 $('#tm').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.o==='custom'){if(!Array.isArray(S.order._tipos))S.order._tipos=catIds();S.order._tipm='custom'}else S.order._tipm='az';save();tipSave();renderCats()});
 function fcSelect(b){
   const antes=F.cat;
-  F.cat=b.dataset.c;
+  F.cat=b.dataset.c;F.tp=true;
   autoCat();
   /* v13.259: ao TROCAR de tipo numa conta nova, a escolha do tipo anterior (ex.: Banco do Brasil do Boleto) não vai junto para o passo 2 do novo tipo. Na edição de uma conta existente continua como antes. */
   if(!EDIT&&antes!==F.cat){
@@ -3095,7 +3097,7 @@ function pgClick(e){
   if(Date.now()-LASTDRAG<500)return;
   let catChanged=false;
   if(id&&(LIST[F.cat]||[]).indexOf(id)<0&&PCAT[id]){
-    F.cat=PCAT[id];catChanged=true;
+    F.cat=PCAT[id];F.tp=true;catChanged=true;
     autoCat();
   }
   setProv(id);
@@ -3265,6 +3267,7 @@ function putExtra(b){
 $('#panel').addEventListener('submit',e=>{
   e.preventDefault();
   if($('#panel').classList.contains('stps')&&SSTEP<3){if(stFalta())return;setStep(SSTEP+1);return}
+  if(!EDIT&&!F.tp){toast('Escolha o tipo da conta');return}
   if(!F.cents){
     const a=$('#amtbox'),pn=$('#panel'),y=Math.round(pn.scrollTop);
     window.__diagAct&&window.__diagAct('adicionar conta sem valor');
