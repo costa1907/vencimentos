@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.293';
+(function(){var V='13.294';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -489,8 +489,9 @@ html.jsnapw:not(.c3d) .cpk .cpi.nr .cpa{will-change:transform}
 .cards.cpnt{scroll-snap-type:none!important}
 .cards.cpnt .cc{transition:none!important}
 html:not(.c3d) .cpk .cpi:not(.ctr)::after{opacity:0}
-/* v13.293: carrossel novo (html.pro): um cartão por gesto, tamanho preso à rolagem (compositor), sem transição de tempo */
+/* v13.294: carrossel novo (html.pro): um cartão por gesto, tamanho preso à rolagem (compositor), sem transição de tempo */
 html.pro .cw{scroll-snap-stop:always}
+html.endfirm .cpk,html.endfirm .cards{overscroll-behavior-x:none}
 .crow{display:flex;gap:6px;margin-top:12px}
 .crb{flex:1;min-width:0;padding:11px 0;border-radius:12px;border:1px solid var(--line2);background:var(--card2);color:var(--tx);font:600 14px/1 var(--fb)}
 .crb.on{background:var(--gold2);color:#111;border-color:transparent}
@@ -865,7 +866,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.293</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.294</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -980,7 +981,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.293';
+const VERSION='13.294';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1498,8 +1499,8 @@ const CGRID=false;
 /* v13.28: carrossel do seletor de cartões (na janela) com arraste próprio, sem rolagem nativa horizontal. Para voltar ao nativo, troque para false */
 /* v13.40: modo do carrossel de cartões: nativo do iPhone (padrão) ou rolagem por JS. Troca pelo botão do Diagnóstico (guarda em sobrou.car e recarrega) */
 /* v13.88: terceiro modo "híbrido" (sobrou.car2='hyb'): o iPhone acompanha o dedo sozinho, como no nativo (rolagem nativa, sem trava de encaixe), e o app assume só ao SOLTAR: escolhe o cartão (no máx. 1 por gesto) e faz o encaixe pela animação do navegador (v13.84) */
-/* v13.293: carrossel NOVO ("nativo puro"): rolagem e encaixe 100% do iPhone (um cartão por gesto), tamanho/giro presos à rolagem no compositor, NENHUM código a cada quadro; textos, bolinhas e escolha só mudam quando para. Ajustes → Carrossel de cartões escolhe entre Novo, Nativo, Híbrido e JS (sobrou.car2) */
-const CAR2=(()=>{try{const v=localStorage.getItem('sobrou.car2');if(v==='nat'||v==='hyb'||v==='js'||v==='pro'||v==='3d')return v}catch(e){}return 'pro'})(); /* v13.293: 4 carrosséis para comparar: pro (novo, nativo puro), nat (nativo do iPhone, anterior), hyb (híbrido), js (por JS). O giro 3D (Cartões 3D) é independente e vale para todos */
+/* v13.294: carrossel NOVO ("nativo puro"): rolagem e encaixe 100% do iPhone (um cartão por gesto), tamanho/giro presos à rolagem no compositor, NENHUM código a cada quadro; textos, bolinhas e escolha só mudam quando para. Ajustes → Carrossel de cartões escolhe entre Novo, Nativo, Híbrido e JS (sobrou.car2) */
+const CAR2=(()=>{try{const v=localStorage.getItem('sobrou.car2');if(v==='nat'||v==='hyb'||v==='js'||v==='pro'||v==='3d')return v}catch(e){}return 'pro'})(); /* v13.294: 4 carrosséis para comparar: pro (novo, nativo puro), nat (nativo do iPhone, anterior), hyb (híbrido), js (por JS). O giro 3D (Cartões 3D) é independente e vale para todos */
 const PRO=CAR2==='pro',LEAN=PRO||CAR2==='3d'; /* LEAN: sem conta por quadro durante o deslize (Novo e 3D) */
 const CARN={pro:'novo (nativo puro)',nat:'nativo do iPhone',hyb:'híbrido',js:'por JS','3d':'3D'},CARX={pro:'nat',nat:'hyb',hyb:'js',js:'3d','3d':'pro'};
 window.__CAR={m:CAR2,n:CARN,x:CARX};
@@ -1513,9 +1514,12 @@ let HCLS=0,HIG=0,ODC=null,HKEY='',LCH=null,HPREV=null;
 const NATIVO3D=true;
 const SDA=NATIVO3D&&(()=>{try{return CSS.supports('animation-timeline','view()')&&CSS.supports('animation-range','cover 10% cover 90%')}catch(e){return false}})();
 if(SDA)document.documentElement.classList.add('sda');
-if(SDA&&CAR2==='3d')document.documentElement.classList.add('c3d'); /* v13.293: o giro 3D é um carrossel à parte (rolagem nativa + giro preso à rolagem): ligar um desliga os outros */
+if(SDA&&CAR2==='3d')document.documentElement.classList.add('c3d'); /* v13.294: o giro 3D é um carrossel à parte (rolagem nativa + giro preso à rolagem): ligar um desliga os outros */
 if(PRO)document.documentElement.classList.add('pro');
 if(LEAN)document.documentElement.classList.add('lean');
+const ENDF=(()=>{try{return localStorage.getItem('sobrou.ends')==='firm'}catch(e){return false}})(); /* v13.294: pontas do carrossel: elástico (padrão) ou firme (para seco na ponta, sem puxar o cartão para fora) */
+window.__ENDF=ENDF;
+if(ENDF)document.documentElement.classList.add('endfirm');
 if(JSNAP)document.documentElement.classList.add('jsnap');
 if(CGRID)document.documentElement.classList.add('cgrid');
 if(JSNAPW)document.documentElement.classList.add('jsnapw');
@@ -1820,7 +1824,7 @@ function renderSet(){
    '<div class="lbl" style="margin-top:16px">Cor de fundo</div><div class="sw" id="swb">'+TH.BG.map((b,i)=>'<button type="button" class="swc" data-b="'+i+'" aria-label="'+b[0]+'" style="background:'+TH.hsl(b[1],b[2]===0?0:Math.max(b[2],30),i===1?4:16)+'"></button>').join('')+'</div>'+
    '<div class="lbl" style="margin-top:16px">Cor de destaque</div><div class="sw" id="swa">'+TH.AC.map((a,i)=>'<button type="button" class="swc" data-a="'+i+'" aria-label="'+a[0]+'" style="background:'+a[1]+'"></button>').join('')+'</div><button class="act" id="bspl" style="margin-top:16px">Ver animação de abertura</button></div>'+
    '<div class="card"><h3>Efeitos especiais</h3><div class="cap">Giro 3D e brilho dos cartões, animações ao abrir as telas, desfoque da barra de baixo e abertura animada. Se o app engasgar no seu aparelho, desligue para deixar tudo mais leve; ligue de novo quando quiser comparar. Vale só para este aparelho.</div><div class="fxrow"><b>'+(NOFX()?'Desligados':'Ligados')+'</b><button type="button" class="swt" id="bfx" role="switch" aria-checked="'+(NOFX()?'false':'true')+'" aria-label="Efeitos especiais"></button></div></div>'+
-   '<div class="card"><h3>Carrossel de cartões</h3><div class="cap">Escolha o carrossel para comparar. <b>Novo</b>: nativo puro, o iPhone cuida de tudo e o app não faz conta durante o deslize. <b>Nativo</b>: o anterior, rolagem do iPhone com correções do app. <b>Híbrido</b>: iPhone acompanha o dedo e o app encaixa ao soltar. <b>JS</b>: o app move os cartões. <b>3D</b>: rolagem nativa com o giro 3D dos cartões. Só um fica ligado por vez. A tela recarrega ao trocar.</div><div class="crow" id="bcr">'+['pro','nat','hyb','js','3d'].map(k=>'<button type="button" class="crb'+(CAR2===k?' on':'')+'" data-k="'+k+'">'+{pro:'Novo',nat:'Nativo',hyb:'Híbrido',js:'JS','3d':'3D'}[k]+'</button>').join('')+'</div></div>'+
+   '<div class="card"><h3>Carrossel de cartões</h3><div class="cap">Escolha o carrossel para comparar. <b>Novo</b>: nativo puro, o iPhone cuida de tudo e o app não faz conta durante o deslize. <b>Nativo</b>: o anterior, rolagem do iPhone com correções do app. <b>Híbrido</b>: iPhone acompanha o dedo e o app encaixa ao soltar. <b>JS</b>: o app move os cartões. <b>3D</b>: rolagem nativa com o giro 3D dos cartões. Só um fica ligado por vez. A tela recarrega ao trocar.</div><div class="crow" id="bcr">'+['pro','nat','hyb','js','3d'].map(k=>'<button type="button" class="crb'+(CAR2===k?' on':'')+'" data-k="'+k+'">'+{pro:'Novo',nat:'Nativo',hyb:'Híbrido',js:'JS','3d':'3D'}[k]+'</button>').join('')+'</div><div class="lbl" style="margin-top:14px">Pontas (primeiro e último cartão)</div><div class="crow" id="bend">'+[['el','Elástico'],['firm','Firme']].map(x=>'<button type="button" class="crb'+((x[0]==='firm')===window.__ENDF?' on':'')+'" data-e="'+x[0]+'">'+x[1]+'</button>').join('')+'</div><div class="cap" style="margin:8px 0 0"><b>Elástico</b>: o cartão estica ao puxar além da ponta e volta. <b>Firme</b>: para seco na ponta.</div></div>'+
    '<div class="card"><h3>Cadastro em passos</h3><div class="cap">O botão + abre o cadastro em 3 passos curtos (Tipo, Escolha, Detalhes), com botão fixo embaixo. Desligue para voltar ao formulário único de antes.</div><div class="fxrow"><b>'+(STEPS()?'Ligado':'Desligado')+'</b><button type="button" class="swt" id="bst" role="switch" aria-checked="'+(STEPS()?'true':'false')+'" aria-label="Cadastro em passos"></button></div></div>'+
    '<div class="card"><h3>Backup</h3><div class="cap">Copie o backup e guarde no WhatsApp, Notas ou e-mail. Para restaurar, cole o texto abaixo.</div>'+
    '<button class="act" id="bcopy">Copiar backup</button><textarea class="fld bk" id="bpaste" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="Cole aqui o backup para restaurar"></textarea><button class="act" id="brest">Restaurar backup</button></div>'+
@@ -1835,6 +1839,7 @@ function renderSet(){
   if(window.__diag)window.__diag.bind();
   $('#bspl').onclick=()=>window.showSplash&&window.showSplash();
   $('#bst').onclick=()=>{const on=!STEPS();try{if(on)localStorage.removeItem('sobrou.steps');else localStorage.setItem('sobrou.steps','0')}catch(e){}renderSet();toast(on?'Cadastro em passos ligado':'Cadastro em passos desligado')};
+  $('#bend').onclick=e=>{const b=e.target.closest('.crb');if(!b||(b.dataset.e==='firm')===window.__ENDF)return;try{localStorage.setItem('sobrou.ends',b.dataset.e==='firm'?'firm':'el')}catch(_){}toast('Pontas: '+(b.dataset.e==='firm'?'firme':'elástico')+'…');setTimeout(()=>location.reload(),350)};
   $('#bcr').onclick=e=>{const b=e.target.closest('.crb');if(!b||b.dataset.k===CAR2)return;try{localStorage.setItem('sobrou.car2',b.dataset.k)}catch(_){}toast('Carrossel: '+CARN[b.dataset.k]+'…');setTimeout(()=>location.reload(),350)};
   $('#bfx').onclick=()=>{const off=!NOFX();document.documentElement.classList.toggle('nofx',off);try{if(off)localStorage.setItem('sobrou.fx','0');else localStorage.removeItem('sobrou.fx')}catch(e){}renderSet();toast(off?'Efeitos especiais desligados':'Efeitos especiais ligados')};
   $('#thm').onclick=e=>{const b=e.target.closest('.tp');if(!b)return;const p=TH.PR[+b.dataset.pr];TH.set(p[1],p[2]);thSync()};
@@ -1926,7 +1931,7 @@ document.addEventListener('click',e=>{
    Mede: quadros lentos em cada fase (espera, saída, troca, entrada), tempo de código de cada etapa, e, a cada quadro da troca, a posição das linhas
    para achar PULOS (linha que anda para um lado e volta, ou salta de uma vez) e SOBREPOSIÇÃO de linhas. Ler posições a cada quadro pode somar um pouco de custo: só no modo diagnóstico. */
 const PD={
-  rc:new Map(), /* v13.293: contas de lotes que trocaram há pouco: outro lote que ainda está sendo observado não conta o deslize delas como pulo/sobreposição */
+  rc:new Map(), /* v13.294: contas de lotes que trocaram há pouco: outro lote que ainda está sendo observado não conta o deslize delas como pulo/sobreposição */
   mark(keys){const n=performance.now();keys.forEach(k=>this.rc.set(k,n));if(this.rc.size>60)this.rc.forEach((t,k)=>{if(n-t>6000)this.rc.delete(k)})},
   alheia(kk){const t=this.rc.get(kk);return PAYQ.has(kk)||(t!=null&&performance.now()-t<4000)},
   on(){try{return !!(window.__diagOn&&window.__diagOn())}catch(e){return false}},
@@ -1978,7 +1983,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.293 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.294 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -2018,7 +2023,7 @@ function payStart(){ /* fim da espera: as contas pendentes saem juntas */
   const rs=[...PAYQ.values()].filter(r=>r.phase==='espera');if(!rs.length)return;
   const B={rs:rs,keys:new Set(rs.map(r=>r.k)),sw:0,tf:0};PAYB=B;
   const t=performance.now();rs.forEach(r=>{r.phase='saida';r.tSaida=t;r.bk=B.keys});
-  let pre=null;if(!RMq()){try{document.querySelectorAll('#list .row,#list .group,#list .sec,#list .cheer').forEach(e=>{e.getAnimations().forEach(a=>{if(a.effect&&a.effect.getTiming().fill!=='forwards')a.finish()})}); /* v13.293: mede sempre com tudo parado (uma linha no meio de um deslize daria um ponto de partida errado) */
+  let pre=null;if(!RMq()){try{document.querySelectorAll('#list .row,#list .group,#list .sec,#list .cheer').forEach(e=>{e.getAnimations().forEach(a=>{if(a.effect&&a.effect.getTiming().fill!=='forwards')a.finish()})}); /* v13.294: mede sempre com tudo parado (uma linha no meio de um deslize daria um ponto de partida errado) */
     pre=payMedir()}catch(_){}}B.pre=pre;
   if(!rs.some(r=>r.s)){try{PD.ini(rs[0])}catch(_){}}
   const go=()=>{if(B.sw)return;B.sw=1;clearTimeout(B.tf);paySwap(B)};
@@ -2048,7 +2053,7 @@ function paySwap(B){ /* refaz a lista UMA vez para o lote e desliza tudo para o 
   { /* seções que aparecem abrem de 0 até a altura final; as que somem deixam um espaço que fecha: assim nada abaixo pula */
     const RK={late:0,up:1,cheer:2,done:3,empty:4},blks=[...document.querySelectorAll('#list > *')];
     const AP=Object.keys(post.blk).filter(k=>!pre.blk[k]),DP=Object.keys(pre.blk).filter(k=>!post.blk[k]);
-    /* v13.293: troca 1 por 1 (ex.: "A pagar" some e "Tudo pago" aparece): a caixa nova NÃO anima altura (antes: altura+bordas+sombra a cada quadro, e no vídeo o iPhone repetia 2 quadros); ela nasce no tamanho final só com fade e o espaço da que saiu fecha só a diferença */
+    /* v13.294: troca 1 por 1 (ex.: "A pagar" some e "Tudo pago" aparece): a caixa nova NÃO anima altura (antes: altura+bordas+sombra a cada quadro, e no vídeo o iPhone repetia 2 quadros); ela nasce no tamanho final só com fade e o espaço da que saiu fecha só a diferença */
     let PR=null;
     if(AP.length===1&&DP.length===1&&Object.keys(post.blk).some(kk=>RK[kk]>RK[AP[0]])){const dd=(pre.blk[DP[0]].h+pre.blk[DP[0]].mt)-(post.blk[AP[0]].h+post.blk[AP[0]].mt);if(dd>=0)PR={a:AP[0],d:DP[0],dd:dd}}
     Object.keys(post.blk).forEach(k=>{if(pre.blk[k])return;const q=post.blk[k],e=q.el;T.apar=(T.apar||0)+1;
@@ -2076,7 +2081,7 @@ function paySwap(B){ /* refaz a lista UMA vez para o lote e desliza tudo para o 
       g.querySelectorAll('.row').forEach(w=>{const kk=w.dataset.id+'|'+w.dataset.key;if(B.keys.has(kk))return;
         const a=pre.rows[kk],b=post.rows[kk];if(!a||!b||!p||!q)return;
         const dy=(a.top-p.top)-(b.top-q.top);
-        if(Math.abs(dy)>.5){try{w.animate([{top:dy+'px'},{top:'0px'}],op)}catch(_){}}})}); /* v13.293: as linhas deslizam por layout (top), no MESMO relógio da altura dos grupos: com transform (compositor) e altura (processador) em relógios diferentes, qualquer quadro atrasado do iPhone fazia as duas saírem de compasso e as linhas tremiam */
+        if(Math.abs(dy)>.5){try{w.animate([{top:dy+'px'},{top:'0px'}],op)}catch(_){}}})}); /* v13.294: as linhas deslizam por layout (top), no MESMO relógio da altura dos grupos: com transform (compositor) e altura (processador) em relógios diferentes, qualquer quadro atrasado do iPhone fazia as duas saírem de compasso e as linhas tremiam */
     B.rs.forEach(rr=>{const nr=document.querySelector('.row[data-id="'+rr.id+'"][data-key="'+rr.key+'"]');
       if(nr){nr.style.opacity='0';setTimeout(()=>{if(!nr.isConnected)return;nr.style.opacity='';try{nr.animate([{opacity:0,transform:'translateX(-16px)'},{opacity:1,transform:'translateX(0)'}],{duration:250,easing:PAYE,fill:'backwards'})}catch(_){}},90)}})
   }
@@ -2324,7 +2329,7 @@ function cpLabel(bi){
     }
   }
   tr.addEventListener('scroll',()=>{CPLS=Date.now();
-    if(LEAN){if(!tr._mv){tr._mv=1;const pt=$('#cpt');pt&&pt.classList.add('mv')}clearTimeout(idle);idle=setTimeout(()=>{tr._mv=0;settle()},140);return} /* v13.293: durante o deslize só isto: nenhuma conta por quadro */
+    if(LEAN){if(!tr._mv){const sl=tr.scrollLeft;if(sl>=0&&sl<=tr.scrollWidth-tr.clientWidth){tr._mv=1;const pt=$('#cpt');pt&&pt.classList.add('mv')}}clearTimeout(idle);idle=setTimeout(()=>{tr._mv=0;settle()},140);return} /* v13.294: durante o deslize só isto: nenhuma conta por quadro */
     if(JSNAPW&&!r2)r2=requestAnimationFrame(()=>{r2=0;tr._sc&&tr._sc()});
     if(!raf)raf=requestAnimationFrame(()=>{raf=0;const n=performance.now();let chg=false;{const cx=tr._cx;if(cx&&cx.length&&tr._cw){const c=(tr._seff!=null?tr._seff:tr.scrollLeft)+tr._cw/2;let k=0,bd=1e9;for(let i=0;i<cx.length;i++){const d=Math.abs(cx[i]-c);if(d<bd){bd=d;k=i}}chg=k!==tr._c}} /* v13.90: se o cartão do centro mudou, atualiza SEMPRE (antes o limite de 45 ms podia descartar justo o último evento e a marca ficava errada com o dedo parado) */
       if(!chg&&n-lrun<45)return;lrun=n;const bi=cpLayout(true);if(bi!==lb){lb=bi;cpLabel(bi);cpLoad(bi)}});
@@ -2520,13 +2525,13 @@ function cpGhostMake(){
     if(!old||!par||old.hidden||!old.children.length||!(sh&&!sh.hidden&&sh.classList.contains('open')))return null;
     if(getComputedStyle(par).position==='static')par.style.position='relative';
     const g=old.cloneNode(true);g.removeAttribute('id');g.classList.remove('cpnt');g.setAttribute('aria-hidden','true');
-    let tg=null,tp=null;try{const pt=$('#cpt');if(pt&&!pt.hidden&&pt.parentNode===par){tg=pt.cloneNode(true);tg.removeAttribute('id');tg.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));tg.setAttribute('aria-hidden','true');tp={t:pt.offsetTop,l:pt.offsetLeft,w:pt.offsetWidth,h:pt.offsetHeight}}}catch(_){tg=null} /* v13.293: o texto do cartão (nome, bandeira, pontinhos) também ganha fantasma: ele trocava NA HORA enquanto o cartão antigo ainda ficava ~80 ms na tela, e a diferença parecia uma tremida */
+    let tg=null,tp=null;try{const pt=$('#cpt');if(pt&&!pt.hidden&&pt.parentNode===par){tg=pt.cloneNode(true);tg.removeAttribute('id');tg.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));tg.setAttribute('aria-hidden','true');tp={t:pt.offsetTop,l:pt.offsetLeft,w:pt.offsetWidth,h:pt.offsetHeight}}}catch(_){tg=null} /* v13.294: o texto do cartão (nome, bandeira, pontinhos) também ganha fantasma: ele trocava NA HORA enquanto o cartão antigo ainda ficava ~80 ms na tela, e a diferença parecia uma tremida */
     return {g:g,sl:old.scrollLeft,t:old.offsetTop,l:old.offsetLeft,w:old.offsetWidth,h:old.offsetHeight,par:par,tg:tg,tp:tp};
   }catch(e){return null}
 }
 /* v13.108: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
 let CSW=0;
-/* v13.293: o esmaecer da troca de cartão: 130 ms com 'ease-out' fazia ~60% da mudança (bege → escuro) em UM quadro (no vídeo: diferença 52 num quadro e 12, 10, 7, 4 nos seguintes), parecendo um corte/piscada; agora 240 ms 'ease-in-out' (a mudança se espalha por ~14 quadros) e a espera mínima antes de trocar caiu de 50 para 16 ms (o cartão novo já está pronto na memória) */
+/* v13.294: o esmaecer da troca de cartão: 130 ms com 'ease-out' fazia ~60% da mudança (bege → escuro) em UM quadro (no vídeo: diferença 52 num quadro e 12, 10, 7, 4 nos seguintes), parecendo um corte/piscada; agora 240 ms 'ease-in-out' (a mudança se espalha por ~14 quadros) e a espera mínima antes de trocar caiu de 50 para 16 ms (o cartão novo já está pronto na memória) */
 const CPD=240,CPE='cubic-bezier(.45,0,.35,1)';
 function cpSwap(o){
   const t=$('#cm');if(!t)return;
@@ -2803,7 +2808,7 @@ function stErr(m,el){let e=$('#serr');if(!m){if(e)e.remove();return}
   e.textContent=m;el.parentNode.insertBefore(e,el);
   try{const pn=$('#panel');pn.scrollTo({top:Math.max(0,e.getBoundingClientRect().top-pn.getBoundingClientRect().top+pn.scrollTop-110),behavior:'smooth'})}catch(x){}}
 function stFalta(){
-  if(!EDIT&&!F.tp){stErr('Escolha o tipo da conta para continuar',$('#fc'));return true} /* v13.293: a conta nova não vem com tipo marcado */
+  if(!EDIT&&!F.tp){stErr('Escolha o tipo da conta para continuar',$('#fc'));return true} /* v13.294: a conta nova não vem com tipo marcado */
   if(SSTEP!==2||EDIT)return false;
   if(!F.prov&&!F.pvs&&!okImg(F.img)){stErr('Escolha uma opção da lista para continuar',$('#pg'));return true}
   const bx=$('#bkx');
@@ -3994,7 +3999,7 @@ window.__diagFn=[['renderProv',()=>renderProv,f=>{renderProv=f}],['renderBank',(
     const keys=Object.keys(by).sort((a,b)=>by[b].n-by[a].n);
     let t='Sobrou! v'+(window.VERSION_STR||'')+' · diagnóstico de fluidez\n';
     t+='Aparelho: '+navigator.userAgent.replace(/.*?\((.*?)\).*/,'$1')+' · tela '+screen.width+'x'+screen.height+' @'+devicePixelRatio+'x · ~'+hz()+' Hz\n';
-    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+' · ordem dos tipos: '+(()=>{try{const o=window.__app.get().order||{};return Array.isArray(o._tipos)&&o._tipm!=='az'?'Minha ordem ('+o._tipos.length+')':'A–Z'}catch(e){return '?'}})()+'\nCarrossel de cartões: '+__CAR.n[__CAR.m].toUpperCase()+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc5')==='on'?'LIGADO (o app rola a janela quando o iPhone não rola)':'DESLIGADO — só observando (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length)+'\n\n';
+    t+='Efeitos especiais: '+(document.documentElement.classList.contains('nofx')?'desligados':'ligados')+' · 3D nativo: '+(document.documentElement.classList.contains('sda')?'sim':'não')+' · cartões 3D: '+(document.documentElement.classList.contains('c3d')?'ligado':'desligado')+' · engasgos (≥50 ms): '+EV.length+' · travadas (≥100 ms): '+EV.filter(x=>x.ms>=100).length+' · encaixes corrigidos pelo app: '+NT.length+' · rolagens que não acompanharam o dedo: '+RL.length+' · arrastos que o app socorreu: '+SO.length+' · ícones arrastados (Minha ordem): '+AR.length+' · ordem dos tipos: '+(()=>{try{const o=window.__app.get().order||{};return Array.isArray(o._tipos)&&o._tipm!=='az'?'Minha ordem ('+o._tipos.length+')':'A–Z'}catch(e){return '?'}})()+'\nCarrossel de cartões: '+__CAR.n[__CAR.m].toUpperCase()+' · pontas '+(window.__ENDF?'FIRMES':'elásticas')+(document.documentElement.classList.contains('jsnapw')?(document.documentElement.classList.contains('hybw')?' · toque durante o encaixe: '+(document.documentElement.classList.contains('hnat')?'iPhone':'app'):'')+' · tamanho do cartão: '+(document.documentElement.classList.contains('cszt')?'por tempo':'contínuo'):'')+' · arrastos verticais feitos: '+(GV[0]+GV[1])+' (janela '+GV[0]+', tela inicial '+GV[1]+') · socorridos: '+SO.length+(GV[0]+GV[1]?' ('+Math.round(SO.length*100/(GV[0]+GV[1]))+'%)':'')+'\nSocorro do app: '+(localStorage.getItem('sobrou.soc5')==='on'?'LIGADO (o app rola a janela quando o iPhone não rola)':'DESLIGADO — só observando (não mexe na rolagem) · falsos alarmes (o iPhone acabou rolando): '+ev.filter(x=>/^→ falso alarme/.test(x.acao||'')).length+' · pararam de verdade: '+ev.filter(x=>/^→ parou de verdade/.test(x.acao||'')).length)+'\n\n';
     if(window.__splStat)t+='Abertura (animação nova): '+window.__splStat+'\n';
     {const ks=Object.keys(RS).sort((x,y)=>RS[y].f-RS[x].f);
      t+='RITMO DA ROLAGEM (quadros durante a rolagem · lentos ≥25 ms · lentos ≥33 ms · pior)\n';
