@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.310';
+(function(){var V='13.311';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -942,7 +942,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.310</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.311</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -1057,7 +1057,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.310';
+const VERSION='13.311';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2076,7 +2076,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.310 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.311 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -3286,6 +3286,24 @@ function setProv(id){
   F.prov=id||'';
 }
 /* v13.309: trocar de bandeira com o carrossel ainda andando (inércia do dedo): o carrossel NOVO herdava o movimento e saía andando sozinho do 1º para o 2º cartão (vídeo da 13.308). Agora, depois da troca, por 0,6 s o app confere a cada quadro se o carrossel continua no cartão marcado e, se ele andou sozinho (sem dedo), recoloca (mexer na posição interrompe a inércia); se insistir, trava a rolagem por 150 ms. Um toque do dedo no carrossel encerra a vigilância. */
+/* v13.311: espera o carrossel assentar: empurra suave para o cartão mais perto do centro (cancela a inércia) e chama cb quando a rolagem fica quieta por 60 ms ou no scrollend (no máximo 500 ms) */
+function cpWaitStop(t,cb){
+  let done=0,q=0,cap=0;
+  const fin=()=>{if(done)return;done=1;clearTimeout(q);clearTimeout(cap);t.removeEventListener('scroll',onS);cb()};
+  const onS=()=>{clearTimeout(q);q=setTimeout(fin,60)};
+  try{
+    const its=t.children,c=t.scrollLeft+t.clientWidth/2;let bi=0,bd=1e9;
+    for(let i=0;i<its.length;i++){const d=Math.abs(its[i].offsetLeft+its[i].offsetWidth/2-c);if(d<bd){bd=d;bi=i}}
+    /* no sentido do movimento: se o cartão mais perto fica ATRÁS do que o carrossel já passou (ele ia para frente), assenta no da frente (nunca volta atrás) */
+    if(CMDX>0&&its[bi].offsetLeft+its[bi].offsetWidth/2<c-2&&bi<its.length-1)bi++;
+    else if(CMDX<0&&its[bi].offsetLeft+its[bi].offsetWidth/2>c+2&&bi>0)bi--;
+    const it=its[bi];
+    if(it){const L=Math.max(0,it.offsetLeft+it.offsetWidth/2-t.clientWidth/2);
+      if(Math.abs(L-t.scrollLeft)>1){try{t.scrollTo({left:L,behavior:NOFX()?'auto':'smooth'})}catch(e){t.scrollLeft=L}}}
+  }catch(e){}
+  t.addEventListener('scroll',onS,{passive:true});t.addEventListener('scrollend',fin,{once:true});
+  q=setTimeout(fin,120);cap=setTimeout(fin,500);
+}
 function cpHold(){
   try{
     const t=$('#cm');if(!t||CGRID)return;
@@ -3312,8 +3330,14 @@ $('#ccx').addEventListener('click',e=>{
     const t=$('#cm'),my=++CFT2;
     /* v13.145: se o carrossel ainda está andando (inércia do dedo), primeiro ele é parado onde está (2 quadros) e só então troca; antes a troca acontecia com ele em movimento e ele "tremia" e era empurrado pro lado */
     if(t&&performance.now()-CMSC<180){
-      t.style.overflowX='hidden';try{t._stopSnap&&t._stopSnap()}catch(_){}
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{t.style.overflowX='';if(my===CFT2)go()}));
+      if(t._stopSnap){ /* modos com encaixe feito pelo app (JS/híbrido): como antes */
+        t.style.overflowX='hidden';try{t._stopSnap()}catch(_){}
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{t.style.overflowX='';if(my===CFT2)go()}));
+      }else{
+        /* v13.311: com o carrossel ainda andando, NÃO para seco (parava fora do centro e o cartão dava um salto de uns 16 px no quadro da troca, e a inércia ainda empurrava o carrossel novo); a bandeira marca na hora, o carrossel termina de assentar no cartão mais perto (rolagem suave curta, que também interrompe a inércia) e só então começa a troca (esmaecer) com tudo parado no centro */
+        $$('#cbf .chip').forEach(c=>c.classList.toggle('on',(c.dataset.f||'')===nc));
+        cpWaitStop(t,()=>{if(my===CFT2)go()});
+      }
     }else go();
     return}
   const b=e.target.closest('[data-b]'),t=e.target.closest('[data-t]'),m=e.target.closest('[data-m]');
@@ -3322,8 +3346,8 @@ $('#ccx').addEventListener('click',e=>{
   if(b){F.brand=b.dataset.b;F.model='';syncForm()}
   if(t){F.tier=t.dataset.t;F.model='';syncForm()}
 });
-let CFT2=0,CMSC=0;
-$('#cm').addEventListener('scroll',()=>{CMSC=performance.now()},{passive:true});
+let CFT2=0,CMSC=0,CMLX=0,CMDX=0;
+$('#cm').addEventListener('scroll',()=>{CMSC=performance.now();const x=$('#cm').scrollLeft;if(x!==CMLX){CMDX=x>CMLX?1:-1;CMLX=x}},{passive:true}); /* v13.311: CMDX = sentido do movimento (para assentar no cartão da frente, sem voltar) */
 (function(){ /* v13.161: marca html.kbd enquanto um campo de texto está em foco */
   let tm=0;
   const txt=el=>el&&((el.tagName==='INPUT'&&!/^(file|checkbox|radio|button|submit|range|color|date|time|month|week|datetime-local|image|reset|hidden)$/i.test(el.type))||el.tagName==='TEXTAREA');
