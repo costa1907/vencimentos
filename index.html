@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.314';
+(function(){var V='13.316';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -461,10 +461,13 @@ textarea.fld{height:76px;padding:12px 14px;resize:none;line-height:1.4}
 .cbf .chip.bf{opacity:1;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .cbf .chip.bf::after{opacity:0;transition:opacity .25s}
 .cbf .chip.bf.on::after{opacity:1}
-.cbf .chip.bf .mk svg{opacity:.5;filter:grayscale(1);transition:opacity .25s,filter .25s}
+.cbf .chip.bf .mk{-webkit-filter:grayscale(1);filter:grayscale(1);will-change:filter;transform:translateZ(0)}
+.cbf .chip.bf .mk svg{opacity:.5;transition:opacity .25s}
+.cbf.rp .chip.bf .mk svg{opacity:.501}
 .cbf .chip.bf .k{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.2)}
 .cbf .chip.bf.on{background:linear-gradient(145deg,var(--c1),var(--c2));box-shadow:inset 0 0 0 1.5px rgb(var(--ar)),inset 0 1px 0 rgba(255,255,255,.35),0 10px 22px -10px var(--c2)}
-.cbf .chip.bf.on .mk svg{opacity:1;filter:none}
+.cbf .chip.bf.on .mk{-webkit-filter:none;filter:none}
+.cbf .chip.bf.on .mk svg{opacity:1}
 .cbf .chip.bf.on .k{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.35)}
 .cpk{--w:min(280px,68vw);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:20px calc(50% + 18px - var(--w)/2) 34px;margin-bottom:-18px;contain:layout paint;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .cpk::-webkit-scrollbar{display:none}
@@ -950,7 +953,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.314</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.316</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -1065,7 +1068,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.314';
+const VERSION='13.316';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2084,7 +2087,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.314 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.316 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -4356,6 +4359,12 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
       if(t-T0<1500)requestAnimationFrame(f);else{try{window.__diagNote&&window.__diagNote('giro (ms desde a volta; cabeçalho = topo/altura/opacidade/visível/display/rolagem): '+n+' quadros · lacunas>26ms: '+(gaps.join(', ')||'nenhuma')+' · cabeçalho: '+mud.join(' | ')+' · eventos: '+GL.join(', '),'giro')}catch(e){};G0=0;GL=[]}})()}
   if(mq.addEventListener)mq.addEventListener('change',function(e){if(e.matches){G0=performance.now();GL=[];gl('deitou')}else{if(!G0)G0=performance.now();gl('em pe');gravar()}});
   if(mq.addEventListener)mq.addEventListener('change',ch);else if(mq.addListener)mq.addListener(ch)})();
+</script>
+<script>
+/* v13.316: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
+(function(){var cb=document.getElementById('cbf');if(!cb)return;var t=0;function kick(){if(t)return;t=requestAnimationFrame(function(){t=requestAnimationFrame(function(){t=0;cb.classList.add('rp');void cb.offsetWidth;requestAnimationFrame(function(){cb.classList.remove('rp')})})})}
+try{new MutationObserver(kick).observe(cb,{childList:true})}catch(_){}
+try{new IntersectionObserver(function(e){if(e[0]&&e[0].isIntersecting)kick()}).observe(cb)}catch(_){}})();
 </script>
 </body>
 </html>
