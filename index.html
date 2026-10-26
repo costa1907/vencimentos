@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.327';
+(function(){var V='13.328';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -590,7 +590,7 @@ html.cns .cpt[aria-hidden="true"] .cpg i.cur{background:var(--gold2);transform:s
 .sda .cards.cf .cw:first-child .meta,.sda .cards.cf .cw:first-child .lim{animation-name:cfmF}
 html.lean .cpt.mv .cpn,html.lean .cpt.mv .cps{opacity:.35}
 html.lean .cpn,html.lean .cps{transition:opacity .16s}
-/* v13.327: durante a troca de bandeira o texto novo NÃO pode ter transição de opacidade (o .16s acima fazia o nome novo ficar visível por 2-3 quadros em cima do antigo antes de sumir: piscada/pulo) */
+/* v13.328: durante a troca de bandeira o texto novo NÃO pode ter transição de opacidade (o .16s acima fazia o nome novo ficar visível por 2-3 quadros em cima do antigo antes de sumir: piscada/pulo) */
 .cpt.swp .cpn,.cpt.swp .cps,.cpt.swp .cpg{transition:none!important}
 /* bolinhas: a atual cresce com transform (antes mudava a largura e refazia o layout a cada quadro do deslize) */
 .cpg{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;height:8px;contain:layout style}
@@ -958,7 +958,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.327</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.328</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -1073,7 +1073,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.327';
+const VERSION='13.328';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1367,7 +1367,7 @@ if(!S.goals||typeof S.goals!=='object')S.goals={};
 if(!S.order||typeof S.order!=='object')S.order={};
 if(S.pord!=='custom')S.pord='az';
 /* garante que toda conta tem a estrutura mínima (dados antigos, backup ou nuvem) */
-function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(b.prov==='santander'&&(b.model==='sanfree'||b.model==='sx')){const mc=b.model==='sanfree'&&b.brand==='master';b.model=mc?'sanfreemc':'sanfreevisa';b.brand=mc?'master':'visa';b.tier='standard'} /* v13.327: o Santander Free virou 2 modelos (Visa e Mastercard) e o SX saiu: contas antigas passam para o Free da mesma bandeira */
+function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(b.prov==='santander'&&(b.model==='sanfree'||b.model==='sx')){const mc=b.model==='sanfree'&&b.brand==='master';b.model=mc?'sanfreemc':'sanfreevisa';b.brand=mc?'master':'visa';b.tier='standard'} /* v13.328: o Santander Free virou 2 modelos (Visa e Mastercard) e o SX saiu: contas antigas passam para o Free da mesma bandeira */
   if(!b.paid||typeof b.paid!=='object')b.paid={};if(typeof b.amount!=='number')b.amount=+b.amount||0;if(!b.due)b.due=toISO(today0())})}
 normS();
 let EV=6;
@@ -1441,14 +1441,14 @@ function fxSet(){
   const S=FXP.sets[FXP.n++%FXP.NS];
   try{S.box.getAnimations().forEach(a=>a.cancel())}catch(_){}
   S.box.style.opacity='';S.box.style.visibility='visible';
-  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.327: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
+  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.328: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
   return S;
 }
 function fxHide(S){try{clearTimeout(S.hz);S.box.getAnimations().forEach(a=>a.cancel());S.ok.concat(S.un).forEach(e=>{e.getAnimations().forEach(a=>a.cancel())});S.box.style.opacity='';S.box.style.visibility='hidden'}catch(_){}}
 function fxHideAll(){FXP.sets.forEach(fxHide)}
 document.addEventListener('visibilitychange',fxHideAll);addEventListener('pagehide',fxHideAll);addEventListener('pageshow',fxHideAll);
 function fxFade(S){try{S.box.animate([{opacity:1},{opacity:0}],{duration:140,fill:'forwards'})}catch(_){}}
-let FXW=0,FXV=0; /* v13.327: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
+let FXW=0,FXV=0; /* v13.328: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
 function fxRun(e,kf,o){try{if(FXW)kf=kf.map(f=>f.opacity==null?f:Object.assign({},f,{opacity:f.opacity*.01}));e.getAnimations().forEach(a=>a.cancel());e.animate(kf,o)}catch(_){}}
 document.addEventListener('visibilitychange',()=>{FXV=performance.now()});
 const FXR=(p,q)=>p+Math.random()*(q-p);
@@ -1474,7 +1474,7 @@ function fxUn(x,y,w){
 }
 function fxWarm(){ /* roda uma vez, quase invisível (1%), no meio da tela, só para o navegador preparar as camadas dos 3 conjuntos */
   try{const sh=$('#sheet');if(sh&&!sh.hidden)return;
-    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.327: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
+    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.328: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
     FXW=1;
     try{for(let k=0;k<FXP.NS;k++)fxOk(-420,innerHeight/2,1);
     for(let k=0;k<FXP.NS;k++)fxUn(-420,innerHeight/2,1)}finally{FXW=0}
@@ -2095,7 +2095,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.327 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.328 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -2672,7 +2672,7 @@ function cpGhostMake(){
     const old=$('#cm'),par=old&&old.parentNode,sh=$('#sheet');
     if(!old||!par||old.hidden||!old.children.length||!(sh&&!sh.hidden&&sh.classList.contains('open')))return null;
     if(getComputedStyle(par).position==='static')par.style.position='relative';
-    /* v13.327: o fantasma era posto com medidas INTEIRAS (offsetTop/Left) e o carrossel/texto reais ficam em posições com fração (ex.: 551,16 px); o fantasma ficava até meio pixel mais baixo e, ao sumir, o cartão e o nome pareciam descer e voltar (tremida). Agora usa a posição exata (com fração) */
+    /* v13.328: o fantasma era posto com medidas INTEIRAS (offsetTop/Left) e o carrossel/texto reais ficam em posições com fração (ex.: 551,16 px); o fantasma ficava até meio pixel mais baixo e, ao sumir, o cartão e o nome pareciam descer e voltar (tremida). Agora usa a posição exata (com fração) */
     const FR=el=>{const w=el.offsetWidth,h=el.offsetHeight,o={t:el.offsetTop,l:el.offsetLeft,w:w,h:h};
       try{const pr=par.getBoundingClientRect(),r=el.getBoundingClientRect(),s=par.offsetWidth?pr.width/par.offsetWidth:1;
         if(s>0.5&&s<2){const t=(r.top-pr.top)/s-par.clientTop+par.scrollTop,l=(r.left-pr.left)/s-par.clientLeft+par.scrollLeft;
@@ -2703,8 +2703,8 @@ function cpSwap(o){
     if(o&&o.g){g=o.g;
       g.style.cssText='position:absolute;margin:0;left:'+o.l+'px;top:'+o.t+'px;width:'+o.w+'px;height:'+o.h+'px;pointer-events:none;z-index:3;overflow:hidden;scroll-snap-type:none;touch-action:none;opacity:1;--sh:'+(t.style.getPropertyValue('--sh')||'0px')+'';
       o.par.appendChild(g);g.scrollLeft=o.sl}
-    /* v13.327: na troca, só o nome, a bandeira em texto e as bolinhas esmaecem (um some e SÓ DEPOIS o outro aparece, sem ficarem um por cima do outro); o botão do ângulo (36) NÃO esmaece mais (ele fazia parte da cópia e piscava/tremia a cada troca) */
-    /* v13.327: o que é IGUAL no antigo e no novo (ex.: o nome "Santander FREE" ao trocar Visa→Mastercard) não esmaece mais: antes sumia e voltava, parecendo piscar/tremer; só esmaece o que muda */
+    /* v13.328: na troca, só o nome, a bandeira em texto e as bolinhas esmaecem (um some e SÓ DEPOIS o outro aparece, sem ficarem um por cima do outro); o botão do ângulo (36) NÃO esmaece mais (ele fazia parte da cópia e piscava/tremia a cada troca) */
+    /* v13.328: o que é IGUAL no antigo e no novo (ex.: o nome "Santander FREE" ao trocar Visa→Mastercard) não esmaece mais: antes sumia e voltava, parecendo piscar/tremer; só esmaece o que muda */
     const SG=(r,k)=>{try{const e=r&&r.querySelector(':scope>.'+k);if(!e)return null;if(k==='cpg'){const c=e.children;let ix=-1;for(let i=0;i<c.length;i++)if(c[i].classList.contains('cur')){ix=i;break}return c.length+':'+ix}const u=e.querySelector('.cur');return (u||e).textContent.trim()}catch(_){return null}};
     const SAME=new Set();
     const TX=r=>r?[...r.querySelectorAll(':scope>.cpn,:scope>.cps,:scope>.cpg')].filter(e=>!SAME.has(e.className.split(' ')[0])):[];
@@ -2717,7 +2717,7 @@ function cpSwap(o){
       else t.style.opacity=my===CSW?'':t.style.opacity;
       if(g){try{const a=g.animate([{opacity:1},{opacity:0}],{duration:CPD,easing:CPE,fill:'forwards'});a.onfinish=a.oncancel=()=>{try{g.remove()}catch(e){}}}catch(e){g.remove()}
         setTimeout(()=>{try{g.remove()}catch(e){}},900)}
-      if(tg){const pn=$('#cpt');try{TX(pn).forEach(e=>{e.style.opacity='';e.animate([{opacity:0},{opacity:0,offset:.4},{opacity:1}],{duration:CPD,easing:'linear'})});const a=tg.animate([{opacity:1},{opacity:0,offset:.45},{opacity:0}],{duration:CPD,easing:'linear',fill:'forwards'});a.onfinish=a.oncancel=()=>{try{tg.remove()}catch(e){}}}catch(e){try{tg.remove();TX(pn).forEach(e=>e.style.opacity='')}catch(_){}}
+      if(tg){const pn=$('#cpt');try{TX(pn).forEach(e=>{e.style.opacity='';e.animate([{opacity:0},{opacity:0,offset:.5},{opacity:1,offset:.5},{opacity:1}],{duration:CPD,easing:'linear'})});const a=tg.animate([{opacity:1},{opacity:1,offset:.5},{opacity:0,offset:.5},{opacity:0}],{duration:CPD,easing:'linear',fill:'forwards'});a.onfinish=a.oncancel=()=>{try{tg.remove()}catch(e){}}}catch(e){try{tg.remove();TX(pn).forEach(e=>e.style.opacity='')}catch(_){}}
         setTimeout(()=>{try{tg.remove();TX($('#cpt')).forEach(e=>e.style.opacity='')}catch(e){}},900)}
       setTimeout(()=>{try{const p3=$('#cpt');p3&&p3.classList.remove('swp')}catch(e){}},CPD+60);setTimeout(()=>{try{const p3=$('#cpt');p3&&p3.classList.remove('swp')}catch(e){}},1000)};
     const wait=()=>{
@@ -4381,7 +4381,7 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
   if(mq.addEventListener)mq.addEventListener('change',ch);else if(mq.addListener)mq.addListener(ch)})();
 </script>
 <script>
-/* v13.327: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
+/* v13.328: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
 (function(){var cb=document.getElementById('cbf');if(!cb)return;var t=0;function kick(){if(t)return;t=requestAnimationFrame(function(){t=requestAnimationFrame(function(){t=0;cb.classList.add('rp');void cb.offsetWidth;requestAnimationFrame(function(){cb.classList.remove('rp')})})})}
 try{new MutationObserver(kick).observe(cb,{childList:true})}catch(_){}
 try{new IntersectionObserver(function(e){if(e[0]&&e[0].isIntersecting)kick()}).observe(cb)}catch(_){}})();
