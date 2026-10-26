@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.321';
+(function(){var V='13.324';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -956,7 +956,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.321</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.324</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -1071,7 +1071,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.321';
+const VERSION='13.324';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1259,24 +1259,24 @@ const TPLS=[
 ];
 const MODELS=[
 /* @@BB@@ ===== MODELOS BANCO DO BRASIL ===== */
- {id:'sanfreevisa',n:'Santander Free Visa',provs:['santander'],br:'visa',tr:'standard'},
- {id:'sanfreemc',n:'Santander Free Mastercard',provs:['santander'],br:'master',tr:'standard'},
+ {id:'sanfreevisa',n:'Santander FREE',provs:['santander'],br:'visa',tr:'standard'},
+ {id:'sanfreemc',n:'Santander FREE',provs:['santander'],br:'master',tr:'standard'},
  {id:'aawhite',n:'Santander / AAdvantage® Quartz',provs:['santander'],br:'master',tr:'standard'},
  {id:'smilesgold',n:'Santander Gol Smiles Gold',provs:['santander'],br:'visa',tr:'gold'},
  {id:'aaplat',n:'Santander | AAdvantage® Platinum',provs:['santander'],br:'master',tr:'platinum'},
  {id:'smilesplat',n:'Santander Gol Smiles Platinum',provs:['santander'],br:'visa',tr:'platinum'},
  {id:'elite',n:'Santander Elite',provs:['santander'],br:'visa',tr:'platinum'},
- {id:'elitemc',n:'Santander Elite Mastercard Platinum',provs:['santander'],br:'master',tr:'platinum'},
+ {id:'elitemc',n:'Santander Elite',provs:['santander'],br:'master',tr:'platinum'},
  {id:'smilesinf',n:'Santander Gol Smiles Infinite',provs:['santander'],br:'visa',tr:'infinite'},
  {id:'unique',n:'Santander Unique',provs:['santander'],br:'visa',tr:'infinite'},
  {id:'aablack',n:'Santander | AAdvantage® Black',provs:['santander'],br:'master',tr:'black'},
- {id:'uniquemc',n:'Santander Unique Mastercard Black',provs:['santander'],br:'master',tr:'black'},
+ {id:'uniquemc',n:'Santander Unique',provs:['santander'],br:'master',tr:'black'},
  {id:'unlimited',n:'Santander Unlimited',provs:['santander'],br:'visa',tr:'infinite'},
- {id:'bbblack',n:'Ourocard Black Mastercard',provs:['bb'],br:'master',tr:'black'},
+ {id:'bbblack',n:'Ourocard',provs:['bb'],br:'master',tr:'black'},
  {id:'bbgold',n:'Ourocard Visa Gold',provs:['bb'],br:'visa',tr:'gold'},
  {id:'bbgrafite',n:'Ourocard Elo Grafite',provs:['bb'],br:'elo',tr:'platinum'},
  {id:'bbmais',n:'Ourocard Elo Mais',provs:['bb'],br:'elo',tr:'gold'},
- {id:'bbplatmc',n:'Ourocard Platinum Mastercard',provs:['bb'],br:'master',tr:'platinum'},
+ {id:'bbplatmc',n:'Ourocard',provs:['bb'],br:'master',tr:'platinum'},
  {id:'bbplatvisa',n:'Ourocard Platinum Visa',provs:['bb'],br:'visa',tr:'platinum'},
  {id:'bbinf',n:'Ourocard Visa Infinite',provs:['bb'],br:'visa',tr:'infinite'},
  {id:'bbnanquim',n:'Ourocard Elo Nanquim',provs:['bb'],br:'elo',tr:'black'},
@@ -1288,25 +1288,25 @@ const MODELS=[
 /* @@SANTANDER@@ ===== MODELOS SANTANDER ===== */
 
 /* @@ITAU@@ ===== MODELOS ITAÚ ===== */
- {id:'azulmc',n:'Itaú Azul Mastercard Gold',provs:['itau'],br:'master',tr:'gold'},
+ {id:'azulmc',n:'Itaú Azul',provs:['itau'],br:'master',tr:'gold'},
  {id:'azulvisa',n:'Itaú Azul Visa Gold',provs:['itau'],br:'visa',tr:'gold'},
  {id:'azulvisan',n:'Itaú Azul Visa',provs:['itau'],br:'visa',tr:'standard'},
- {id:'azulmcn',n:'Itaú Azul Mastercard',provs:['itau'],br:'master',tr:'standard'},
- {id:'azulmcsky',n:'Itaú Azul Mastercard Skyline',provs:['itau'],br:'master',tr:'standard'},
+ {id:'azulmcn',n:'Itaú Azul',provs:['itau'],br:'master',tr:'standard'},
+ {id:'azulmcsky',n:'Itaú Azul Skyline',provs:['itau'],br:'master',tr:'standard'},
  {id:'azulvisaplat',n:'Itaú Azul Visa Platinum',provs:['itau'],br:'visa',tr:'platinum'},
- {id:'azulmcplat',n:'Itaú Azul Mastercard Platinum',provs:['itau'],br:'master',tr:'platinum'},
+ {id:'azulmcplat',n:'Itaú Azul',provs:['itau'],br:'master',tr:'platinum'},
  {id:'azulvisainf',n:'Itaú Azul Visa Infinite',provs:['itau'],br:'visa',tr:'infinite'},
  {id:'latamvisa',n:'Itaú LATAM Pass Visa',provs:['itau'],br:'visa',tr:'standard'},
- {id:'latammc',n:'Itaú LATAM Pass Mastercard',provs:['itau'],br:'master',tr:'standard'},
+ {id:'latammc',n:'Itaú LATAM Pass',provs:['itau'],br:'master',tr:'standard'},
  {id:'latamvisagold',n:'Itaú LATAM Pass Visa Gold',provs:['itau'],br:'visa',tr:'gold'},
- {id:'latammcgold',n:'Itaú LATAM Pass Mastercard Gold',provs:['itau'],br:'master',tr:'gold'},
+ {id:'latammcgold',n:'Itaú LATAM Pass',provs:['itau'],br:'master',tr:'gold'},
  {id:'latamvisaplat',n:'Itaú LATAM Pass Visa Platinum',provs:['itau'],br:'visa',tr:'platinum'},
- {id:'latammcplat',n:'Itaú LATAM Pass Mastercard Platinum',provs:['itau'],br:'master',tr:'platinum'},
+ {id:'latammcplat',n:'Itaú LATAM Pass',provs:['itau'],br:'master',tr:'platinum'},
  {id:'latamvisainf',n:'Itaú LATAM Pass Visa Infinite',provs:['itau'],br:'visa',tr:'infinite'},
- {id:'latammcblack',n:'Itaú LATAM Pass Mastercard Black',provs:['itau'],br:'master',tr:'black'},
+ {id:'latammcblack',n:'Itaú LATAM Pass',provs:['itau'],br:'master',tr:'black'},
  {id:'passai',n:'Itaú Passaí Visa Gold',provs:['itau'],br:'visa',tr:'gold'},
  {id:'sennavisa',n:'Itaú Ayrton Senna Visa',provs:['itau'],br:'visa',tr:'standard'},
- {id:'sennamc',n:'Itaú Ayrton Senna Mastercard',provs:['itau'],br:'master',tr:'standard'},
+ {id:'sennamc',n:'Itaú Ayrton Senna',provs:['itau'],br:'master',tr:'standard'},
  {id:'uniclassv',n:'Itaú Uniclass Visa Signature (vertical)',provs:['itau'],br:'visa',tr:'signature'},
 
 /* @@BRADESCO@@ ===== MODELOS BRADESCO ===== */
@@ -1314,9 +1314,9 @@ const MODELS=[
  {id:'disneyamigos',n:'Bradesco Disney Turma do Mickey Visa Infinite',provs:['bradesco'],br:'visa',tr:'infinite'},
  {id:'starwars',n:'Bradesco Star Wars Visa Infinite',provs:['bradesco'],br:'visa',tr:'infinite'},
  {id:'dinerselo',n:'Caixa Elo Diners Club',provs:['caixa'],br:'elo',tr:'platinum'},
- {id:'pmcgold',n:'Porto Seguro Mastercard Gold',provs:['portobank'],br:'master',tr:'gold'},
- {id:'pmcplat',n:'Porto Seguro Mastercard Platinum',provs:['portobank'],br:'master',tr:'platinum'},
- {id:'pmcblack',n:'Porto Seguro Mastercard Black',provs:['portobank'],br:'master',tr:'black'},
+ {id:'pmcgold',n:'Porto Seguro',provs:['portobank'],br:'master',tr:'gold'},
+ {id:'pmcplat',n:'Porto Seguro',provs:['portobank'],br:'master',tr:'platinum'},
+ {id:'pmcblack',n:'Porto Seguro',provs:['portobank'],br:'master',tr:'black'},
  {id:'pvisagold',n:'Porto Seguro Visa Gold',provs:['portobank'],br:'visa',tr:'gold'},
  {id:'pvisaplat',n:'Porto Seguro Visa Platinum',provs:['portobank'],br:'visa',tr:'platinum'},
  {id:'pvisainf',n:'Porto Seguro Visa Infinite',provs:['portobank'],br:'visa',tr:'infinite'}
@@ -1365,7 +1365,7 @@ if(!S.goals||typeof S.goals!=='object')S.goals={};
 if(!S.order||typeof S.order!=='object')S.order={};
 if(S.pord!=='custom')S.pord='az';
 /* garante que toda conta tem a estrutura mínima (dados antigos, backup ou nuvem) */
-function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(b.prov==='santander'&&(b.model==='sanfree'||b.model==='sx')){const mc=b.model==='sanfree'&&b.brand==='master';b.model=mc?'sanfreemc':'sanfreevisa';b.brand=mc?'master':'visa';b.tier='standard'} /* v13.321: o Santander Free virou 2 modelos (Visa e Mastercard) e o SX saiu: contas antigas passam para o Free da mesma bandeira */
+function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(b.prov==='santander'&&(b.model==='sanfree'||b.model==='sx')){const mc=b.model==='sanfree'&&b.brand==='master';b.model=mc?'sanfreemc':'sanfreevisa';b.brand=mc?'master':'visa';b.tier='standard'} /* v13.324: o Santander Free virou 2 modelos (Visa e Mastercard) e o SX saiu: contas antigas passam para o Free da mesma bandeira */
   if(!b.paid||typeof b.paid!=='object')b.paid={};if(typeof b.amount!=='number')b.amount=+b.amount||0;if(!b.due)b.due=toISO(today0())})}
 normS();
 let EV=6;
@@ -1439,14 +1439,14 @@ function fxSet(){
   const S=FXP.sets[FXP.n++%FXP.NS];
   try{S.box.getAnimations().forEach(a=>a.cancel())}catch(_){}
   S.box.style.opacity='';S.box.style.visibility='visible';
-  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.321: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
+  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.324: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
   return S;
 }
 function fxHide(S){try{clearTimeout(S.hz);S.box.getAnimations().forEach(a=>a.cancel());S.ok.concat(S.un).forEach(e=>{e.getAnimations().forEach(a=>a.cancel())});S.box.style.opacity='';S.box.style.visibility='hidden'}catch(_){}}
 function fxHideAll(){FXP.sets.forEach(fxHide)}
 document.addEventListener('visibilitychange',fxHideAll);addEventListener('pagehide',fxHideAll);addEventListener('pageshow',fxHideAll);
 function fxFade(S){try{S.box.animate([{opacity:1},{opacity:0}],{duration:140,fill:'forwards'})}catch(_){}}
-let FXW=0,FXV=0; /* v13.321: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
+let FXW=0,FXV=0; /* v13.324: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
 function fxRun(e,kf,o){try{if(FXW)kf=kf.map(f=>f.opacity==null?f:Object.assign({},f,{opacity:f.opacity*.01}));e.getAnimations().forEach(a=>a.cancel());e.animate(kf,o)}catch(_){}}
 document.addEventListener('visibilitychange',()=>{FXV=performance.now()});
 const FXR=(p,q)=>p+Math.random()*(q-p);
@@ -1472,7 +1472,7 @@ function fxUn(x,y,w){
 }
 function fxWarm(){ /* roda uma vez, quase invisível (1%), no meio da tela, só para o navegador preparar as camadas dos 3 conjuntos */
   try{const sh=$('#sheet');if(sh&&!sh.hidden)return;
-    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.321: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
+    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.324: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
     FXW=1;
     try{for(let k=0;k<FXP.NS;k++)fxOk(-420,innerHeight/2,1);
     for(let k=0;k<FXP.NS;k++)fxUn(-420,innerHeight/2,1)}finally{FXW=0}
@@ -2093,7 +2093,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.321 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.324 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -2670,12 +2670,18 @@ function cpGhostMake(){
     const old=$('#cm'),par=old&&old.parentNode,sh=$('#sheet');
     if(!old||!par||old.hidden||!old.children.length||!(sh&&!sh.hidden&&sh.classList.contains('open')))return null;
     if(getComputedStyle(par).position==='static')par.style.position='relative';
+    /* v13.324: o fantasma era posto com medidas INTEIRAS (offsetTop/Left) e o carrossel/texto reais ficam em posições com fração (ex.: 551,16 px); o fantasma ficava até meio pixel mais baixo e, ao sumir, o cartão e o nome pareciam descer e voltar (tremida). Agora usa a posição exata (com fração) */
+    const FR=el=>{const w=el.offsetWidth,h=el.offsetHeight,o={t:el.offsetTop,l:el.offsetLeft,w:w,h:h};
+      try{const pr=par.getBoundingClientRect(),r=el.getBoundingClientRect(),s=par.offsetWidth?pr.width/par.offsetWidth:1;
+        if(s>0.5&&s<2){const t=(r.top-pr.top)/s-par.clientTop+par.scrollTop,l=(r.left-pr.left)/s-par.clientLeft+par.scrollLeft;
+          if(Math.abs(t-o.t)<1.5&&Math.abs(l-o.l)<1.5){o.t=t;o.l=l;o.w=r.width/s;o.h=r.height/s}}}catch(_){}
+      return o};
     const g=old.cloneNode(true);g.removeAttribute('id');g.querySelectorAll('.cpi').forEach(x=>{x.style.viewTimelineName='none'});g.classList.remove('cpnt');g.setAttribute('aria-hidden','true');
-    let tg=null,tp=null;try{const pt=$('#cpt');if(pt&&!pt.hidden&&pt.parentNode===par){tg=pt.cloneNode(true);tg.removeAttribute('id');tg.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));tg.setAttribute('aria-hidden','true');tp={t:pt.offsetTop,l:pt.offsetLeft,w:pt.offsetWidth,h:pt.offsetHeight}}}catch(_){tg=null} /* v13.301: o texto do cartão (nome, bandeira, pontinhos) também ganha fantasma: ele trocava NA HORA enquanto o cartão antigo ainda ficava ~80 ms na tela, e a diferença parecia uma tremida */
+    let tg=null,tp=null;try{const pt=$('#cpt');if(pt&&!pt.hidden&&pt.parentNode===par){tg=pt.cloneNode(true);tg.removeAttribute('id');tg.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));tg.setAttribute('aria-hidden','true');tp=FR(pt)}}catch(_){tg=null} /* v13.301: o texto do cartão (nome, bandeira, pontinhos) também ganha fantasma: ele trocava NA HORA enquanto o cartão antigo ainda ficava ~80 ms na tela, e a diferença parecia uma tremida */
     /* v13.310: o nome/subtítulo/bolinhas do fantasma mostram a marca .cur, que no 3D do seletor só é atualizada quando a rolagem para (140 ms depois). Tocando na bandeira com o carrossel ainda andando, o fantasma mostrava o nome do cartão ANTERIOR (ex.: "Quartz" sobre o cartão Black). Agora a marca do fantasma é posta pelo cartão que está de fato no centro neste instante. */
     if(tg&&CNS){try{const its=old.children,c=old.scrollLeft+old.clientWidth/2;let bi=0,bd=1e9;for(let i=0;i<its.length;i++){const d=Math.abs(its[i].offsetLeft+its[i].offsetWidth/2-c);if(d<bd){bd=d;bi=i}}
       tg.querySelectorAll('.cpn,.cps,.cpg').forEach(r=>{for(let i=0;i<r.children.length;i++)r.children[i].classList.toggle('cur',i===bi)})}catch(_){}}
-    return {g:g,sl:old.scrollLeft,t:old.offsetTop,l:old.offsetLeft,w:old.offsetWidth,h:old.offsetHeight,par:par,tg:tg,tp:tp};
+    const op=FR(old);return {g:g,sl:old.scrollLeft,t:op.t,l:op.l,w:op.w,h:op.h,par:par,tg:tg,tp:tp};
   }catch(e){return null}
 }
 /* v13.108: a troca é "esmaecer e aparecer": o carrossel NOVO fica invisível enquanto se ajusta (posição, tamanhos, encaixe, 1ª foto) e só aparece quando está pronto, junto com o fantasma do antigo sumindo. Qualquer ajuste do iPhone acontece escondido. */
@@ -4367,7 +4373,7 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
   if(mq.addEventListener)mq.addEventListener('change',ch);else if(mq.addListener)mq.addListener(ch)})();
 </script>
 <script>
-/* v13.321: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
+/* v13.324: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
 (function(){var cb=document.getElementById('cbf');if(!cb)return;var t=0;function kick(){if(t)return;t=requestAnimationFrame(function(){t=requestAnimationFrame(function(){t=0;cb.classList.add('rp');void cb.offsetWidth;requestAnimationFrame(function(){cb.classList.remove('rp')})})})}
 try{new MutationObserver(kick).observe(cb,{childList:true})}catch(_){}
 try{new IntersectionObserver(function(e){if(e[0]&&e[0].isIntersecting)kick()}).observe(cb)}catch(_){}})();
