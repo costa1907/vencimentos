@@ -15,7 +15,7 @@
 @font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:block;src:url(f-bricolage.woff2) format('woff2')}</style>
 <script>
 /* abre direto na versão mais nova guardada no aparelho (o iPhone costuma servir a página antiga do cache) */
-(function(){var V='13.320';
+(function(){var V='13.321';
   function c(a,b){a=a.split('.');b=b.split('.');for(var i=0;i<3;i++){var x=+a[i]||0,y=+b[i]||0;if(x!==y)return x>y?1:-1}return 0}
   try{var v=localStorage.getItem('vencimentos.htmlv'),h=localStorage.getItem('vencimentos.html');
     if(v&&h&&c(v,V)>0&&h.indexOf("const VERSION='"+v+"'")>0){document.documentElement.style.visibility='hidden';setTimeout(function(){document.open();document.write(h);document.close()},0)}
@@ -956,7 +956,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
       <div class="logo"><img data-mk alt=""></div>
       <h1>Sobrou<span class="ex">!</span></h1>
     </div>
-    <div class="hr"><span class="ver" id="ver">v13.320</span><span class="pill">Premium</span></div>
+    <div class="hr"><span class="ver" id="ver">v13.321</span><span class="pill">Premium</span></div>
   </header>
 
   <main>
@@ -1071,7 +1071,7 @@ body.sfull .app,body.sfull .fab,body.sfull .tabs{opacity:0;pointer-events:none}
 <script>
 (function(){
 'use strict';
-const VERSION='13.320';
+const VERSION='13.321';
 const KEY='vencimentos.v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1210,7 +1210,8 @@ const TPLS=[
  {p:"santander",m:"elite",b:"visa",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,k:"484749",j:"454546",s:"c-santander-elitevisa.webp",q:"data:image/webp;base64,UklGRgABAABXRUJQVlA4IPQAAACwBwCdASo4ACMAPqlEmEmmJCIhNVgN+MAVCWkAA+N5XERz3uYi+1VU6UQiFjkia+uBM+ARSRdknyzAv4prcTi9AQuRj9VAAP7vNC5otrsgs/TOiGFCZbbQ2O6Un6ETHxbKvFv0F3aUrEbhQahAuoph6Z3xz45RDRq8AFTb0qIEKLUiBDFj3HWofdBMP/ba+1xinMepwzlOPa4doFA2h2KbxNB5WOcuBfrkeuVGDxeL0t4U2WKe+B8fyMSF++6fy5+W7VvuY1XlfheP2h3Po3x7r11vzrcvVSeWqE5XYAxpJ3AhdO1TFumxiXHe1M5dNNHAAAAA"},
  {p:"santander",m:"unique",b:"visa",t:"infinite",c:"#ffffff",rg:"200,200,205",n:1,k:"37342f",j:"332f2a",s:"c-santander-uniquevisa.webp",q:"data:image/webp;base64,UklGRg4BAABXRUJQVlA4IAIBAADwBwCdASo4ACMAPqlInUmmJKMhMrtrMMAVCWkA0UX6Z4+Qt9cCP/7vngdVuXMjS38tpQoBJVvffX1c98T4sPNfaQKtPeOa4lAA/vV0EVpnLKDoU2nD2tE9gk0z/+B+NdmOA95vZTbxsPn7yhnW++m9nV9tso0Wq/5c8cmWRyV1uUKMMnjPBK2HoiT6YMtFMVxqq70rWLekGP4vBUf3pQ+PzA5B5HsF5VuU5CekSc37t5AprV1Uul0+QuD9gRG9TXwTv9huo0DrJh+l2h3LwhTT0iSXLcPS7tX0jNs+DVf4qeivs+TDK4ec7D+ZmsGDJe0rqcpw8r2J0vS6PeAQNABCyAA="},
  {p:"santander",m:"unlimited",b:"visa",t:"infinite",c:"#ffffff",rg:"170,170,175",n:1,k:"0a0b0b",j:"080808",s:"c-santander-unlimited.webp",q:"data:image/webp;base64,UklGRvIAAABXRUJQVlA4IOYAAADQBgCdASo4ACMAPrFGoEmnI6OhMrtpmOAWCWkABRAe582gAYtnwczChEYRU+SPHqwGo36ue9/dRoQkfW5YAAAA/vm982hLYAtJNKJlEVOBixvfr8Ur/e9xGEL1flvfXo2BOxzWWt8C+TPlr7jK3AFRlZFPOl0gq/dZ8P53LyCpdy8aZmqbZpIW+OFzrfsMldB+c4ipWeszn3fXl+N9YxjxnTch/E94e6hMEmQiDhQ85AD9ndCu6TN6ZFNxylDqSKCISYaTvyJJjiNNhqSncun7w172Dv0uGGFWH1XQCdo5bc/5QAAAAA=="},
- {p:"santander",m:"sanfree",b:"*",t:"standard",c:"#ffffff",rg:"255,120,120",n:1,k:"60191e",j:"23070c",s:"c-santander-sanfree.webp",q:"data:image/webp;base64,UklGRs4BAABXRUJQVlA4IMIBAAAwCgCdASo4ACMAPrVMnkqnJCKhsBgJWOAWiWwAzMQg1gJYW9ADpX1/kuHQbW95iPm1BEXcIsRUr8X8JcymgItMZ+r/WR1T/3HanszU5jp8mRTARNN7bjDtXQAA/vGOTXTXF1d1Lm0SsJ8inK/Fjdd+1TxWwOtNuvi+yKxl3pBHqALeDFfx7Su2M8/6oF7wHP3WAKA55RN2RxzTjA9yoTjB7KINI6kqd9LLXPsre4gTWQg8qhQPesVqA15xppr1an58ILmi9A1DYe/+VjENQRvnuzDasyqAw/BSAxIfSjjFzomVGBftLAopdVWBh5+5XAADY6nBSn0oCsn1KRKWGgWynEspYlVjhFLPko9Di1bwnxxljkZKxrEj+Yb89CoVOpnYCG0tnqdGiwg5N+SDqjKlXLV6wqfgudnmWe59LlVWnsc9BcJrFR1Jrp5w6yfPMs3nY2hom0NRNi8KLcxDwSc2i3Tol04QLziRk1gV6GH77RSsv+hkNU+3Ne9erFG55T0tRcfZY/W46odfIR75sjmA6/Lryokc+sjIvHnIcsIVUlbMXN2iiGyvA41zgl7eFpZqjo2Dd0wg/gmFaKC2wCkAAAA="},
+ {p:"santander",m:"sanfreevisa",b:"visa",t:"standard",c:"#ffffff",rg:"255,120,120",n:1,k:"60191e",j:"23070c",s:"c-santander-sanfreevisa.webp",q:"data:image/webp;base64,UklGRlwBAABXRUJQVlA4IFABAACwBwCdASowAB4APwF2rFGrJ6OiqrgMAWAgCWwAnSDByASzBvLJEkjFIhfUmbQwrQa+neMc+Hki5gemiB5mlup4wYOzOJgAAP7ZNfGWt/52Q6TfFytcBFJB1txeZFCwiti8W4O1ZPDSWySniJcV5JnxcmD+5wQ37u+myXh+trqRnopXtOLl4ACLtVlLu7jpNx+qZ38vyVDB6Z7if2bGu7+S4O8tZ4f3+5v75JzB4bXDmMOaIW0seGdTeyomzVc4Gc78vgtU27VfOFNpU3w6QVwX9Fy0eYtOp8xPJ7XudFf/iKy0pwWzf3sXKihuBcBOma+iqHUTkCwb2tOAHhj9XHyU4x5dpZ4Pqmu0Q7dziTdLnt0JC13/zpEVpPcTqtdmu83ZIHZSN6myc9VLH+KeqyFTmhEWdbKm4sL32F9fGOg1oas/34nP1DnTuFo3BKVgAAA="},
+ {p:"santander",m:"sanfreemc",b:"master",t:"standard",c:"#ffffff",rg:"255,120,120",n:1,k:"60191e",j:"23070c",s:"c-santander-sanfreemc.webp",q:"data:image/webp;base64,UklGRnIBAABXRUJQVlA4IGYBAABQCQCdASowAB4APwFwrlGrJiQisBVYAWAgCWwAnS/WppqpxK9ufoYHUzbymjcBq2sjZrpWDb/tKpNn5FPK49R6yLCUJxdc8YVXB6s2Krp3VtSN8AD+4vU5sFwTVziT312PCy7S+lldPEnw9zlsXrPX/Z44/oLiMEznDDMK47Yp/iII7fjp9DWBWxZ4K5jwUa69KMhxvVc9716mA3viv+71SgUgWqgs1MdUglJRaQqP9ImO3qse5tTcHQxg82rPYlUJvZlIwuni+2UtIAqEXPPJ1b0rz24xXuem6Htyw40z+8Dm4neuut8y7DjyBxOMmJtjtmRvT0bf8RiO0zslrWT8wWnNaN+ybc/pnATf56XICd2zd9zNModOLy/vZHYVrQyUkIFvgYK3Q3SuQzqyzv7u5LAwDi6IlZZHr+5csmdO3RtPSl7vWc+BvXObq2Z+h94yiF8sS01J56/MFdzBzoctPxlzYAAA"},
  {p:"santander",m:"smilesgold",b:"visa",t:"gold",c:"#ffffff",rg:"255,236,170",n:1,k:"935533",j:"97552d",s:"c-santander-smilesgold.webp",q:"data:image/webp;base64,UklGRkYBAABXRUJQVlA4IDoBAABQCACdASo4ACMAPrVKoUwnI6MiLVM7aOAWiWMAwrQmwICN+ISx/WfdK6exNEu9DAT7Z8qRlCOUqyNV+v6cvU/kfw65OEzCtYXN3eAA/tDICHlOwmKpJFk6ShZ3Rx7Fxepy4j1FxvsnL7mmEmGNWbUb+OmH/g3/qpPPs+/bzNl2HkSM15mROhNytVZPG9dC8rhON5ZPdmOZMYOLSFaViDhD+kZbUXir5A30UbIIbl7e7PpXJDsilQoinr9GUxjYUVu0PRk0pvaLwt1vdNfl9Zq1kjIs7OzovQYzrpGGDT86RI8Vfc7iXNBb4F8zmwB5e4zCiQdJ9HqtzVEdzgdTvnASReAJRYBM2V/RpA1Yi+My88MtO+rC1plUKvBsiTHKzFAF9ZOqJ9ITC+hEf48yEBHSnkIJ2K8SEGAAAA=="},
  {p:"santander",m:"smilesplat",b:"visa",t:"platinum",c:"#ffffff",rg:"190,225,240",n:1,k:"436a79",j:"3f697a",s:"c-santander-smilesplat.webp",q:"data:image/webp;base64,UklGRlIBAABXRUJQVlA4IEYBAAAQCQCdASo4ACMAPrVKnkonJCKhsrJLMOAWiWUAyF2NUiDip5PTCOhNrNSCS2G48oNSa7ii0BGnz1HrT9SCLv7/NqSHny160MXm2bMgKXXibdAA/tDHHv1mm4iICKMD721zreOQaDtYtAb28zW3vNe2n3RwoHGe24zLpk6KGyd6izjFhuvCM9UJSbYPb8aJDUgeIO11k7rGSvyzaAbJ2g7AyGVv98hYqq6GJNOqyQi8ghhmldGxx7ABiGgTaxteOP0y82+FBLm3NNVf5XQcKTh55ajuIFP2AKVbc4KPm0XPD0pTNI3VsLFGEwS+Rd3V1rCxEYkCIoCjlfM9cffq+8oOyXB3lS2UEAbgHvuLgUHUPqb0031W89C/7LG137HT6VqJ6ggW0DFEw3swT359twkXRtuaWC67kzgV6fUegdfpdw275WoAAA=="},
  {p:"santander",m:"smilesinf",b:"visa",t:"infinite",c:"#ffffff",rg:"220,225,235",n:1,k:"131313",j:"0c0c0c",s:"c-santander-smilesinf.webp",q:"data:image/webp;base64,UklGRmgBAABXRUJQVlA4IFwBAADQCACdASo4ACMAPq1EnEmmI6KhNVYMAMAViWkACBpYsLASbzTuqg2frg6/NqX7BhLLo5SlC8FgFzAEHA+Y10F03infv7rvJ67tm3eNPugAAP76ZDElWfQBplll+6xvZ2LymK84oQriQU09rIT6mPetrfsU5eFu/m4x2Z2eEPV0yIjMFLBrjB6I0k13hFUfUSpUp1egIgQfNmvfEya+dkiJ6TljTvtRHCGaB+hv7qfABnjNNkWZggbdIHwWtYZh96sPWbo1eL9YU9ZncptbNiUBTyPnkNXXJw5z3J6PAYMRdJzSIg05dLs3XqnROokguK6FAksDNwmjGtTALGhx7qmjkVGh3AFIQjKK/dcu9SqPeWcIkcwRZ5NHC/fccSkx5bfyR9Ih5Tll/jLpGJrrdJPo3jy6atFZoV/av/38eXgBl9aLFlGC3uX/pnPpQ6/0MvGzt5G7qJV+94AAAAA="},
@@ -1248,7 +1249,6 @@ const TPLS=[
 /* @@PORTO@@ @@CAIXA@@ ===== NOVOS (Santander extras, Caixa Elo Diners, Porto Seguro) ===== */
  {p:"santander",m:"uniquemc",b:"master",t:"black",c:"#ffffff",rg:"170,170,175",n:1,k:"37342f",j:"35312c",s:"c-santander-uniquemc.webp",q:"data:image/webp;base64,UklGRggBAABXRUJQVlA4IPwAAABwBwCdASo4ACMAPqFEm0mmJCKhN/jqqMAUCWkA0nGL6rfWMB2ptAoCZ4TBLYTlnZ4v7LyFakzkGHQAaj9uiMdvb2+4AAD+9XQYZcvu7biURMgVmO8FdZBs4dCAZcV/XTf2Yt8M61fvJFyW3E3s6vvncPdOlN67jNLFI5Lj3PFI6TxqNTir+PX8mZiuv5qoRJMgtN33nqsLXp7MZOHN5oO1LL4LzWVgxO1vPVBp69WKOuBZTcG5475QqXLic8FqGlJxn8jlJpDjXAlRhSlIyKT5WNQcKUQJ8jzzw5aMmGyVco3m11KPh+PFmdvCn2YmXZ9pXOZqoKgEzgAAAAA="},
  {p:"santander",m:"elitemc",b:"master",t:"platinum",c:"#ffffff",rg:"200,200,210",n:1,k:"484849",j:"4b413d",s:"c-santander-elitemc.webp",q:"data:image/webp;base64,UklGRhQBAABXRUJQVlA4IAgBAAAwBwCdASo4ACMAPrVKn0qnJCKhsBVaqOAWiUADtJSvZ956ztXnxwNgCdVW1s9TAN7QoW7CajziYiVA0JPugPZITAAA/vMaUSunuwnjDVGEyDuzuAfy1vITwK5wzrV4egGJ3lIOdHUul7H2KyzMUDZ7yFByl2VKiTI7xm3SWZkiHNmuyzqLU0rBJL0+T3PlF3XmU7R03qElu/0M9ShJzzF3dHx9K6RVQ5siiSyeWxpXWfA488rtU/o/P2/+8PBd/9x/j5ekxuXB5NZkqAPr+D9keUtzHzwTYxCWm9rB7S+kNfTrkBh2FePzht962UinyYfwJKAIkt8eBiNHM/92nijKw9uUzE3qoAA="},
- {p:"santander",m:"sx",b:"visa",t:"standard",c:"#ffffff",rg:"235,35,45",n:1,k:"c2302d",j:"752426",s:"c-santander-sx.webp",q:"data:image/webp;base64,UklGRkwCAABXRUJQVlA4IEACAACQDACdASo4ACMAPq1KnUmmJKKhLVZu2MAViWwAuznA255afVeUp5C3ANsjzwHoU8oDrJfQA8tX2Pf3Irqpst0gHSzY9uJEfVzDhOvPNBYBjiLi1DcdtOZQtdIBELZJwn/bHczUP4UKK8cnRHIAAP7Zi/FyKOvB3ZCVfYFxywJ+YLwwefJ3f8f1EXNd6D0sDttcfzcJ6cEGPpRoPmvr5P/PeVzVCvuZA/yDPtfqYJDOcOjq/k3imVpWit+DQ+ZemLnE3m4/6n66rSPAL/gouR/eXRNeDJQXudCRkZkDGOccBtpAh/btz8/yc2a86XGde8tjhEzM7Tsh4cUpb1RoMIEUgPGeZk3bUTHYPTLfy2IuDvTbxJWOJmpN6l2cqJa7tvL9I51T4zbuWqpfbz60jPyAPBvZae+jKtlOyOO7tOd9bAvdTRkXgovZfK+qCWk1UuNffYa+q/yEIW7VRuP3TT9HXraql6V2qWPV2/z+3xHr8aqY23uu2DUx/qnydxlFuiO2mO3Zt8/eoZo9tHIT621EuMmCeQZuw7HGQYYNEmr2hxt7+fyAoQNSgb8m6PzJH5YnqpebMcFbOVfYSKAF0rQjfvnPtb5BUj8IGTj4Nq+WnU1RXIK3kcc7FRgKBL5GHXnpbeNxYC56sCpKf/agWMmjvebMY+70e7f8/3c/ZXYACKl7POqR/gbLL2JdTCin/2RzdNJWNyK/6LJegAfFfsPvwuQsI60DCtLcX7I2F4Tn2wvjNM8fX/gWufE0tWiAAAA="},
  {p:"caixa",m:"dinerselo",b:"elo",t:"platinum",c:"#5a4a2a",rg:"200,185,150",n:1,k:"c8c5b4",j:"c7c4b2",s:"c-caixa-dinerselo.webp",q:"data:image/webp;base64,UklGRjABAABXRUJQVlA4ICQBAABQCACdASo4ACMAPq1Gm0mmI6KhMrbcyMAViWcAzFmM0HX/oq3CoFfXzDIObinEpFI8CBp2Y4CRWeCctZzNBuRifQ9Nfe3c+3kilEgA/uhKBWpKupR3nTsbOPt5jacky5P1kvzAsSSGXJ07XxIaC853H+2CdTf3F0d1uWwa1t5+2bImyo9gcK+J5F+zfma+o8U8jnjbcpfU7xohL6M32aOAL2ZBOdcKh23EtPCTqoF8/RKEkJV7sS9B2NeaY+h+102y68hV6IU1RKI7SxI1Z35Uw5A39qmVrMTPz4jEtnzvGRZE2p638we5WEogoyg0MGge7Hj5545i/DELDwM7js97vQzpOgplMT5KRvceWArgN2hHoTct6a88La+PVLrDBsDucAAA"},
  {p:"portobank",m:"pmcgold",b:"master",t:"gold",c:"#ffffff",rg:"200,170,80",n:1,k:"706335",j:"775e2e",s:"c-portobank-mcgold.webp",q:"data:image/webp;base64,UklGRmgBAABXRUJQVlA4IFwBAADQCQCdASo4ACMAPrVMoEonJCMhrVZskOAWiWIAxrgLQWrqhtJ59wd2oiGwglgrmCvng2uFlFLxdc7B99rYg6TDyYWmQ1Qg3m2u/Ws0iLZWA97CSEo/WGAA/tqPu8MK1I36fBhGtizHh6f5Uvux6saibcPbMmdssW9UaF8H6nvkhBv+qYWWCXcXr4CSn5n9jPqBh1HcHxEL1ytrv6EMHZr8k/QPnJsmbkEWilwpVy5PSXWzm3Ul41ii/EfGkcfQCJiBkj3BsR0f/+Z15M1x8riMieyXEA6nxtkLELcN+viXsxe+ilQHT7TYxscskio0xiKcT+ttDWSyuKHf801aNbqpmTn+0ty/SXfHXff6UDlUv9r2a887mDuDKAPW+u954HMoQnJDMcRTbkux/wny8348JGFxxyfG1FtsGyadCqSkmkFz5qDfT8A54cwiUPzMglo5IJp/JWUZUC+13gA="},
  {p:"portobank",m:"pmcplat",b:"master",t:"platinum",c:"#ffffff",rg:"170,170,175",n:1,k:"5f6262",j:"665b54",s:"c-portobank-mcplat.webp",q:"data:image/webp;base64,UklGRlwBAABXRUJQVlA4IFABAAAwCQCdASo4ACMAPqlCm0mmI6KhNVgMAMAVCUAaEgKTb3Q+yWpnZrI10u2CqVntL1pZAI2vDDqCDmkWmebmLH9+VTrj6R79WiuIv3OrsKsNlq+0AP7kOagOEIW7yCZ95vaLsN2PPxUqACbk2MyVOTA0a1MmfdOnvyHSuri9+3a2E4q5w1/u9cB9bEPxkBdtQLAhQfOldYo/Zb2+52ftMpSKQK2OO2zVBoIi1Qjemu61Rov4vA12jDMzA8WqsVU3ZBF9WawAUpGJtVyaRC1oxd8YnMOWu2brGF0VnEw5R11KV0VyEk9VK5Fbwgr8KaRZgqTPneKz+LLH91f7R1gqNn1r1m/a/3H27wcjBJ0B6VaHjgJ9uOWzv6WDGJ+vpHtB8eEitvaCl9TYx21dz23x57CJgk/VEYmxbF8rK23ged9GtKjf2kJb/oYHEfC7WAcQAAA="},
@@ -1259,6 +1259,19 @@ const TPLS=[
 ];
 const MODELS=[
 /* @@BB@@ ===== MODELOS BANCO DO BRASIL ===== */
+ {id:'sanfreevisa',n:'Santander Free Visa',provs:['santander'],br:'visa',tr:'standard'},
+ {id:'sanfreemc',n:'Santander Free Mastercard',provs:['santander'],br:'master',tr:'standard'},
+ {id:'aawhite',n:'Santander / AAdvantage® Quartz',provs:['santander'],br:'master',tr:'standard'},
+ {id:'smilesgold',n:'Santander Gol Smiles Gold',provs:['santander'],br:'visa',tr:'gold'},
+ {id:'aaplat',n:'Santander | AAdvantage® Platinum',provs:['santander'],br:'master',tr:'platinum'},
+ {id:'smilesplat',n:'Santander Gol Smiles Platinum',provs:['santander'],br:'visa',tr:'platinum'},
+ {id:'elite',n:'Santander Elite',provs:['santander'],br:'visa',tr:'platinum'},
+ {id:'elitemc',n:'Santander Elite Mastercard Platinum',provs:['santander'],br:'master',tr:'platinum'},
+ {id:'smilesinf',n:'Santander Gol Smiles Infinite',provs:['santander'],br:'visa',tr:'infinite'},
+ {id:'unique',n:'Santander Unique',provs:['santander'],br:'visa',tr:'infinite'},
+ {id:'aablack',n:'Santander | AAdvantage® Black',provs:['santander'],br:'master',tr:'black'},
+ {id:'uniquemc',n:'Santander Unique Mastercard Black',provs:['santander'],br:'master',tr:'black'},
+ {id:'unlimited',n:'Santander Unlimited',provs:['santander'],br:'visa',tr:'infinite'},
  {id:'bbblack',n:'Ourocard Black Mastercard',provs:['bb'],br:'master',tr:'black'},
  {id:'bbgold',n:'Ourocard Visa Gold',provs:['bb'],br:'visa',tr:'gold'},
  {id:'bbgrafite',n:'Ourocard Elo Grafite',provs:['bb'],br:'elo',tr:'platinum'},
@@ -1273,16 +1286,6 @@ const MODELS=[
  {id:'petro',n:'Petrobras Visa',provs:['bb'],br:'visa',tr:'standard'},
 
 /* @@SANTANDER@@ ===== MODELOS SANTANDER ===== */
- {id:'sanfree',n:'Santander Free',provs:['santander'],br:'visa',tr:'standard'},
- {id:'smilesgold',n:'Santander Gol Smiles Gold',provs:['santander'],br:'visa',tr:'gold'},
- {id:'smilesplat',n:'Santander Gol Smiles Platinum',provs:['santander'],br:'visa',tr:'platinum'},
- {id:'smilesinf',n:'Santander Gol Smiles Infinite',provs:['santander'],br:'visa',tr:'infinite'},
- {id:'aawhite',n:'Santander / AAdvantage® Quartz',provs:['santander'],br:'master',tr:'standard'},
- {id:'aaplat',n:'Santander | AAdvantage® Platinum',provs:['santander'],br:'master',tr:'platinum'},
- {id:'aablack',n:'Santander | AAdvantage® Black',provs:['santander'],br:'master',tr:'black'},
- {id:'unique',n:'Santander Unique',provs:['santander'],br:'visa',tr:'infinite'},
- {id:'unlimited',n:'Santander Unlimited',provs:['santander'],br:'visa',tr:'infinite'},
- {id:'elite',n:'Santander Elite',provs:['santander'],br:'visa',tr:'platinum'},
 
 /* @@ITAU@@ ===== MODELOS ITAÚ ===== */
  {id:'azulmc',n:'Itaú Azul Mastercard Gold',provs:['itau'],br:'master',tr:'gold'},
@@ -1310,9 +1313,6 @@ const MODELS=[
  {id:'disneymickey',n:'Bradesco Disney Mickey Mágico Visa Infinite',provs:['bradesco'],br:'visa',tr:'infinite'},
  {id:'disneyamigos',n:'Bradesco Disney Turma do Mickey Visa Infinite',provs:['bradesco'],br:'visa',tr:'infinite'},
  {id:'starwars',n:'Bradesco Star Wars Visa Infinite',provs:['bradesco'],br:'visa',tr:'infinite'},
- {id:'uniquemc',n:'Santander Unique Mastercard Black',provs:['santander'],br:'master',tr:'black'},
- {id:'elitemc',n:'Santander Elite Mastercard Platinum',provs:['santander'],br:'master',tr:'platinum'},
- {id:'sx',n:'Santander SX',provs:['santander'],br:'visa',tr:'standard'},
  {id:'dinerselo',n:'Caixa Elo Diners Club',provs:['caixa'],br:'elo',tr:'platinum'},
  {id:'pmcgold',n:'Porto Seguro Mastercard Gold',provs:['portobank'],br:'master',tr:'gold'},
  {id:'pmcplat',n:'Porto Seguro Mastercard Platinum',provs:['portobank'],br:'master',tr:'platinum'},
@@ -1330,7 +1330,7 @@ function MF(prov){
 }
 function tplFor(o,tier,br){
   if(o.model){const m=MODELS.find(x=>x.id===o.model&&x.provs.indexOf(o.prov)>-1);if(m)return TPLS.find(x=>x.m===o.model&&x.p===o.prov)||TPLS.find(x=>x.m===o.model)||null}
-  return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfree')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
+  return TPLS.find(x=>x.p===o.prov&&(!x.m||x.m==='sanfreevisa'||x.m==='sanfreemc')&&(x.b===br||x.b==='*')&&x.t===tier)||null;
 }
 document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')&&t.dataset.r){const m=(t.getAttribute('src')||'').split('?')[0].match(/(i-[a-z0-9_-]+\.webp)$/);if(m)ICMISS[m[1]]=1}},true);
 document.addEventListener('load',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&t.parentNode&&t.parentNode.classList.contains('logo')){const u=t.getAttribute('src');if(!ICOK[u]){ICOK[u]=1;icokSave()}t.className='ok'}if(t&&t.classList&&t.classList.contains('cc-bg')&&t.parentNode&&!(t.closest&&t.closest('#cm')))t.parentNode.classList.add('rd')},true);
@@ -1365,7 +1365,8 @@ if(!S.goals||typeof S.goals!=='object')S.goals={};
 if(!S.order||typeof S.order!=='object')S.order={};
 if(S.pord!=='custom')S.pord='az';
 /* garante que toda conta tem a estrutura mínima (dados antigos, backup ou nuvem) */
-function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(!b.paid||typeof b.paid!=='object')b.paid={};if(typeof b.amount!=='number')b.amount=+b.amount||0;if(!b.due)b.due=toISO(today0())})}
+function normS(){S.bills=(S.bills||[]).filter(b=>b&&typeof b==='object');S.bills.forEach(b=>{if(!b.id)b.id=uid();if(b.prov==='santander'&&(b.model==='sanfree'||b.model==='sx')){const mc=b.model==='sanfree'&&b.brand==='master';b.model=mc?'sanfreemc':'sanfreevisa';b.brand=mc?'master':'visa';b.tier='standard'} /* v13.321: o Santander Free virou 2 modelos (Visa e Mastercard) e o SX saiu: contas antigas passam para o Free da mesma bandeira */
+  if(!b.paid||typeof b.paid!=='object')b.paid={};if(typeof b.amount!=='number')b.amount=+b.amount||0;if(!b.due)b.due=toISO(today0())})}
 normS();
 let EV=6;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.__sync)window.__sync()}
@@ -1438,14 +1439,14 @@ function fxSet(){
   const S=FXP.sets[FXP.n++%FXP.NS];
   try{S.box.getAnimations().forEach(a=>a.cancel())}catch(_){}
   S.box.style.opacity='';S.box.style.visibility='visible';
-  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.320: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
+  clearTimeout(S.hz);S.hz=setTimeout(()=>fxHide(S),FXW?1400:1000); /* v13.321: depois do efeito a caixa some de vez (fica visibility:hidden, nada para reaparecer sozinho) */
   return S;
 }
 function fxHide(S){try{clearTimeout(S.hz);S.box.getAnimations().forEach(a=>a.cancel());S.ok.concat(S.un).forEach(e=>{e.getAnimations().forEach(a=>a.cancel())});S.box.style.opacity='';S.box.style.visibility='hidden'}catch(_){}}
 function fxHideAll(){FXP.sets.forEach(fxHide)}
 document.addEventListener('visibilitychange',fxHideAll);addEventListener('pagehide',fxHideAll);addEventListener('pageshow',fxHideAll);
 function fxFade(S){try{S.box.animate([{opacity:1},{opacity:0}],{duration:140,fill:'forwards'})}catch(_){}}
-let FXW=0,FXV=0; /* v13.320: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
+let FXW=0,FXV=0; /* v13.321: FXW=1 só durante o aquecimento: as peças ficam com 1% de opacidade elas mesmas (não só a caixa); FXV = última vez que o app voltou do segundo plano */
 function fxRun(e,kf,o){try{if(FXW)kf=kf.map(f=>f.opacity==null?f:Object.assign({},f,{opacity:f.opacity*.01}));e.getAnimations().forEach(a=>a.cancel());e.animate(kf,o)}catch(_){}}
 document.addEventListener('visibilitychange',()=>{FXV=performance.now()});
 const FXR=(p,q)=>p+Math.random()*(q-p);
@@ -1471,7 +1472,7 @@ function fxUn(x,y,w){
 }
 function fxWarm(){ /* roda uma vez, quase invisível (1%), no meio da tela, só para o navegador preparar as camadas dos 3 conjuntos */
   try{const sh=$('#sheet');if(sh&&!sh.hidden)return;
-    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.320: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
+    if(document.hidden||performance.now()-FXV<4000){setTimeout(fxWarm,4000);return} /* v13.321: recém-voltou do segundo plano: espera (foi aí que o efeito vermelho de desfazer apareceu sozinho) */
     FXW=1;
     try{for(let k=0;k<FXP.NS;k++)fxOk(-420,innerHeight/2,1);
     for(let k=0;k<FXP.NS;k++)fxUn(-420,innerHeight/2,1)}finally{FXW=0}
@@ -2092,7 +2093,7 @@ const PD={
     window.__diagNote&&window.__diagNote((rec.paying?'pagar':'desfazer')+' · '+nome+' · '+S.fr.length+' quadros · lentos ≥25 ms: '+s25+' · ≥33: '+s33+' · ≥50: '+s50+' · pior '+Math.round(w)+' ms ('+(wf||'—')+') · código: efeito '+Math.round(rec.ef||0)+' ms, medir '+Math.round(T.med||0)+' ms, refazer lista '+Math.round(T.ren||0)+' ms, preparar deslize '+Math.round(T.prep||0)+' ms (medir depois '+Math.round(T.pos||0)+' ms) · lote: '+(T.nb||1)+' conta(s)'+' · lista: '+(T.st?'REMENDO'+(T.st.hero?' + topo só atualizado':' + topo recriado')+' (manteve '+T.st.reuso+', criou '+T.st.novas+', tirou '+T.st.tiradas+(T.st.secN||T.st.secT?'; seções +'+T.st.secN+' −'+T.st.secT:'')+'; '+T.st.ms.toFixed(1)+' ms)':T.pv===false?'refeita (remendo desligado)':'refeita inteira')+' · pulos de linha: '+j+(jm?' (maior '+Math.round(jm)+' px'+(()=>{try{const b=S_find(jk.split('|')[0]);return b?', '+b.name:''}catch(_){return ''}})()+')':'')+' · sobreposição: '+(om>2?Math.round(om)+' px'+(S.ovi?' ('+S.ovi[0]+' sobre '+S.ovi[1]+' aos '+S.ovi[2]+' ms, fase '+S.ovi[3]+(S.ovi[4]?', outro lote ativo':'')+')':''):'nenhuma')+' · '+(T.fast?'troca direta (toque seguido/outra tela)':(T.apar||T.some)?'seção '+(T.apar?'nova abriu':'')+(T.apar&&T.some?' e ':'')+(T.some?'removida fechou':'')+' com deslize':'deslize normal')+(ls.length?' · quadros lentos (instante): '+ls.join(', '):''),'pag');
   },
   rep(){
-    const A=this.A;let t='PAGAR / DESFAZER v13.320 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
+    const A=this.A;let t='PAGAR / DESFAZER v13.321 (espera 0,55 s, saída, deslize, entrada · lista por remendo)\n';
     if(!A.n)return t+'- (ainda sem pagar/desfazer medido; ligue o diagnóstico e marque/desmarque contas)\n\n';
     t+='- ações: '+A.n+' ('+A.np+' pagar · '+A.nu+' desfazer) · troca direta: '+A.fast+' · com seção nova/removida: '+A.fade+'\n';
     t+='- quadros: '+A.fr+' · lentos ≥25 ms: '+A.s25+' ('+(A.fr?(A.s25*100/A.fr).toFixed(1):0)+'%) · ≥33 ms: '+A.s33+' · ≥50 ms: '+A.s50+' · pior: '+Math.round(A.w)+' ms (fase: '+(A.wf||'—')+')\n';
@@ -4366,7 +4367,7 @@ document.querySelectorAll('img[data-mk]').forEach(i=>{if(!i.getAttribute('src'))
   if(mq.addEventListener)mq.addEventListener('change',ch);else if(mq.addListener)mq.addListener(ch)})();
 </script>
 <script>
-/* v13.320: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
+/* v13.321: no iPhone as bandeiras (com filtro cinza) só apareciam depois do 1º toque; força um redesenho quando entram na tela ou são refeitas */
 (function(){var cb=document.getElementById('cbf');if(!cb)return;var t=0;function kick(){if(t)return;t=requestAnimationFrame(function(){t=requestAnimationFrame(function(){t=0;cb.classList.add('rp');void cb.offsetWidth;requestAnimationFrame(function(){cb.classList.remove('rp')})})})}
 try{new MutationObserver(kick).observe(cb,{childList:true})}catch(_){}
 try{new IntersectionObserver(function(e){if(e[0]&&e[0].isIntersecting)kick()}).observe(cb)}catch(_){}})();
